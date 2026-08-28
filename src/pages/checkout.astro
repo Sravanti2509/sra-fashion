@@ -1,0 +1,2622 @@
+---
+
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+<title>Checkout | SRA</title>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  </head>
+
+  <body>
+    <Header />
+
+<main class="checkout-page">
+  <div class="checkout-container">
+
+    <!-- =========================
+         CHECKOUT HEADER
+    ========================== -->
+
+    <div class="checkout-header">
+      <span>SRA COLLECTION</span>
+
+      <h1>Checkout</h1>
+
+      <p>
+        Complete your order details.
+      </p>
+    </div>
+
+
+    <!-- =========================
+         MESSAGE
+    ========================== -->
+
+    <div
+      id="checkoutMessage"
+      class="checkout-message"
+    ></div>
+
+
+    <!-- =========================
+         CHECKOUT GRID
+    ========================== -->
+
+    <div class="checkout-grid">
+
+      <!-- =========================
+           CUSTOMER DETAILS
+      ========================== -->
+
+      <section class="checkout-card">
+
+        <div class="section-title">
+          CUSTOMER DETAILS
+        </div>
+
+
+        <form id="checkoutForm">
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label for="name">
+              FULL NAME
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              placeholder="Enter your full name"
+              required
+            />
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label for="email">
+              EMAIL ADDRESS
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              readonly
+            />
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="form-group">
+
+            <label for="phone">
+              PHONE NUMBER
+            </label>
+
+            <input
+              id="phone"
+              type="tel"
+              maxlength="10"
+              inputmode="numeric"
+              placeholder="Enter phone number"
+              required
+            />
+
+          </div>
+
+
+          <!-- ADDRESS -->
+
+          <div class="form-group">
+
+            <label for="address">
+              DELIVERY ADDRESS
+            </label>
+
+            <textarea
+              id="address"
+              placeholder="Enter your complete delivery address"
+              required
+            ></textarea>
+
+          </div>
+
+
+          <!-- CITY -->
+
+          <div class="form-group">
+
+            <label for="city">
+              CITY
+            </label>
+
+            <input
+              id="city"
+              type="text"
+              placeholder="Enter city"
+              required
+            />
+
+          </div>
+
+
+          <!-- PINCODE -->
+
+          <div class="form-group">
+
+            <label for="pincode">
+              PIN CODE
+            </label>
+
+            <input
+              id="pincode"
+              type="text"
+              maxlength="6"
+              inputmode="numeric"
+              placeholder="Enter PIN code"
+              required
+            />
+
+          </div>
+
+
+          <!-- =========================
+               PAYMENT
+          ========================== -->
+
+          <div class="payment-section">
+
+            <div class="section-title">
+              PAYMENT METHOD
+            </div>
+
+
+            <label class="payment-option">
+
+              <input
+                type="radio"
+                name="payment"
+                value="cod"
+                checked
+              />
+
+              <span>
+                <strong>
+                  Cash on Delivery
+                </strong>
+
+                <small>
+                  Pay when your order arrives.
+                </small>
+              </span>
+
+            </label>
+
+
+            <label class="payment-option">
+
+              <input
+                type="radio"
+                name="payment"
+                value="online"
+              />
+
+              <span>
+                <strong>
+                  Online Payment
+                </strong>
+
+                <small>
+                  Pay securely online.
+                </small>
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <!-- =========================
+               PLACE ORDER
+          ========================== -->
+
+          <button
+            type="submit"
+            class="place-order"
+            id="placeOrderButton"
+          >
+            PLACE ORDER
+          </button>
+
+        </form>
+
+      </section>
+
+
+      <!-- =========================
+           ORDER SUMMARY
+      ========================== -->
+
+      <aside class="summary-card">
+
+        <div class="section-title">
+          YOUR ORDER
+        </div>
+
+
+        <div id="orderItems"></div>
+
+
+        <div class="summary-line">
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong id="subtotal">
+            ₹0
+          </strong>
+
+        </div>
+
+
+        <div class="summary-line">
+
+          <span>
+            Delivery
+          </span>
+
+          <strong>
+            FREE
+          </strong>
+
+        </div>
+
+
+        <div class="summary-divider"></div>
+
+
+        <div class="summary-total">
+
+          <span>
+            Total
+          </span>
+
+          <strong id="total">
+            ₹0
+          </strong>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+</main>
+
+
+<Footer />
+
+
+<!-- =========================
+     SUPABASE + CHECKOUT
+========================== -->
+
+<script>
+  import { createClient } from "@supabase/supabase-js";
+  import { allProducts } from "../data/allProducts.js";
+
+
+  /* =====================================================
+     SUPABASE
+  ===================================================== */
+
+  const supabaseUrl =
+    import.meta.env.PUBLIC_SUPABASE_URL;
+
+  const supabaseAnonKey =
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+
+    console.error(
+      "Supabase environment variables are missing."
+    );
+
+  }
+
+
+  const supabase =
+    createClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const form =
+    document.querySelector("#checkoutForm");
+
+  const nameInput =
+    document.querySelector("#name");
+
+  const emailInput =
+    document.querySelector("#email");
+
+  const phoneInput =
+    document.querySelector("#phone");
+
+  const addressInput =
+    document.querySelector("#address");
+
+  const cityInput =
+    document.querySelector("#city");
+
+  const pincodeInput =
+    document.querySelector("#pincode");
+
+  const orderItems =
+    document.querySelector("#orderItems");
+
+  const subtotalElement =
+    document.querySelector("#subtotal");
+
+  const totalElement =
+    document.querySelector("#total");
+
+  const checkoutMessage =
+    document.querySelector("#checkoutMessage");
+
+  const placeOrderButton =
+    document.querySelector("#placeOrderButton");
+
+
+  /* =====================================================
+     MESSAGE
+  ===================================================== */
+
+  function showMessage(
+    text,
+    type = ""
+  ) {
+
+    if (!checkoutMessage) {
+      return;
+    }
+
+    checkoutMessage.textContent =
+      text;
+
+    checkoutMessage.className =
+      `checkout-message ${type}`;
+
+  }
+
+
+  /* =====================================================
+     GET CART
+  ===================================================== */
+
+  function getCart() {
+
+    try {
+
+      const savedCart =
+        localStorage.getItem("sra-cart");
+
+      if (!savedCart) {
+        return [];
+      }
+
+      const cart =
+        JSON.parse(savedCart);
+
+      if (!Array.isArray(cart)) {
+        return [];
+      }
+
+      return cart;
+
+    } catch (error) {
+
+      console.error(
+        "CART READ ERROR:",
+        error
+      );
+
+      return [];
+
+    }
+
+  }
+
+
+  /* =====================================================
+     GET DETAILED CART
+  ===================================================== */
+
+  function getDetailedCart(cart) {
+
+    return cart
+      .map((cartItem) => {
+
+        const product =
+          allProducts.find(
+            (item) =>
+              String(item.id) ===
+              String(cartItem.id)
+          );
+
+
+        if (!product) {
+
+          console.warn(
+            "Product not found:",
+            cartItem.id
+          );
+
+          return null;
+
+        }
+
+
+        return {
+
+          ...cartItem,
+
+          name:
+            product.name ||
+            "SRA Product",
+
+          price:
+            Number(
+              product.price || 0
+            ),
+
+          image:
+            product.image || "",
+
+          sizes:
+            product.sizes || []
+
+        };
+
+      })
+      .filter(Boolean);
+
+  }
+
+
+  /* =====================================================
+     FORMAT PRICE
+  ===================================================== */
+
+  function formatPrice(price) {
+
+    const amount =
+      Number(price || 0);
+
+    return (
+      "₹" +
+      amount.toLocaleString(
+        "en-IN"
+      )
+    );
+
+  }
+
+
+  /* =====================================================
+     GENERATE ORDER NUMBER
+  ===================================================== */
+
+  function generateOrderNumber() {
+
+    const now =
+      new Date();
+
+    const year =
+      now.getFullYear();
+
+    const month =
+      String(
+        now.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        now.getDate()
+      ).padStart(2, "0");
+
+    const random =
+      Math.floor(
+        10000 +
+        Math.random() * 90000
+      );
+
+    return (
+      `SRA-${year}${month}${day}-${random}`
+    );
+
+  }
+
+
+  /* =====================================================
+     CHECK LOGIN
+  ===================================================== */
+
+  async function checkUser() {
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabase.auth.getSession();
+
+
+      if (error) {
+
+        console.error(
+          "SESSION ERROR:",
+          error
+        );
+
+        window.location.replace(
+          "/login"
+        );
+
+        return null;
+
+      }
+
+
+      const session =
+        data?.session;
+
+
+      if (!session?.user) {
+
+        console.log(
+          "No logged-in user."
+        );
+
+        window.location.replace(
+          "/login"
+        );
+
+        return null;
+
+      }
+
+
+      return session.user;
+
+    } catch (error) {
+
+      console.error(
+        "AUTH ERROR:",
+        error
+      );
+
+      window.location.replace(
+        "/login"
+      );
+
+      return null;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     ESCAPE HTML
+  ===================================================== */
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  /* =====================================================
+     DISPLAY ORDER ITEMS
+  ===================================================== */
+
+  function displayOrderItems(
+    detailedCart
+  ) {
+
+    if (!orderItems) {
+      return 0;
+    }
+
+
+    orderItems.innerHTML =
+      "";
+
+    let subtotal = 0;
+
+
+    detailedCart.forEach(
+      (item) => {
+
+        const price =
+          Number(
+            item.price || 0
+          );
+
+
+        const quantity =
+          Math.max(
+            1,
+            Number(
+              item.quantity || 1
+            )
+          );
+
+
+        const itemTotal =
+          price * quantity;
+
+
+        subtotal +=
+          itemTotal;
+
+
+        const itemElement =
+          document.createElement(
+            "div"
+          );
+
+
+        itemElement.className =
+          "order-item";
+
+
+        itemElement.innerHTML = `
+
+          <div>
+
+            <strong>
+              ${escapeHtml(
+                item.name
+              )}
+            </strong>
+
+            <small>
+              Size:
+              ${escapeHtml(
+                item.size || "N/A"
+              )}
+              · Qty:
+              ${quantity}
+            </small>
+
+          </div>
+
+          <span>
+            ${formatPrice(
+              itemTotal
+            )}
+          </span>
+
+        `;
+
+
+        orderItems.appendChild(
+          itemElement
+        );
+
+      }
+    );
+
+
+    subtotalElement.textContent =
+      formatPrice(subtotal);
+
+
+    totalElement.textContent =
+      formatPrice(subtotal);
+
+
+    return subtotal;
+
+  }
+
+
+  /* =====================================================
+     SEND ORDER SMS
+     
+     IMPORTANT:
+     This function is called ONLY after:
+     1. COD order is created successfully
+     OR
+     2. Online payment is successful
+  ===================================================== */
+
+  async function sendOrderSMS(
+    order,
+    paymentMethod
+  ) {
+
+    console.log(
+      "🔥 SEND ORDER SMS STARTED"
+    );
+
+    console.log(
+      "SMS ORDER:",
+      order
+    );
+
+    console.log(
+      "SMS PAYMENT:",
+      paymentMethod
+    );
+
+
+    if (!order) {
+
+      console.error(
+        "SMS ERROR: Order object missing."
+      );
+
+      return false;
+
+    }
+
+
+    const phone =
+      String(
+        order.customer_phone || ""
+      )
+        .replace(/\D/g, "");
+
+
+    if (
+      phone.length !== 10
+    ) {
+
+      console.error(
+        "SMS ERROR: Invalid phone number:",
+        phone
+      );
+
+      return false;
+
+    }
+
+
+    try {
+
+      const functionUrl =
+        `${supabaseUrl}/functions/v1/send-order-sms`;
+
+
+      console.log(
+        "SMS FUNCTION URL:",
+        functionUrl
+      );
+
+
+      const smsResponse =
+        await fetch(
+          functionUrl,
+          {
+            method: "POST",
+
+            headers: {
+
+              "Content-Type":
+                "application/json",
+
+              apikey:
+                supabaseAnonKey,
+
+              Authorization:
+                `Bearer ${supabaseAnonKey}`
+
+            },
+
+            body:
+              JSON.stringify({
+
+                name:
+                  order.customer_name,
+
+                phone:
+                  phone,
+
+                orderNumber:
+                  order.order_number,
+
+                total:
+                  Number(
+                    order.total || 0
+                  ),
+
+                payment:
+                  paymentMethod === "online"
+                    ? "Online Payment"
+                    : "Cash on Delivery"
+
+              })
+
+            }
+          );
+
+
+      const responseText =
+        await smsResponse.text();
+
+
+      console.log(
+        "SMS HTTP STATUS:",
+        smsResponse.status
+      );
+
+      console.log(
+        "SMS RAW RESPONSE:",
+        responseText
+      );
+
+
+      let smsResult = {};
+
+      try {
+
+        smsResult =
+          responseText
+            ? JSON.parse(
+                responseText
+              )
+            : {};
+
+      } catch (parseError) {
+
+        console.error(
+          "SMS RESPONSE JSON ERROR:",
+          parseError
+        );
+
+      }
+
+
+      if (
+        !smsResponse.ok ||
+        !smsResult.success
+      ) {
+
+        console.error(
+          "❌ SMS FAILED:",
+          smsResult
+        );
+
+        return false;
+
+      }
+
+
+      console.log(
+        "✅ ORDER SMS SENT:",
+        smsResult.sid || "SUCCESS"
+      );
+
+
+      return true;
+
+    } catch (smsError) {
+
+      console.error(
+        "❌ SMS FETCH ERROR:",
+        smsError
+      );
+
+      return false;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     LOAD CHECKOUT
+  ===================================================== */
+
+  async function loadCheckout() {
+
+    const user =
+      await checkUser();
+
+
+    console.log(
+      "LOGGED USER:",
+      user
+    );
+
+    console.log(
+      "LOGGED USER ID:",
+      user?.id
+    );
+
+
+    if (!user) {
+      return;
+    }
+
+
+    /* =========================
+       USER DETAILS
+    ========================== */
+
+    emailInput.value =
+      user.email || "";
+
+
+    nameInput.value =
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      "";
+
+
+    phoneInput.value =
+      user.user_metadata?.phone ||
+      "";
+
+
+    /* =========================
+       GET CART
+    ========================== */
+
+    const cart =
+      getCart();
+
+
+    if (!cart.length) {
+
+      showMessage(
+        "Your shopping bag is empty.",
+        "error"
+      );
+
+
+      placeOrderButton.disabled =
+        true;
+
+      return;
+
+    }
+
+
+    /* =========================
+       DETAILED CART
+    ========================== */
+
+    const detailedCart =
+      getDetailedCart(cart);
+
+
+    if (!detailedCart.length) {
+
+      showMessage(
+        "Unable to find your products. Please return to the shopping bag.",
+        "error"
+      );
+
+
+      placeOrderButton.disabled =
+        true;
+
+      return;
+
+    }
+
+
+    /* =========================
+       DISPLAY PRODUCTS
+    ========================== */
+
+    displayOrderItems(
+      detailedCart
+    );
+
+  }
+
+
+  /* =====================================================
+     FORM SUBMIT
+  ===================================================== */
+
+  form?.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+
+      /* =========================
+         CHECK USER
+      ========================== */
+
+      const user =
+        await checkUser();
+
+
+      console.log(
+        "SUBMIT USER:",
+        user
+      );
+
+      console.log(
+        "SUBMIT USER ID:",
+        user?.id
+      );
+
+
+      if (!user) {
+        return;
+      }
+
+
+      /* =========================
+         GET CART
+      ========================== */
+
+      const cart =
+        getCart();
+
+
+      if (!cart.length) {
+
+        showMessage(
+          "Your shopping bag is empty.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /* =========================
+         DETAILED CART
+      ========================== */
+
+      const detailedCart =
+        getDetailedCart(cart);
+
+
+      if (!detailedCart.length) {
+
+        showMessage(
+          "Products could not be found. Please return to your cart and try again.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /* =========================
+         PHONE VALIDATION
+      ========================== */
+
+      const phone =
+        phoneInput.value
+          .replace(/\D/g, "");
+
+
+      if (
+        phone.length !== 10
+      ) {
+
+        showMessage(
+          "Please enter a valid 10 digit phone number.",
+          "error"
+        );
+
+        phoneInput.focus();
+
+        return;
+
+      }
+
+
+      /* =========================
+         PINCODE VALIDATION
+      ========================== */
+
+      const pincode =
+        pincodeInput.value
+          .replace(/\D/g, "");
+
+
+      if (
+        pincode.length !== 6
+      ) {
+
+        showMessage(
+          "Please enter a valid 6 digit PIN code.",
+          "error"
+        );
+
+        pincodeInput.focus();
+
+        return;
+
+      }
+
+
+      /* =========================
+         PAYMENT METHOD
+      ========================== */
+
+      const payment =
+        document.querySelector(
+          'input[name="payment"]:checked'
+        )?.value;
+
+
+      if (!payment) {
+
+        showMessage(
+          "Please select a payment method.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /* =========================
+         CALCULATE TOTAL
+      ========================== */
+
+      let subtotal = 0;
+
+
+      detailedCart.forEach(
+        (item) => {
+
+          const price =
+            Number(
+              item.price || 0
+            );
+
+
+          const quantity =
+            Math.max(
+              1,
+              Number(
+                item.quantity || 1
+              )
+            );
+
+
+          subtotal +=
+            price * quantity;
+
+        }
+      );
+
+
+      if (
+        subtotal <= 0
+      ) {
+
+        showMessage(
+          "Unable to calculate order total. Please check your cart.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /* =========================
+         BUTTON LOADING
+      ========================== */
+
+      placeOrderButton.disabled =
+        true;
+
+      placeOrderButton.textContent =
+        payment === "online"
+          ? "CREATING ORDER..."
+          : "PLACING ORDER...";
+
+
+      showMessage(
+        "",
+        ""
+      );
+
+
+      try {
+
+        /* =========================
+           ORDER NUMBER
+        ========================== */
+
+        const orderNumber =
+          generateOrderNumber();
+
+
+        /* =========================
+           CREATE ORDER
+        ========================== */
+
+        const {
+          data: order,
+          error: orderError
+        } =
+          await supabase
+            .from("orders")
+            .insert({
+
+              order_number:
+                orderNumber,
+
+              user_id:
+                user.id,
+
+              customer_name:
+                nameInput.value.trim(),
+
+              customer_email:
+                emailInput.value.trim(),
+
+              customer_phone:
+                phone,
+
+              delivery_address:
+                addressInput.value.trim(),
+
+              city:
+                cityInput.value.trim(),
+
+              pincode:
+                pincode,
+
+              payment_method:
+                payment,
+
+              payment_status:
+                "pending",
+
+              order_status:
+                "confirmed",
+
+              subtotal:
+                subtotal,
+
+              total:
+                subtotal
+
+            })
+            .select()
+            .single();
+
+
+        /* =========================
+           ORDER ERROR
+        ========================== */
+
+        if (orderError) {
+
+          console.error(
+            "ORDER CREATE ERROR:",
+            orderError
+          );
+
+
+          showMessage(
+            orderError.message ||
+            "Unable to create your order.",
+            "error"
+          );
+
+
+          placeOrderButton.disabled =
+            false;
+
+          placeOrderButton.textContent =
+            "PLACE ORDER";
+
+          return;
+
+        }
+
+
+        console.log(
+          "✅ ORDER CREATED:",
+          order
+        );
+
+
+        /* =========================
+           ORDER ITEMS
+        ========================== */
+
+        const orderItemsData =
+          detailedCart.map(
+            (item) => ({
+
+              order_id:
+                order.id,
+
+              product_name:
+                item.name,
+
+              product_price:
+                Number(
+                  item.price || 0
+                ),
+
+              quantity:
+                Math.max(
+                  1,
+                  Number(
+                    item.quantity || 1
+                  )
+                ),
+
+              product_image:
+                item.image || null
+
+            })
+          );
+
+
+        const {
+          error: itemsError
+        } =
+          await supabase
+            .from("order_items")
+            .insert(
+              orderItemsData
+            );
+
+
+        /* =========================
+           ORDER ITEMS ERROR
+        ========================== */
+
+        if (itemsError) {
+
+          console.error(
+            "ORDER ITEMS ERROR:",
+            itemsError
+          );
+
+
+          showMessage(
+            "Order was created but products could not be saved. Please contact support.",
+            "error"
+          );
+
+
+          placeOrderButton.disabled =
+            false;
+
+          placeOrderButton.textContent =
+            "PLACE ORDER";
+
+          return;
+
+        }
+
+
+        console.log(
+          "✅ ORDER ITEMS SAVED"
+        );
+
+
+        /* =================================================
+           COD
+        ================================================= */
+
+        if (
+          payment === "cod"
+        ) {
+
+          console.log(
+            "💵 COD ORDER"
+          );
+
+
+          /* =========================
+             SEND SMS
+          ========================== */
+
+          showMessage(
+            "Order placed. Sending confirmation SMS...",
+            ""
+          );
+
+
+          const smsSent =
+            await sendOrderSMS(
+              order,
+              "cod"
+            );
+
+
+          if (smsSent) {
+
+            console.log(
+              "✅ COD SMS SENT"
+            );
+
+          } else {
+
+            console.warn(
+              "⚠️ COD order placed, but SMS could not be sent."
+            );
+
+          }
+
+
+          /* =========================
+             SAVE LAST ORDER
+          ========================== */
+
+          localStorage.setItem(
+            "sra-last-order",
+            JSON.stringify({
+
+              orderId:
+                order.id,
+
+              orderNumber:
+                order.order_number,
+
+              total:
+                order.total,
+
+              payment:
+                "cod"
+
+            })
+          );
+
+
+          /* =========================
+             CLEAR CART
+          ========================== */
+
+          localStorage.removeItem(
+            "sra-cart"
+          );
+
+
+          /* =========================
+             SUCCESS PAGE
+          ========================== */
+
+          window.location.href =
+            `/order-success?order=${encodeURIComponent(
+              order.order_number
+            )}`;
+
+
+          return;
+
+        }
+
+
+        /* =================================================
+           ONLINE PAYMENT
+        ================================================= */
+
+        if (
+          payment === "online"
+        ) {
+
+          try {
+
+            placeOrderButton.textContent =
+              "OPENING PAYMENT...";
+
+
+            /* =========================
+               CREATE RAZORPAY ORDER
+            ========================== */
+
+            const razorpayResponse =
+              await fetch(
+                "/api/create-order",
+                {
+                  method: "POST",
+
+                  headers: {
+                    "Content-Type":
+                      "application/json"
+                  },
+
+                  body:
+                    JSON.stringify({
+
+                      amount:
+                        Number(
+                          order.total
+                        ),
+
+                      receipt:
+                        order.order_number
+
+                    })
+
+                }
+              );
+
+
+            const razorpayData =
+              await razorpayResponse.json();
+
+
+            console.log(
+              "RAZORPAY ORDER:",
+              razorpayData
+            );
+
+
+            if (
+              !razorpayResponse.ok ||
+              !razorpayData.success
+            ) {
+
+              throw new Error(
+                razorpayData.error ||
+                "Razorpay order creation failed"
+              );
+
+            }
+
+
+            /* =========================
+               SAVE PENDING ORDER
+            ========================== */
+
+            localStorage.setItem(
+              "sra-pending-order",
+              JSON.stringify({
+
+                orderId:
+                  order.id,
+
+                orderNumber:
+                  order.order_number,
+
+                total:
+                  order.total,
+
+                razorpayOrderId:
+                  razorpayData.order.id
+
+              })
+            );
+
+
+            /* =========================
+               RAZORPAY CHECKOUT
+            ========================== */
+
+            const options = {
+
+              key:
+                import.meta.env
+                  .PUBLIC_RAZORPAY_KEY_ID,
+
+              amount:
+                razorpayData.order.amount,
+
+              currency:
+                "INR",
+
+              name:
+                "SRA",
+
+              description:
+                `Order ${order.order_number}`,
+
+              order_id:
+                razorpayData.order.id,
+
+
+              prefill: {
+
+                name:
+                  nameInput.value.trim(),
+
+                email:
+                  emailInput.value.trim(),
+
+                contact:
+                  `+91${phone}`
+
+              },
+
+
+              theme: {
+                color: "#171717"
+              },
+
+
+              /* =========================
+                 PAYMENT SUCCESS
+              ========================== */
+
+              handler:
+                async function (
+                  response
+                ) {
+
+                  console.log(
+                    "✅ RAZORPAY SUCCESS:",
+                    response
+                  );
+
+
+                  placeOrderButton.textContent =
+                    "PAYMENT SUCCESSFUL...";
+
+
+                  /* =========================
+                     SAVE PAYMENT DETAILS
+                  ========================== */
+
+                  localStorage.setItem(
+                    "sra-last-order",
+                    JSON.stringify({
+
+                      orderId:
+                        order.id,
+
+                      orderNumber:
+                        order.order_number,
+
+                      total:
+                        order.total,
+
+                      payment:
+                        "online",
+
+                      razorpayPaymentId:
+                        response.razorpay_payment_id,
+
+                      razorpayOrderId:
+                        response.razorpay_order_id,
+
+                      razorpaySignature:
+                        response.razorpay_signature
+
+                    })
+                  );
+
+
+                  /* =========================
+                     SEND SMS
+                     
+                     IMPORTANT:
+                     SMS IS SENT ONLY AFTER
+                     RAZORPAY SUCCESS.
+                  ========================== */
+
+                  showMessage(
+                    "Payment successful. Sending confirmation SMS...",
+                    ""
+                  );
+
+
+                  const smsSent =
+                    await sendOrderSMS(
+                      order,
+                      "online"
+                    );
+
+
+                  if (smsSent) {
+
+                    console.log(
+                      "✅ ONLINE PAYMENT SMS SENT"
+                    );
+
+                  } else {
+
+                    console.warn(
+                      "⚠️ Payment successful, but SMS could not be sent."
+                    );
+
+                  }
+
+
+                  /* =========================
+                     CLEAR CART
+                  ========================== */
+
+                  localStorage.removeItem(
+                    "sra-cart"
+                  );
+
+
+                  /* =========================
+                     CLEAR PENDING ORDER
+                  ========================== */
+
+                  localStorage.removeItem(
+                    "sra-pending-order"
+                  );
+
+
+                  /* =========================
+                     SUCCESS PAGE
+                  ========================== */
+
+                  window.location.href =
+                    `/order-success?order=${encodeURIComponent(
+                      order.order_number
+                    )}&payment=online`;
+
+                },
+
+
+              /* =========================
+                 RAZORPAY MODAL
+              ========================== */
+
+              modal: {
+
+                ondismiss:
+                  function () {
+
+                    console.log(
+                      "Razorpay checkout closed"
+                    );
+
+
+                    placeOrderButton.disabled =
+                      false;
+
+                    placeOrderButton.textContent =
+                      "PLACE ORDER";
+
+                  }
+
+              }
+
+            };
+
+
+            const razorpay =
+              new window.Razorpay(
+                options
+              );
+
+
+            /* =========================
+               PAYMENT FAILED
+            ========================== */
+
+            razorpay.on(
+              "payment.failed",
+              function (
+                response
+              ) {
+
+                console.error(
+                  "RAZORPAY PAYMENT FAILED:",
+                  response.error
+                );
+
+
+                showMessage(
+                  response.error?.description ||
+                  "Payment failed. Please try again.",
+                  "error"
+                );
+
+
+                placeOrderButton.disabled =
+                  false;
+
+                placeOrderButton.textContent =
+                  "PLACE ORDER";
+
+              }
+            );
+
+
+            razorpay.open();
+
+
+          } catch (error) {
+
+            console.error(
+              "ONLINE PAYMENT ERROR:",
+              error
+            );
+
+
+            showMessage(
+              error.message ||
+              "Unable to start online payment.",
+              "error"
+            );
+
+
+            placeOrderButton.disabled =
+              false;
+
+            placeOrderButton.textContent =
+              "PLACE ORDER";
+
+          }
+
+
+          return;
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "CHECKOUT ERROR:",
+          error
+        );
+
+
+        showMessage(
+          "Something went wrong. Please try again.",
+          "error"
+        );
+
+
+        placeOrderButton.disabled =
+          false;
+
+        placeOrderButton.textContent =
+          "PLACE ORDER";
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     START CHECKOUT
+  ===================================================== */
+
+  loadCheckout();
+
+</script>
+
+  </body>
+</html>
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  body {
+    margin: 0;
+
+    background: #f7f6f3;
+
+    color: #171717;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+
+  /* =========================
+     PAGE
+  ========================== */
+
+  .checkout-page {
+
+    padding:
+      60px 20px 100px;
+
+  }
+
+
+  .checkout-container {
+
+    max-width:
+      1100px;
+
+    margin:
+      auto;
+
+  }
+
+
+  /* =========================
+     HEADER
+  ========================== */
+
+  .checkout-header {
+
+    text-align:
+      center;
+
+    margin-bottom:
+      40px;
+
+  }
+
+
+  .checkout-header span {
+
+    color:
+      #947b5b;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      2px;
+
+  }
+
+
+  .checkout-header h1 {
+
+    margin:
+      10px 0;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      45px;
+
+    font-weight:
+      400;
+
+  }
+
+
+  .checkout-header p {
+
+    color:
+      #77736d;
+
+    font-size:
+      11px;
+
+  }
+
+
+  /* =========================
+     MESSAGE
+  ========================== */
+
+  .checkout-message {
+
+    min-height:
+      20px;
+
+    margin-bottom:
+      15px;
+
+    text-align:
+      center;
+
+    font-size:
+      10px;
+
+  }
+
+
+  .checkout-message.error {
+
+    color:
+      #9f3040;
+
+  }
+
+
+  .checkout-message.success {
+
+    color:
+      #47704d;
+
+  }
+
+
+  /* =========================
+     GRID
+  ========================== */
+
+  .checkout-grid {
+
+    display:
+      grid;
+
+    grid-template-columns:
+      1fr 350px;
+
+    gap:
+      35px;
+
+    align-items:
+      start;
+
+  }
+
+
+  /* =========================
+     CARDS
+  ========================== */
+
+  .checkout-card,
+  .summary-card {
+
+    background:
+      #fff;
+
+    border:
+      1px solid #dedbd5;
+
+    padding:
+      30px;
+
+  }
+
+
+  /* =========================
+     SECTION TITLE
+  ========================== */
+
+  .section-title {
+
+    margin-bottom:
+      25px;
+
+    padding-bottom:
+      12px;
+
+    border-bottom:
+      1px solid #dedbd5;
+
+    color:
+      #947b5b;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1.5px;
+
+  }
+
+
+  /* =========================
+     FORM
+  ========================== */
+
+  .form-group {
+
+    margin-bottom:
+      20px;
+
+  }
+
+
+  .form-group label {
+
+    display:
+      block;
+
+    margin-bottom:
+      7px;
+
+    font-size:
+      8px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1px;
+
+  }
+
+
+  .form-group input,
+  .form-group textarea {
+
+    width:
+      100%;
+
+    border:
+      1px solid #d4d0c9;
+
+    padding:
+      13px;
+
+    outline:
+      none;
+
+    background:
+      #fff;
+
+    font-size:
+      12px;
+
+  }
+
+
+  .form-group input {
+
+    height:
+      48px;
+
+  }
+
+
+  .form-group textarea {
+
+    min-height:
+      90px;
+
+    resize:
+      vertical;
+
+  }
+
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+
+    border-color:
+      #171717;
+
+  }
+
+
+  .form-group input[readonly] {
+
+    background:
+      #f7f6f3;
+
+    color:
+      #77736d;
+
+    cursor:
+      not-allowed;
+
+  }
+
+
+  /* =========================
+     PAYMENT
+  ========================== */
+
+  .payment-section {
+
+    margin-top:
+      30px;
+
+  }
+
+
+  .payment-option {
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    gap:
+      12px;
+
+    padding:
+      15px;
+
+    margin-bottom:
+      10px;
+
+    border:
+      1px solid #dedbd5;
+
+    cursor:
+      pointer;
+
+    transition:
+      border-color .2s ease,
+      background .2s ease;
+
+  }
+
+
+  .payment-option:hover {
+
+    border-color:
+      #947b5b;
+
+    background:
+      #faf9f6;
+
+  }
+
+
+  .payment-option input {
+
+    accent-color:
+      #171717;
+
+  }
+
+
+  .payment-option span {
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    gap:
+      5px;
+
+  }
+
+
+  .payment-option strong {
+
+    font-size:
+      11px;
+
+  }
+
+
+  .payment-option small {
+
+    color:
+      #77736d;
+
+    font-size:
+      9px;
+
+  }
+
+
+  /* =========================
+     PLACE ORDER
+  ========================== */
+
+  .place-order {
+
+    width:
+      100%;
+
+    height:
+      52px;
+
+    margin-top:
+      20px;
+
+    border:
+      0;
+
+    background:
+      #171717;
+
+    color:
+      #fff;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1.5px;
+
+    cursor:
+      pointer;
+
+    transition:
+      background .2s ease;
+
+  }
+
+
+  .place-order:hover {
+
+    background:
+      #947b5b;
+
+  }
+
+
+  .place-order:disabled {
+
+    opacity:
+      .6;
+
+    cursor:
+      not-allowed;
+
+  }
+
+
+  /* =========================
+     SUMMARY
+  ========================== */
+
+  .summary-card {
+
+    position:
+      sticky;
+
+    top:
+      100px;
+
+  }
+
+
+  .order-item {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    gap:
+      15px;
+
+    padding:
+      15px 0;
+
+    border-bottom:
+      1px solid #eeeae4;
+
+  }
+
+
+  .order-item div {
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    gap:
+      5px;
+
+  }
+
+
+  .order-item strong {
+
+    font-size:
+      11px;
+
+    font-weight:
+      600;
+
+  }
+
+
+  .order-item small {
+
+    color:
+      #77736d;
+
+    font-size:
+      9px;
+
+  }
+
+
+  .order-item > span {
+
+    font-size:
+      11px;
+
+    white-space:
+      nowrap;
+
+  }
+
+
+  .summary-line,
+  .summary-total {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    margin-top:
+      18px;
+
+    font-size:
+      11px;
+
+  }
+
+
+  .summary-line span {
+
+    color:
+      #77736d;
+
+  }
+
+
+  .summary-divider {
+
+    height:
+      1px;
+
+    margin:
+      22px 0;
+
+    background:
+      #dedbd5;
+
+  }
+
+
+  .summary-total {
+
+    font-size:
+      14px;
+
+    font-weight:
+      700;
+
+  }
+
+
+  /* =========================
+     MOBILE
+  ========================== */
+
+  @media (max-width: 750px) {
+
+    .checkout-page {
+
+      padding:
+        35px 14px 70px;
+
+    }
+
+
+    .checkout-header h1 {
+
+      font-size:
+        35px;
+
+    }
+
+
+    .checkout-grid {
+
+      grid-template-columns:
+        1fr;
+
+    }
+
+
+    .summary-card {
+
+      position:
+        static;
+
+    }
+
+
+    .checkout-card,
+    .summary-card {
+
+      padding:
+        22px;
+
+    }
+
+  }
+
+
+  /* =========================
+     SMALL MOBILE
+  ========================== */
+
+  @media (max-width: 380px) {
+
+    .checkout-page {
+
+      padding:
+        25px 10px 60px;
+
+    }
+
+
+    .checkout-header h1 {
+
+      font-size:
+        31px;
+
+    }
+
+
+    .checkout-card,
+    .summary-card {
+
+      padding:
+        18px;
+
+    }
+
+  }
+
+</style>

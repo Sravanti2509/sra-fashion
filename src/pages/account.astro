@@ -1,0 +1,1133 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>My Account | SRA</title>
+  </head>
+
+  <body>
+    <Header />
+
+    <main class="account-page">
+      <section class="account-container">
+
+        <!-- PAGE HEADER -->
+        <div class="account-header">
+          <span class="eyebrow">SRA MEMBERS</span>
+
+          <h1>My Account</h1>
+
+          <p>
+            Manage your SRA account details.
+          </p>
+        </div>
+
+
+        <!-- MESSAGE -->
+        <div
+          id="accountMessage"
+          class="account-message"
+        ></div>
+
+
+        <!-- ACCOUNT CARD -->
+        <section class="account-card">
+
+          <!-- PROFILE -->
+          <div class="profile-top">
+
+            <div
+              class="profile-avatar"
+              id="profileAvatar"
+            >
+              S
+            </div>
+
+            <div>
+              <span class="profile-label">
+                WELCOME
+              </span>
+
+              <h2 id="profileName">
+                SRA MEMBER
+              </h2>
+
+              <p id="profileEmail">
+                —
+              </p>
+            </div>
+
+          </div>
+
+
+          <!-- PERSONAL DETAILS -->
+          <div class="section-title">
+            <span>PERSONAL DETAILS</span>
+          </div>
+
+
+          <form id="accountForm">
+
+            <!-- NAME -->
+            <div class="form-group">
+              <label for="name">
+                FULL NAME
+              </label>
+
+              <input
+                id="name"
+                type="text"
+                autocomplete="name"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+
+            <!-- EMAIL -->
+            <div class="form-group">
+              <label for="email">
+                EMAIL ADDRESS
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                autocomplete="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+
+            <!-- PHONE -->
+            <div class="form-group">
+              <label for="phone">
+                PHONE NUMBER
+              </label>
+
+              <input
+                id="phone"
+                type="tel"
+                autocomplete="tel"
+                inputmode="numeric"
+                maxlength="10"
+                placeholder="Enter phone number"
+              />
+            </div>
+
+
+            <!-- SAVE -->
+            <button
+              type="submit"
+              id="saveButton"
+              class="save-button"
+            >
+              SAVE CHANGES
+            </button>
+
+          </form>
+
+        </section>
+
+
+        <!-- QUICK LINKS -->
+        <div class="quick-links">
+
+          <a href="/">
+            <span>CONTINUE SHOPPING</span>
+            <span>→</span>
+          </a>
+
+          <a href="/favourites">
+            <span>MY FAVOURITES</span>
+            <span>→</span>
+          </a>
+
+          <a href="/cart">
+            <span>MY CART</span>
+            <span>→</span>
+          </a>
+
+        </div>
+
+      </section>
+    </main>
+
+    <Footer />
+
+
+    <!-- =========================
+         SUPABASE
+    ========================== -->
+
+    <script>
+      import { createClient } from "@supabase/supabase-js";
+
+
+      /* =========================
+         SUPABASE CONFIG
+      ========================= */
+
+      const supabaseUrl =
+        import.meta.env.PUBLIC_SUPABASE_URL;
+
+      const supabaseAnonKey =
+        import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        console.error(
+          "Supabase environment variables are missing."
+        );
+      }
+
+
+      const supabase = createClient(
+        supabaseUrl,
+        supabaseAnonKey
+      );
+
+
+      /* =========================
+         ELEMENTS
+      ========================= */
+
+      const accountForm =
+        document.querySelector("#accountForm");
+
+      const nameInput =
+        document.querySelector("#name");
+
+      const emailInput =
+        document.querySelector("#email");
+
+      const phoneInput =
+        document.querySelector("#phone");
+
+      const profileName =
+        document.querySelector("#profileName");
+
+      const profileEmail =
+        document.querySelector("#profileEmail");
+
+      const profileAvatar =
+        document.querySelector("#profileAvatar");
+
+      const accountMessage =
+        document.querySelector("#accountMessage");
+
+      const saveButton =
+        document.querySelector("#saveButton");
+
+
+      /* =========================
+         MESSAGE
+      ========================= */
+
+      function showMessage(
+        message,
+        type = ""
+      ) {
+        if (!accountMessage) return;
+
+        accountMessage.textContent =
+          message;
+
+        accountMessage.className =
+          `account-message ${type}`;
+      }
+
+
+      /* =========================
+         GET CURRENT USER
+      ========================= */
+
+      async function getCurrentUser() {
+
+        const {
+          data,
+          error
+        } = await supabase.auth.getUser();
+
+
+        if (error) {
+
+          console.error(
+            "GET USER ERROR:",
+            error
+          );
+
+          return null;
+        }
+
+
+        return data.user;
+      }
+
+
+      /* =========================
+         LOAD ACCOUNT
+      ========================= */
+
+      async function loadAccount() {
+
+        try {
+
+          const user =
+            await getCurrentUser();
+
+
+          /* NOT LOGGED IN */
+
+          if (!user) {
+
+            window.location.replace(
+              "/login"
+            );
+
+            return;
+          }
+
+
+          console.log(
+            "CURRENT SUPABASE USER:",
+            user
+          );
+
+
+          /* =========================
+             USER METADATA
+          ========================== */
+
+          const metadata =
+            user.user_metadata || {};
+
+
+          const name =
+            metadata.name ||
+            metadata.full_name ||
+            metadata.username ||
+            user.email?.split("@")[0] ||
+            "SRA MEMBER";
+
+
+          const phone =
+            metadata.phone || "";
+
+
+          /* =========================
+             LOAD FORM
+          ========================== */
+
+          if (nameInput) {
+
+            nameInput.value =
+              name;
+          }
+
+
+          if (emailInput) {
+
+            emailInput.value =
+              user.email || "";
+          }
+
+
+          if (phoneInput) {
+
+            phoneInput.value =
+              phone;
+          }
+
+
+          /* =========================
+             PROFILE
+          ========================== */
+
+          if (profileName) {
+
+            profileName.textContent =
+              name;
+          }
+
+
+          if (profileEmail) {
+
+            profileEmail.textContent =
+              user.email || "";
+          }
+
+
+          /* =========================
+             AVATAR
+          ========================== */
+
+          if (profileAvatar) {
+
+            profileAvatar.textContent =
+              name
+                .trim()
+                .charAt(0)
+                .toUpperCase() || "S";
+          }
+
+
+          /* =========================
+             LOCAL STORAGE
+          ========================== */
+
+          localStorage.setItem(
+            "sra-user",
+            JSON.stringify({
+              id: user.id,
+              name: name,
+              email: user.email || "",
+            })
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "ACCOUNT LOAD ERROR:",
+            error
+          );
+
+          showMessage(
+            "Unable to load account details.",
+            "error"
+          );
+        }
+      }
+
+
+      /* =========================
+         RUN
+      ========================== */
+
+      loadAccount();
+
+
+      /* =========================
+         SAVE CHANGES
+      ========================== */
+
+      accountForm?.addEventListener(
+        "submit",
+        async (event) => {
+
+          event.preventDefault();
+
+
+          showMessage("");
+
+
+          /* =========================
+             BUTTON LOADING
+          ========================== */
+
+          if (
+            saveButton instanceof HTMLButtonElement
+          ) {
+
+            saveButton.disabled =
+              true;
+
+            saveButton.textContent =
+              "SAVING...";
+          }
+
+
+          try {
+
+            /* =========================
+               GET INPUT VALUES
+            ========================== */
+
+            const newName =
+              nameInput?.value
+                .trim() || "";
+
+
+            const newEmail =
+              emailInput?.value
+                .trim()
+                .toLowerCase() || "";
+
+
+            const newPhone =
+              phoneInput?.value
+                .trim()
+                .replace(/\D/g, "") || "";
+
+
+            /* =========================
+               VALIDATE NAME
+            ========================== */
+
+            if (
+              newName.length < 2
+            ) {
+
+              showMessage(
+                "Please enter your full name.",
+                "error"
+              );
+
+              return;
+            }
+
+
+            /* =========================
+               VALIDATE EMAIL
+            ========================== */
+
+            const emailPattern =
+              /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+            if (
+              !emailPattern.test(
+                newEmail
+              )
+            ) {
+
+              showMessage(
+                "Please enter a valid email address.",
+                "error"
+              );
+
+              return;
+            }
+
+
+            /* =========================
+               VALIDATE PHONE
+            ========================== */
+
+            if (
+              newPhone.length > 0 &&
+              newPhone.length !== 10
+            ) {
+
+              showMessage(
+                "Phone number must contain 10 digits.",
+                "error"
+              );
+
+              return;
+            }
+
+
+            /* =========================
+               GET CURRENT USER
+            ========================== */
+
+            const currentUser =
+              await getCurrentUser();
+
+
+            if (!currentUser) {
+
+              showMessage(
+                "Your session has expired. Please login again.",
+                "error"
+              );
+
+              setTimeout(() => {
+                window.location.replace(
+                  "/login"
+                );
+              }, 1500);
+
+              return;
+            }
+
+
+            /* =========================
+               SAVE TO SUPABASE
+            ========================== */
+
+            const {
+              data,
+              error
+            } =
+              await supabase.auth.updateUser({
+
+                email: newEmail,
+
+                data: {
+
+                  name: newName,
+
+                  full_name: newName,
+
+                  phone: newPhone
+
+                }
+
+              });
+
+
+            /* =========================
+               SUPABASE ERROR
+            ========================== */
+
+            if (error) {
+
+              console.error(
+                "SUPABASE UPDATE ERROR:",
+                error
+              );
+
+              showMessage(
+                error.message,
+                "error"
+              );
+
+              return;
+            }
+
+
+            console.log(
+              "ACCOUNT UPDATED:",
+              data.user
+            );
+
+
+            /* =========================
+               UPDATE PROFILE
+            ========================== */
+
+            if (profileName) {
+
+              profileName.textContent =
+                newName;
+            }
+
+
+            if (profileEmail) {
+
+              profileEmail.textContent =
+                data.user?.email ||
+                currentUser.email ||
+                newEmail;
+            }
+
+
+            if (profileAvatar) {
+
+              profileAvatar.textContent =
+                newName
+                  .trim()
+                  .charAt(0)
+                  .toUpperCase();
+            }
+
+
+            /* =========================
+               UPDATE LOCAL STORAGE
+            ========================== */
+
+            localStorage.setItem(
+              "sra-user",
+              JSON.stringify({
+
+                id:
+                  data.user?.id ||
+                  currentUser.id,
+
+                name:
+                  newName,
+
+                email:
+                  data.user?.email ||
+                  currentUser.email ||
+                  newEmail
+
+              })
+            );
+
+
+            /* =========================
+               HEADER UPDATE
+            ========================== */
+
+            window.dispatchEvent(
+              new Event("userUpdated")
+            );
+
+
+            /* =========================
+               SUCCESS
+            ========================== */
+
+            showMessage(
+              "Your details have been saved successfully.",
+              "success"
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              "SAVE ACCOUNT ERROR:",
+              error
+            );
+
+            showMessage(
+              "Something went wrong. Please try again.",
+              "error"
+            );
+
+          } finally {
+
+            /* =========================
+               RESTORE BUTTON
+            ========================== */
+
+            if (
+              saveButton instanceof HTMLButtonElement
+            ) {
+
+              saveButton.disabled =
+                false;
+
+              saveButton.textContent =
+                "SAVE CHANGES";
+            }
+
+          }
+
+        }
+      );
+
+
+      /* =========================
+         AUTH STATE
+      ========================== */
+
+      supabase.auth.onAuthStateChange(
+        (event, session) => {
+
+          console.log(
+            "AUTH EVENT:",
+            event
+          );
+
+
+          if (
+            event === "SIGNED_OUT"
+          ) {
+
+            localStorage.removeItem(
+              "sra-user"
+            );
+
+          }
+
+
+          if (
+            event === "SIGNED_IN" &&
+            session?.user
+          ) {
+
+            window.dispatchEvent(
+              new Event("userUpdated")
+            );
+
+          }
+
+        }
+      );
+
+    </script>
+
+  </body>
+</html>
+
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f5f1e8;
+  color: #0b1f3a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.account-page {
+  min-height: 750px;
+  padding: 75px 20px 110px;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.account-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.account-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 13px;
+  color: #b79b63;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.account-header h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -1.8px;
+}
+
+.account-header p {
+  margin: 14px 0 0;
+  color: #777269;
+  font-size: 11px;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.account-message {
+  min-height: 18px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.3px;
+}
+
+.account-message.error {
+  color: #9f3040;
+}
+
+.account-message.success {
+  color: #47704d;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.account-card {
+  background: #faf8f3;
+  border: 1px solid #ded7cc;
+  padding: 42px;
+  box-shadow:
+    0 20px 60px rgba(11, 31, 58, 0.06);
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 35px;
+  border-bottom: 1px solid #ddd7cd;
+}
+
+.profile-avatar {
+  width: 66px;
+  height: 66px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #0b1f3a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+}
+
+.profile-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #b79b63;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+.profile-top h2 {
+  margin: 0 0 5px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.profile-top p {
+  margin: 0;
+  color: #777269;
+  font-size: 10px;
+}
+
+
+/* =========================
+   SECTION TITLE
+========================= */
+
+.section-title {
+  margin: 35px 0 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd7cd;
+}
+
+.section-title span {
+  color: #0b1f3a;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+  margin-bottom: 21px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #0b1f3a;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.form-group input {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px;
+  border: 1px solid #d4cdc2;
+  outline: none;
+  background: #ffffff;
+  color: #0b1f3a;
+  font-size: 12px;
+  transition: 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #aaa49c;
+}
+
+.form-group input:focus {
+  border-color: #0b1f3a;
+  box-shadow:
+    0 0 0 2px rgba(11, 31, 58, 0.05);
+}
+
+
+/* =========================
+   SAVE BUTTON
+========================= */
+
+.save-button {
+  width: 100%;
+  height: 53px;
+  border: 1px solid #0b1f3a;
+  background: #0b1f3a;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.save-button:hover {
+  background: transparent;
+  color: #0b1f3a;
+}
+
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   QUICK LINKS
+========================= */
+
+.quick-links {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #ddd7cd;
+  border-bottom: 1px solid #ddd7cd;
+}
+
+.quick-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 20px 18px;
+  color: #0b1f3a;
+  text-decoration: none;
+  border-right: 1px solid #ddd7cd;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: 0.2s ease;
+}
+
+.quick-links a:last-child {
+  border-right: 0;
+}
+
+.quick-links a:hover {
+  background: #faf8f3;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 700px) {
+
+  .account-page {
+    padding: 45px 14px 75px;
+  }
+
+  .account-header {
+    margin-bottom: 30px;
+  }
+
+  .account-header h1 {
+    font-size: 38px;
+  }
+
+  .account-header p {
+    font-size: 9px;
+  }
+
+  .account-card {
+    padding: 28px 22px;
+  }
+
+  .profile-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 23px;
+  }
+
+  .profile-top h2 {
+    font-size: 23px;
+  }
+
+  .profile-top p {
+    font-size: 9px;
+  }
+
+  .form-group input {
+    height: 48px;
+    font-size: 11px;
+  }
+
+  .save-button {
+    height: 50px;
+  }
+
+  .quick-links {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-links a {
+    border-right: 0;
+    border-bottom: 1px solid #ddd7cd;
+  }
+
+  .quick-links a:last-child {
+    border-bottom: 0;
+  }
+}
+
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 380px) {
+
+  .account-page {
+    padding: 35px 10px 60px;
+  }
+
+  .account-header h1 {
+    font-size: 34px;
+  }
+
+  .account-card {
+    padding: 24px 17px;
+  }
+
+  .profile-top {
+    gap: 13px;
+  }
+
+  .profile-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .profile-top h2 {
+    font-size: 20px;
+  }
+}
+
+</style>

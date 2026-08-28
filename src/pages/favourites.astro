@@ -1,0 +1,1270 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+import { shirtsTshirts } from "../data/shirts-t-shirts.js";
+import { denim } from "../data/denim.js";
+import { trousers } from "../data/trousers.js";
+import { shorts } from "../data/shorts.js";
+
+import { dresses } from "../data/dresses.js";
+import { jeans } from "../data/jeans.js";
+import { tops } from "../data/tops.js";
+import { sweaters } from "../data/sweaters-cardigans.js";
+
+/* =========================================
+   MEN PRODUCTS
+========================================= */
+
+const menProducts = [
+  ...shirtsTshirts,
+  ...denim,
+  ...trousers,
+  ...shorts,
+];
+
+/* =========================================
+   WOMEN PRODUCTS
+========================================= */
+
+const womenProducts = [
+  ...dresses,
+  ...jeans,
+  ...tops,
+  ...sweaters,
+];
+
+/* =========================================
+   ALL PRODUCTS
+========================================= */
+
+const allProducts = [
+  ...menProducts,
+  ...womenProducts,
+];
+
+/* =========================================
+   PRODUCT IDs
+   Used to decide MEN / WOMEN route
+========================================= */
+
+const menIds = menProducts.map((product) =>
+  String(product.id)
+);
+
+const womenIds = womenProducts.map((product) =>
+  String(product.id)
+);
+---
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Favourites | SRA</title>
+
+  </head>
+
+
+  <body>
+
+    <Header />
+
+
+    <main class="favourites-page">
+
+
+      <!-- =========================================
+           HEADER
+      ========================================== -->
+
+      <section class="page-heading">
+
+        <span class="eyebrow">
+          SRA COLLECTION
+        </span>
+
+        <h1>
+          Your Favourites
+        </h1>
+
+        <p>
+          Pieces you've saved for later.
+        </p>
+
+      </section>
+
+
+      <!-- =========================================
+           PRODUCTS
+      ========================================== -->
+
+      <section
+        id="favouritesGrid"
+        class="products-grid"
+      ></section>
+
+
+      <!-- =========================================
+           EMPTY STATE
+      ========================================== -->
+
+      <section
+        id="emptyState"
+        class="empty-state"
+      >
+
+        <div class="empty-heart">
+          ♡
+        </div>
+
+        <h2>
+          No favourites yet
+        </h2>
+
+        <p>
+          Save the pieces you love and they will appear here.
+        </p>
+
+        <a href="/men">
+          EXPLORE COLLECTION
+        </a>
+
+      </section>
+
+
+    </main>
+
+
+    <Footer />
+
+
+    <!-- =========================================
+         SCRIPT
+    ========================================== -->
+
+    <script
+      define:vars={{
+        products: allProducts,
+        menIds,
+        womenIds
+      }}
+    >
+
+      const grid =
+        document.querySelector("#favouritesGrid");
+
+      const emptyState =
+        document.querySelector("#emptyState");
+
+
+      /* =========================================
+         GET FAVOURITES
+      ========================================== */
+
+      function getFavourites() {
+
+        try {
+
+          const saved =
+            localStorage.getItem("sra-favourites");
+
+          const data =
+            JSON.parse(saved || "[]");
+
+          return Array.isArray(data)
+            ? data.map(String)
+            : [];
+
+        } catch (error) {
+
+          console.error(
+            "Favourite loading error:",
+            error
+          );
+
+          return [];
+
+        }
+
+      }
+
+
+      /* =========================================
+         GET PRODUCT URL
+
+         MEN:
+         /men/product/id
+
+         WOMEN:
+         /women/product/id
+      ========================================== */
+
+      function getProductUrl(productId) {
+
+        const id =
+          String(productId);
+
+
+        if (menIds.includes(id)) {
+
+          return `/men/product/${id}`;
+
+        }
+
+
+        if (womenIds.includes(id)) {
+
+          return `/women/product/${id}`;
+
+        }
+
+
+        /*
+          Fallback
+        */
+
+        return `/men/product/${id}`;
+
+      }
+
+
+      /* =========================================
+         RENDER FAVOURITES
+      ========================================== */
+
+      function renderFavourites() {
+
+        if (!grid || !emptyState) return;
+
+
+        const favouriteIds =
+          getFavourites();
+
+
+        const favouriteProducts =
+          products.filter((product) =>
+            favouriteIds.includes(
+              String(product.id)
+            )
+          );
+
+
+        /* =====================================
+           EMPTY STATE
+        ===================================== */
+
+        if (!favouriteProducts.length) {
+
+          grid.innerHTML = "";
+
+          grid.style.display = "none";
+
+          emptyState.style.display = "flex";
+
+          return;
+
+        }
+
+
+        /* =====================================
+           SHOW PRODUCTS
+        ===================================== */
+
+        grid.style.display = "grid";
+
+        emptyState.style.display = "none";
+
+
+        grid.innerHTML =
+          favouriteProducts
+            .map((product) => {
+
+              const price =
+                Number(product.price || 0)
+                  .toLocaleString("en-IN");
+
+
+              /*
+                IMPORTANT:
+
+                Automatically chooses:
+
+                MEN
+                /men/product/id
+
+                WOMEN
+                /women/product/id
+              */
+
+              const productUrl =
+                getProductUrl(product.id);
+
+
+              return `
+
+                <article
+                  class="product-card"
+                  data-product-id="${product.id}"
+                >
+
+
+                  <!-- =================================
+                       IMAGE
+                  ================================== -->
+
+                  <div class="image-box">
+
+
+                    <!-- PRODUCT IMAGE -->
+
+                    <a
+                      href="${productUrl}"
+                      class="image-link"
+                      aria-label="View ${product.name}"
+                    >
+
+                      <img
+                        src="${product.image}"
+                        alt="${product.name}"
+                        class="product-image"
+                        loading="lazy"
+                      />
+
+                    </a>
+
+
+                    <!-- =================================
+                         REMOVE FAVOURITE
+                    ================================== -->
+
+                    <button
+                      type="button"
+                      class="remove-favourite"
+                      data-id="${product.id}"
+                      aria-label="Remove ${product.name} from favourites"
+                      title="Remove from favourites"
+                    >
+
+                      ♡
+
+                    </button>
+
+
+                  </div>
+
+
+                  <!-- =================================
+                       PRODUCT INFORMATION
+                  ================================== -->
+
+                  <div class="product-info">
+
+
+                    <div class="product-top">
+
+
+                      <div class="product-name-area">
+
+
+                        <span class="product-brand">
+                          SRA
+                        </span>
+
+
+                        <h2 class="product-title">
+                          ${product.name}
+                        </h2>
+
+
+                      </div>
+
+
+                      <span class="product-price">
+                        ₹${price}
+                      </span>
+
+
+                    </div>
+
+
+                    <!-- =================================
+                         VIEW PRODUCT
+                    ================================== -->
+
+                    <a
+                      href="${productUrl}"
+                      class="view-product"
+                      aria-label="View ${product.name}"
+                    >
+
+                      <span>
+                        VIEW PRODUCT
+                      </span>
+
+                      <strong>
+                        →
+                      </strong>
+
+                    </a>
+
+
+                  </div>
+
+
+                </article>
+
+              `;
+
+            })
+            .join("");
+
+
+        /* =====================================
+           REMOVE BUTTON
+        ===================================== */
+
+        grid
+          .querySelectorAll(".remove-favourite")
+          .forEach((button) => {
+
+            button.addEventListener(
+              "click",
+              (event) => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                const id =
+                  String(
+                    button.dataset.id
+                  );
+
+
+                let favourites =
+                  getFavourites();
+
+
+                favourites =
+                  favourites.filter(
+                    (item) =>
+                      String(item) !== id
+                  );
+
+
+                localStorage.setItem(
+                  "sra-favourites",
+                  JSON.stringify(favourites)
+                );
+
+
+                renderFavourites();
+
+
+                /*
+                  Update Header
+                */
+
+                window.dispatchEvent(
+                  new Event(
+                    "favouritesUpdated"
+                  )
+                );
+
+              }
+            );
+
+          });
+
+      }
+
+
+      /* =========================================
+         INITIAL LOAD
+      ========================================== */
+
+      renderFavourites();
+
+
+      /* =========================================
+         STORAGE UPDATE
+      ========================================== */
+
+      window.addEventListener(
+        "storage",
+        (event) => {
+
+          if (
+            event.key === "sra-favourites"
+          ) {
+
+            renderFavourites();
+
+          }
+
+        }
+      );
+
+
+      /* =========================================
+         SAME TAB UPDATE
+      ========================================== */
+
+      window.addEventListener(
+        "favouritesUpdated",
+        () => {
+
+          renderFavourites();
+
+        }
+      );
+
+
+      /* =========================================
+         PAGE FOCUS
+      ========================================== */
+
+      window.addEventListener(
+        "focus",
+        () => {
+
+          renderFavourites();
+
+        }
+      );
+
+    </script>
+
+
+    <style>
+
+      /* =========================================
+         GLOBAL
+      ========================================== */
+
+      :global(*) {
+        box-sizing: border-box;
+      }
+
+
+      :global(html) {
+        scroll-behavior: smooth;
+      }
+
+
+      :global(body) {
+        margin: 0;
+
+        background: #f7f6f2;
+
+        color: #171717;
+
+        font-family:
+          Arial,
+          Helvetica,
+          sans-serif;
+      }
+
+
+      /* =========================================
+         PAGE
+      ========================================== */
+
+      :global(.favourites-page) {
+
+        width: 100%;
+
+        max-width: 1280px;
+
+        margin: 0 auto;
+
+        padding:
+          64px 42px 100px;
+      }
+
+
+      /* =========================================
+         HEADER
+      ========================================== */
+
+      :global(.page-heading) {
+
+        text-align: center;
+
+        margin-bottom: 48px;
+      }
+
+
+      :global(.eyebrow) {
+
+        display: block;
+
+        margin-bottom: 10px;
+
+        color: #a08455;
+
+        font-size: 8px;
+
+        font-weight: 700;
+
+        letter-spacing: 2.8px;
+
+        text-transform: uppercase;
+      }
+
+
+      :global(.page-heading h1) {
+
+        margin: 0;
+
+        color: #171717;
+
+        font-family:
+          Georgia,
+          "Times New Roman",
+          serif;
+
+        font-size: 43px;
+
+        font-weight: 400;
+
+        line-height: 1.1;
+
+        letter-spacing: -1px;
+      }
+
+
+      :global(.page-heading p) {
+
+        margin:
+          11px 0 0;
+
+        color: #85827b;
+
+        font-size: 10px;
+      }
+
+
+      /* =========================================
+         PRODUCT GRID
+      ========================================== */
+
+      :global(.products-grid) {
+
+        display: grid;
+
+        grid-template-columns:
+          repeat(4, minmax(0, 1fr));
+
+        column-gap: 26px;
+
+        row-gap: 52px;
+
+        width: 100%;
+      }
+
+
+      /* =========================================
+         CARD
+      ========================================== */
+
+      :global(.product-card) {
+
+        width: 100%;
+
+        min-width: 0;
+
+        background: transparent;
+      }
+
+
+      /* =========================================
+         IMAGE BOX
+      ========================================== */
+
+      :global(.image-box) {
+
+        position: relative;
+
+        width: 100%;
+
+        height: 320px;
+
+        background: #eeece7;
+
+        overflow: hidden;
+      }
+
+
+      /* =========================================
+         IMAGE LINK
+      ========================================== */
+
+      :global(.image-link) {
+
+        display: block;
+
+        width: 100%;
+
+        height: 100%;
+
+        overflow: hidden;
+
+        text-decoration: none;
+      }
+
+
+      /* =========================================
+         IMAGE
+      ========================================== */
+
+      :global(.product-image) {
+
+        display: block;
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+        object-position: center;
+
+        transition:
+          transform .45s ease;
+      }
+
+
+      :global(.image-link:hover .product-image) {
+
+        transform: scale(1.025);
+      }
+
+
+      /* =========================================
+         REMOVE BUTTON
+      ========================================== */
+
+      :global(.remove-favourite) {
+
+        position: absolute;
+
+        top: 10px;
+
+        right: 10px;
+
+        width: 28px;
+
+        height: 28px;
+
+        padding: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border:
+          1px solid rgba(0,0,0,.08);
+
+        border-radius: 50%;
+
+        background:
+          rgba(255,255,255,.96);
+
+        color: #555;
+
+        font-size: 14px;
+
+        line-height: 1;
+
+        cursor: pointer;
+
+        z-index: 10;
+
+        transition:
+          all .2s ease;
+      }
+
+
+      :global(.remove-favourite:hover) {
+
+        background: #171717;
+
+        color: #fff;
+
+        transform: scale(1.05);
+      }
+
+
+      /* =========================================
+         PRODUCT INFO
+      ========================================== */
+
+      :global(.product-info) {
+
+        width: 100%;
+
+        padding:
+          13px 1px 0;
+      }
+
+
+      /* =========================================
+         PRODUCT TOP
+      ========================================== */
+
+      :global(.product-top) {
+
+        display: flex;
+
+        align-items: flex-start;
+
+        justify-content: space-between;
+
+        gap: 15px;
+
+        width: 100%;
+      }
+
+
+      :global(.product-name-area) {
+
+        min-width: 0;
+      }
+
+
+      /* =========================================
+         BRAND
+      ========================================== */
+
+      :global(.product-brand) {
+
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #a08455;
+
+        font-size: 7px;
+
+        font-weight: 700;
+
+        letter-spacing: 1.8px;
+
+        text-transform: uppercase;
+      }
+
+
+      /* =========================================
+         TITLE
+      ========================================== */
+
+      :global(.product-title) {
+
+        margin: 0;
+
+        color: #181818;
+
+        font-family:
+          Georgia,
+          "Times New Roman",
+          serif;
+
+        font-size: 16px;
+
+        font-weight: 400;
+
+        line-height: 1.25;
+      }
+
+
+      /* =========================================
+         PRICE
+      ========================================== */
+
+      :global(.product-price) {
+
+        flex-shrink: 0;
+
+        padding-top: 10px;
+
+        color: #181818;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+      }
+
+
+      /* =========================================
+         VIEW PRODUCT
+      ========================================== */
+
+      :global(.view-product) {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+        margin-top: 10px;
+
+        padding-bottom: 3px;
+
+        border-bottom:
+          1px solid #c8c3ba;
+
+        color: #66625c;
+
+        text-decoration: none;
+
+        font-size: 7px;
+
+        font-weight: 700;
+
+        letter-spacing: 1.2px;
+
+        transition:
+          color .2s ease,
+          border-color .2s ease;
+      }
+
+
+      :global(.view-product strong) {
+
+        font-size: 11px;
+
+        font-weight: 400;
+
+        transition:
+          transform .2s ease;
+      }
+
+
+      :global(.view-product:hover) {
+
+        color: #a08455;
+
+        border-color: #a08455;
+      }
+
+
+      :global(.view-product:hover strong) {
+
+        transform:
+          translateX(3px);
+      }
+
+
+      /* =========================================
+         EMPTY
+      ========================================== */
+
+      :global(.empty-state) {
+
+        min-height: 400px;
+
+        display: none;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        text-align: center;
+      }
+
+
+      :global(.empty-heart) {
+
+        width: 58px;
+
+        height: 58px;
+
+        margin-bottom: 18px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border:
+          1px solid #ddd8cf;
+
+        border-radius: 50%;
+
+        color: #a08455;
+
+        font-size: 24px;
+      }
+
+
+      :global(.empty-state h2) {
+
+        margin:
+          0 0 8px;
+
+        color: #171717;
+
+        font-family:
+          Georgia,
+          serif;
+
+        font-size: 27px;
+
+        font-weight: 400;
+      }
+
+
+      :global(.empty-state p) {
+
+        margin:
+          0 0 22px;
+
+        color: #85827b;
+
+        font-size: 10px;
+      }
+
+
+      :global(.empty-state a) {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        height: 42px;
+
+        padding:
+          0 24px;
+
+        background: #171717;
+
+        color: #fff;
+
+        text-decoration: none;
+
+        font-size: 7px;
+
+        font-weight: 700;
+
+        letter-spacing: 1.2px;
+
+        transition:
+          background .2s ease;
+      }
+
+
+      :global(.empty-state a:hover) {
+
+        background: #a08455;
+      }
+
+
+      /* =========================================
+         TABLET
+      ========================================== */
+
+      @media (max-width: 1100px) {
+
+        :global(.favourites-page) {
+
+          padding-left: 28px;
+
+          padding-right: 28px;
+        }
+
+
+        :global(.products-grid) {
+
+          grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+          column-gap: 22px;
+        }
+
+
+        :global(.image-box) {
+
+          height: 315px;
+        }
+
+      }
+
+
+      /* =========================================
+         MOBILE
+      ========================================== */
+
+      @media (max-width: 700px) {
+
+        :global(.favourites-page) {
+
+          padding:
+            45px 16px 80px;
+        }
+
+
+        :global(.page-heading) {
+
+          margin-bottom: 35px;
+        }
+
+
+        :global(.page-heading h1) {
+
+          font-size: 34px;
+        }
+
+
+        :global(.page-heading p) {
+
+          font-size: 9px;
+        }
+
+
+        :global(.products-grid) {
+
+          grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+          column-gap: 12px;
+
+          row-gap: 38px;
+        }
+
+
+        :global(.image-box) {
+
+          height: 250px;
+        }
+
+
+        :global(.remove-favourite) {
+
+          top: 8px;
+
+          right: 8px;
+
+          width: 26px;
+
+          height: 26px;
+
+          font-size: 13px;
+        }
+
+
+        :global(.product-info) {
+
+          padding-top: 10px;
+        }
+
+
+        :global(.product-brand) {
+
+          font-size: 6px;
+
+          margin-bottom: 4px;
+
+          letter-spacing: 1.4px;
+        }
+
+
+        :global(.product-title) {
+
+          font-size: 13px;
+
+          line-height: 1.3;
+        }
+
+
+        :global(.product-price) {
+
+          padding-top: 7px;
+
+          font-size: 9px;
+        }
+
+
+        :global(.view-product) {
+
+          margin-top: 8px;
+
+          font-size: 6px;
+
+          letter-spacing: .9px;
+        }
+
+
+        :global(.view-product strong) {
+
+          font-size: 10px;
+        }
+
+      }
+
+
+      /* =========================================
+         SMALL MOBILE
+      ========================================== */
+
+      @media (max-width: 380px) {
+
+        :global(.favourites-page) {
+
+          padding:
+            35px 10px 60px;
+        }
+
+
+        :global(.products-grid) {
+
+          column-gap: 10px;
+
+          row-gap: 32px;
+        }
+
+
+        :global(.image-box) {
+
+          height: 225px;
+        }
+
+
+        :global(.product-title) {
+
+          font-size: 12px;
+        }
+
+
+        :global(.product-price) {
+
+          font-size: 8.5px;
+        }
+
+      }
+
+    </style>
+
+
+  </body>
+
+</html>

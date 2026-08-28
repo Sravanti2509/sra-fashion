@@ -1,0 +1,1042 @@
+
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="SRA Shipping & Delivery information."
+    />
+
+    <title>Shipping & Delivery | SRA</title>
+  </head>
+
+  <body>
+
+    <Header />
+
+    <main>
+
+      <!-- HERO -->
+
+      <section class="shipping-hero">
+
+        <div class="hero-content">
+
+          <span>
+            SRA CUSTOMER CARE
+          </span>
+
+          <h1>
+            Shipping<br />
+            &amp; Delivery.
+          </h1>
+
+          <p>
+            Everything you need to know about getting
+            your SRA order safely to you.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- SHIPPING INTRO -->
+
+      <section class="shipping-intro">
+
+        <span class="section-label">
+          DELIVERY INFORMATION
+        </span>
+
+        <h2>
+          Your order,<br />
+          thoughtfully delivered.
+        </h2>
+
+        <p>
+          At SRA, we carefully prepare every order before
+          it leaves us. Once your order is confirmed, our
+          team begins processing it for dispatch.
+        </p>
+
+      </section>
+
+
+      <!-- SHIPPING DETAILS -->
+
+      <section class="shipping-details">
+
+        <div class="shipping-grid">
+
+          <!-- PROCESSING -->
+
+          <article class="shipping-card">
+
+            <span class="number">
+              01
+            </span>
+
+            <h3>
+              Order Processing
+            </h3>
+
+            <p>
+              Orders are usually processed within
+              1–2 business days after confirmation.
+              Orders placed on weekends or holidays
+              may take a little longer.
+            </p>
+
+          </article>
+
+
+          <!-- DELIVERY -->
+
+          <article class="shipping-card">
+
+            <span class="number">
+              02
+            </span>
+
+            <h3>
+              Delivery Time
+            </h3>
+
+            <p>
+              Once dispatched, orders are generally
+              delivered within 3–7 business days,
+              depending on your location.
+            </p>
+
+          </article>
+
+
+          <!-- TRACKING -->
+
+          <article class="shipping-card">
+
+            <span class="number">
+              03
+            </span>
+
+            <h3>
+              Order Tracking
+            </h3>
+
+            <p>
+              Once your order has been shipped, you will
+              receive tracking information so you can
+              follow your delivery.
+            </p>
+
+          </article>
+
+
+          <!-- DELIVERY ATTEMPT -->
+
+          <article class="shipping-card">
+
+            <span class="number">
+              04
+            </span>
+
+            <h3>
+              Delivery Attempts
+            </h3>
+
+            <p>
+              Our delivery partners may make multiple
+              attempts if you are unavailable when your
+              package arrives.
+            </p>
+
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- SHIPPING POLICY -->
+
+      <section class="policy-section">
+
+        <div class="policy-inner">
+
+          <div class="policy-title">
+
+            <span>
+              GOOD TO KNOW
+            </span>
+
+            <h2>
+              A few things<br />
+              to remember.
+            </h2>
+
+          </div>
+
+
+          <div class="policy-content">
+
+            <div class="policy-item">
+
+              <h3>
+                Shipping Address
+              </h3>
+
+              <p>
+                Please make sure your delivery address,
+                phone number and other contact details
+                are correct before placing your order.
+              </p>
+
+            </div>
+
+
+            <div class="policy-item">
+
+              <h3>
+                Delays
+              </h3>
+
+              <p>
+                Delivery times may occasionally be affected
+                by weather, public holidays, remote locations
+                or circumstances outside our control.
+              </p>
+
+            </div>
+
+
+            <div class="policy-item">
+
+              <h3>
+                Damaged Package
+              </h3>
+
+              <p>
+                If your package appears damaged when it
+                arrives, please contact our customer care
+                team as soon as possible.
+              </p>
+
+            </div>
+
+
+            <div class="policy-item">
+
+              <h3>
+                Need Help?
+              </h3>
+
+              <p>
+                If you have questions about your delivery,
+                our customer care team will be happy to help.
+              </p>
+
+              <a href="/contact">
+                CONTACT US →
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- CTA -->
+
+      <section class="shipping-cta">
+
+        <span>
+          SRA COLLECTION
+        </span>
+
+        <h2>
+          Made to arrive.<br />
+          Made to stay.
+        </h2>
+
+        <p>
+          Explore the latest SRA collection
+          and find something that feels like you.
+        </p>
+
+        <div class="cta-buttons">
+
+          <a href="/women">
+            SHOP WOMEN
+          </a>
+
+          <a href="/men">
+            SHOP MEN
+          </a>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <Footer />
+
+  </body>
+</html>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+
+  body {
+    margin: 0;
+
+    background: #f6f2e9;
+
+    color: #0b1f3a;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+
+  a {
+    color: inherit;
+  }
+
+
+  /* =====================================================
+     HERO
+  ===================================================== */
+
+  .shipping-hero {
+
+    min-height: 560px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 100px 30px;
+
+    text-align: center;
+
+    border-bottom:
+      1px solid #e3ddd1;
+  }
+
+
+  .hero-content {
+    max-width: 800px;
+  }
+
+
+  .hero-content > span {
+
+    display: block;
+
+    margin-bottom: 25px;
+
+    color: #b08c4d;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+  }
+
+
+  .hero-content h1 {
+
+    margin: 0;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size:
+      clamp(55px, 8vw, 105px);
+
+    font-weight: 400;
+
+    line-height: .92;
+
+    letter-spacing: -5px;
+  }
+
+
+  .hero-content p {
+
+    max-width: 450px;
+
+    margin: 35px auto 0;
+
+    color: #777269;
+
+    font-size: 12px;
+
+    line-height: 1.9;
+  }
+
+
+  /* =====================================================
+     INTRO
+  ===================================================== */
+
+  .shipping-intro {
+
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    padding: 140px 30px;
+
+    text-align: center;
+  }
+
+
+  .section-label {
+
+    display: block;
+
+    margin-bottom: 20px;
+
+    color: #b08c4d;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+  }
+
+
+  .shipping-intro h2 {
+
+    margin: 0;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      clamp(42px, 5vw, 65px);
+
+    font-weight: 400;
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+  }
+
+
+  .shipping-intro p {
+
+    max-width: 560px;
+
+    margin: 30px auto 0;
+
+    color: #777269;
+
+    font-size: 12px;
+
+    line-height: 1.9;
+  }
+
+
+  /* =====================================================
+     DETAILS
+  ===================================================== */
+
+  .shipping-details {
+
+    padding: 0 50px 140px;
+  }
+
+
+  .shipping-grid {
+
+    max-width: 1250px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+    border-top:
+      1px solid #d8d1c5;
+
+    border-left:
+      1px solid #d8d1c5;
+  }
+
+
+  .shipping-card {
+
+    min-height: 280px;
+
+    padding: 40px;
+
+    border-right:
+      1px solid #d8d1c5;
+
+    border-bottom:
+      1px solid #d8d1c5;
+
+    transition:
+      background .3s ease,
+      color .3s ease;
+  }
+
+
+  .shipping-card:hover {
+
+    background: #0b1f3a;
+
+    color: #ffffff;
+  }
+
+
+  .number {
+
+    color: #b08c4d;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  .shipping-card h3 {
+
+    margin: 65px 0 20px;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size: 31px;
+
+    font-weight: 400;
+
+    letter-spacing: -1px;
+  }
+
+
+  .shipping-card p {
+
+    max-width: 430px;
+
+    margin: 0;
+
+    color: #777269;
+
+    font-size: 11px;
+
+    line-height: 1.9;
+  }
+
+
+  .shipping-card:hover p {
+
+    color: #c9cbd0;
+  }
+
+
+  /* =====================================================
+     POLICY
+  ===================================================== */
+
+  .policy-section {
+
+    margin: 0 35px;
+
+    padding: 100px 70px;
+
+    background: #ebe5da;
+  }
+
+
+  .policy-inner {
+
+    max-width: 1150px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+      .8fr 1.2fr;
+
+    gap: 100px;
+  }
+
+
+  .policy-title > span {
+
+    color: #b08c4d;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+  }
+
+
+  .policy-title h2 {
+
+    margin: 18px 0 0;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size: 50px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -2px;
+  }
+
+
+  .policy-item {
+
+    padding: 0 0 30px;
+
+    margin-bottom: 30px;
+
+    border-bottom:
+      1px solid #d2cabc;
+  }
+
+
+  .policy-item:last-child {
+
+    margin-bottom: 0;
+  }
+
+
+  .policy-item h3 {
+
+    margin: 0 0 12px;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size: 22px;
+
+    font-weight: 400;
+  }
+
+
+  .policy-item p {
+
+    max-width: 580px;
+
+    margin: 0;
+
+    color: #777269;
+
+    font-size: 11px;
+
+    line-height: 1.9;
+  }
+
+
+  .policy-item a {
+
+    display: inline-block;
+
+    margin-top: 15px;
+
+    color: #0b1f3a;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    text-decoration: none;
+
+    border-bottom:
+      1px solid #b08c4d;
+
+    padding-bottom: 5px;
+  }
+
+
+  /* =====================================================
+     CTA
+  ===================================================== */
+
+  .shipping-cta {
+
+    padding: 160px 25px;
+
+    text-align: center;
+
+    background: #0b1f3a;
+
+    color: #ffffff;
+  }
+
+
+  .shipping-cta > span {
+
+    color: #c7a66b;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+  }
+
+
+  .shipping-cta h2 {
+
+    margin: 20px 0;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      clamp(55px, 7vw, 90px);
+
+    font-weight: 400;
+
+    line-height: .92;
+
+    letter-spacing: -4px;
+  }
+
+
+  .shipping-cta p {
+
+    margin: 0 auto 30px;
+
+    color: #c9cbd0;
+
+    font-size: 11px;
+
+    line-height: 1.8;
+  }
+
+
+  .cta-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+  }
+
+
+  .cta-buttons a {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 145px;
+
+    height: 46px;
+
+    padding: 0 20px;
+
+    border:
+      1px solid #ffffff;
+
+    color: #ffffff;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    text-decoration: none;
+
+    transition: .25s ease;
+  }
+
+
+  .cta-buttons a:hover {
+
+    background: #ffffff;
+
+    color: #0b1f3a;
+  }
+
+
+  /* =====================================================
+     TABLET
+  ===================================================== */
+
+  @media (max-width: 900px) {
+
+    .shipping-details {
+
+      padding:
+        0 25px 100px;
+    }
+
+
+    .policy-section {
+
+      margin: 0 20px;
+
+      padding: 70px 45px;
+    }
+
+
+    .policy-inner {
+
+      grid-template-columns: 1fr;
+
+      gap: 55px;
+    }
+
+  }
+
+
+  /* =====================================================
+     MOBILE
+  ===================================================== */
+
+  @media (max-width: 600px) {
+
+    .shipping-hero {
+
+      min-height: 470px;
+
+      padding: 75px 20px;
+    }
+
+
+    .hero-content > span {
+
+      font-size: 7px;
+
+      letter-spacing: 2px;
+    }
+
+
+    .hero-content h1 {
+
+      font-size: 52px;
+
+      letter-spacing: -3px;
+    }
+
+
+    .hero-content p {
+
+      max-width: 310px;
+
+      margin-top: 25px;
+
+      font-size: 10px;
+    }
+
+
+    .shipping-intro {
+
+      padding: 90px 22px;
+    }
+
+
+    .shipping-intro h2 {
+
+      font-size: 37px;
+
+      letter-spacing: -1px;
+    }
+
+
+    .shipping-intro p {
+
+      font-size: 10px;
+    }
+
+
+    .shipping-details {
+
+      padding:
+        0 12px 90px;
+    }
+
+
+    .shipping-grid {
+
+      grid-template-columns: 1fr;
+    }
+
+
+    .shipping-card {
+
+      min-height: 220px;
+
+      padding: 25px;
+    }
+
+
+    .shipping-card h3 {
+
+      margin-top: 45px;
+
+      font-size: 27px;
+    }
+
+
+    .shipping-card p {
+
+      font-size: 10px;
+    }
+
+
+    .policy-section {
+
+      margin: 0 12px;
+
+      padding: 55px 25px;
+    }
+
+
+    .policy-title h2 {
+
+      font-size: 39px;
+
+      letter-spacing: -1px;
+    }
+
+
+    .policy-item h3 {
+
+      font-size: 20px;
+    }
+
+
+    .policy-item p {
+
+      font-size: 10px;
+    }
+
+
+    .shipping-cta {
+
+      padding: 100px 20px;
+    }
+
+
+    .shipping-cta h2 {
+
+      font-size: 55px;
+
+      letter-spacing: -3px;
+    }
+
+
+    .shipping-cta p {
+
+      font-size: 10px;
+    }
+
+
+    .cta-buttons {
+
+      flex-direction: column;
+
+      align-items: center;
+    }
+
+
+    .cta-buttons a {
+
+      width: 180px;
+    }
+
+  }
+
+
+  /* =====================================================
+     SMALL PHONE
+  ===================================================== */
+
+  @media (max-width: 380px) {
+
+    .hero-content h1 {
+
+      font-size: 45px;
+    }
+
+
+    .shipping-intro h2 {
+
+      font-size: 33px;
+    }
+
+
+    .shipping-card h3 {
+
+      font-size: 24px;
+    }
+
+
+    .policy-title h2 {
+
+      font-size: 34px;
+    }
+
+
+    .shipping-cta h2 {
+
+      font-size: 47px;
+    }
+
+  }
+
+</style>

@@ -1,0 +1,797 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Order Confirmed | SRA</title>
+  </head>
+
+  <body>
+
+    <Header />
+
+    <main class="success-page">
+
+      <div class="success-container">
+
+        <!-- SUCCESS ICON -->
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+
+        <!-- HEADING -->
+
+        <span class="eyebrow">
+          SRA COLLECTION
+        </span>
+
+        <h1>
+          Order Confirmed
+        </h1>
+
+        <p class="success-text">
+          Thank you for shopping with SRA.
+          Your order has been successfully placed.
+        </p>
+
+
+        <!-- ORDER DETAILS -->
+
+        <div class="order-card">
+
+          <div class="order-row">
+
+            <span>
+              ORDER NUMBER
+            </span>
+
+            <strong id="orderNumber">
+              Loading...
+            </strong>
+
+          </div>
+
+
+          <div class="order-row">
+
+            <span>
+              PAYMENT
+            </span>
+
+            <strong id="paymentMethod">
+              Cash on Delivery
+            </strong>
+
+          </div>
+
+
+          <div class="order-row">
+
+            <span>
+              TOTAL
+            </span>
+
+            <strong id="orderTotal">
+              ₹0
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div class="delivery-message">
+
+          <h2>
+            Thank you for your order.
+          </h2>
+
+          <p>
+            Your order is being prepared.
+            We will deliver it to the address
+            provided during checkout.
+          </p>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="success-actions">
+
+          <a
+            href="/"
+            class="continue-shopping"
+          >
+            CONTINUE SHOPPING
+          </a>
+
+
+          <a
+            href="/"
+            class="home-link"
+          >
+            BACK TO HOME
+          </a>
+
+        </div>
+
+      </div>
+
+    </main>
+
+
+    <Footer />
+
+
+    <!-- =========================
+         ORDER DATA
+    ========================== -->
+
+    <script>
+
+      /* =========================
+         GET LAST ORDER
+      ========================== */
+
+      function getLastOrder() {
+
+        try {
+
+          const saved =
+            localStorage.getItem(
+              "sra-last-order"
+            );
+
+
+          if (!saved) {
+            return null;
+          }
+
+
+          return JSON.parse(saved);
+
+        } catch (error) {
+
+          console.error(
+            "LAST ORDER ERROR:",
+            error
+          );
+
+          return null;
+
+        }
+
+      }
+
+
+      /* =========================
+         FORMAT PRICE
+      ========================== */
+
+      function formatPrice(price) {
+
+        return (
+          "₹" +
+          Number(
+            price || 0
+          ).toLocaleString(
+            "en-IN"
+          )
+        );
+
+      }
+
+
+      /* =========================
+         LOAD ORDER
+      ========================== */
+
+      function loadOrder() {
+
+        const order =
+          getLastOrder();
+
+
+        if (!order) {
+
+          document.querySelector(
+            "#orderNumber"
+          ).textContent =
+            "Order information unavailable";
+
+
+          document.querySelector(
+            "#orderTotal"
+          ).textContent =
+            "—";
+
+
+          return;
+
+        }
+
+
+        /* =========================
+           ORDER NUMBER
+        ========================== */
+
+        document.querySelector(
+          "#orderNumber"
+        ).textContent =
+          order.orderNumber ||
+          "—";
+
+
+        /* =========================
+           PAYMENT
+        ========================== */
+
+        const payment =
+          order.payment || "cod";
+
+
+        document.querySelector(
+          "#paymentMethod"
+        ).textContent =
+          payment === "cod"
+            ? "Cash on Delivery"
+            : "Online Payment";
+
+
+        /* =========================
+           TOTAL
+        ========================== */
+
+        document.querySelector(
+          "#orderTotal"
+        ).textContent =
+          formatPrice(
+            order.total
+          );
+
+      }
+
+
+      /* =========================
+         START
+      ========================== */
+
+      loadOrder();
+
+    </script>
+
+  </body>
+</html>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  body {
+
+    margin: 0;
+
+    background: #f7f6f3;
+
+    color: #171717;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+
+  }
+
+
+  /* =========================
+     PAGE
+  ========================== */
+
+  .success-page {
+
+    min-height:
+      70vh;
+
+    padding:
+      80px 20px 100px;
+
+    display: flex;
+
+    justify-content:
+      center;
+
+    align-items:
+      flex-start;
+
+  }
+
+
+  .success-container {
+
+    width: 100%;
+
+    max-width:
+      650px;
+
+    text-align:
+      center;
+
+  }
+
+
+  /* =========================
+     SUCCESS ICON
+  ========================== */
+
+  .success-icon {
+
+    width: 70px;
+
+    height: 70px;
+
+    margin:
+      0 auto 25px;
+
+    border:
+      1px solid #947b5b;
+
+    border-radius:
+      50%;
+
+    display: flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    color: #947b5b;
+
+    font-size:
+      30px;
+
+    font-weight:
+      300;
+
+  }
+
+
+  /* =========================
+     EYEBROW
+  ========================== */
+
+  .eyebrow {
+
+    color:
+      #947b5b;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      2px;
+
+  }
+
+
+  /* =========================
+     HEADING
+  ========================== */
+
+  h1 {
+
+    margin:
+      12px 0 15px;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      46px;
+
+    font-weight:
+      400;
+
+  }
+
+
+  .success-text {
+
+    max-width:
+      500px;
+
+    margin:
+      0 auto 35px;
+
+    color:
+      #77736d;
+
+    font-size:
+      12px;
+
+    line-height:
+      1.8;
+
+  }
+
+
+  /* =========================
+     ORDER CARD
+  ========================== */
+
+  .order-card {
+
+    background:
+      #ffffff;
+
+    border:
+      1px solid #dedbd5;
+
+    padding:
+      25px 30px;
+
+    text-align:
+      left;
+
+  }
+
+
+  .order-row {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    align-items:
+      center;
+
+    gap:
+      20px;
+
+    padding:
+      17px 0;
+
+    border-bottom:
+      1px solid #eeeae4;
+
+  }
+
+
+  .order-row:last-child {
+
+    border-bottom:
+      0;
+
+  }
+
+
+  .order-row span {
+
+    color:
+      #77736d;
+
+    font-size:
+      8px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1px;
+
+  }
+
+
+  .order-row strong {
+
+    font-size:
+      11px;
+
+    font-weight:
+      600;
+
+    text-align:
+      right;
+
+  }
+
+
+  /* =========================
+     DELIVERY MESSAGE
+  ========================== */
+
+  .delivery-message {
+
+    margin-top:
+      30px;
+
+    padding:
+      25px;
+
+    background:
+      #ffffff;
+
+    border:
+      1px solid #dedbd5;
+
+  }
+
+
+  .delivery-message h2 {
+
+    margin:
+      0 0 10px;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      20px;
+
+    font-weight:
+      400;
+
+  }
+
+
+  .delivery-message p {
+
+    margin:
+      0;
+
+    color:
+      #77736d;
+
+    font-size:
+      10px;
+
+    line-height:
+      1.7;
+
+  }
+
+
+  /* =========================
+     ACTIONS
+  ========================== */
+
+  .success-actions {
+
+    display:
+      flex;
+
+    justify-content:
+      center;
+
+    gap:
+      12px;
+
+    margin-top:
+      30px;
+
+  }
+
+
+  .continue-shopping {
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    min-width:
+      190px;
+
+    height:
+      48px;
+
+    padding:
+      0 20px;
+
+    background:
+      #171717;
+
+    color:
+      #ffffff;
+
+    text-decoration:
+      none;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1.3px;
+
+    transition:
+      background 0.2s ease;
+
+  }
+
+
+  .continue-shopping:hover {
+
+    background:
+      #947b5b;
+
+  }
+
+
+  .home-link {
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    min-width:
+      150px;
+
+    height:
+      48px;
+
+    padding:
+      0 20px;
+
+    border:
+      1px solid #171717;
+
+    color:
+      #171717;
+
+    text-decoration:
+      none;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1.3px;
+
+  }
+
+
+  .home-link:hover {
+
+    background:
+      #171717;
+
+    color:
+      #ffffff;
+
+  }
+
+
+  /* =========================
+     MOBILE
+  ========================== */
+
+  @media (max-width: 600px) {
+
+    .success-page {
+
+      padding:
+        55px 15px 70px;
+
+    }
+
+
+    .success-icon {
+
+      width:
+        60px;
+
+      height:
+        60px;
+
+      font-size:
+        25px;
+
+    }
+
+
+    h1 {
+
+      font-size:
+        36px;
+
+    }
+
+
+    .success-text {
+
+      font-size:
+        11px;
+
+    }
+
+
+    .order-card {
+
+      padding:
+        20px;
+
+    }
+
+
+    .order-row {
+
+      align-items:
+        flex-start;
+
+      flex-direction:
+        column;
+
+      gap:
+        7px;
+
+    }
+
+
+    .order-row strong {
+
+      text-align:
+        left;
+
+    }
+
+
+    .success-actions {
+
+      flex-direction:
+        column;
+
+    }
+
+
+    .continue-shopping,
+    .home-link {
+
+      width:
+        100%;
+
+    }
+
+  }
+
+
+</style>

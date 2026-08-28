@@ -1,0 +1,1015 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Login | SRA</title>
+</head>
+
+<body>
+
+  <Header />
+
+  <main class="login-page">
+
+    <section class="login-card">
+
+      <div class="login-heading">
+
+        <span class="eyebrow">
+          SRA MEMBERS
+        </span>
+
+        <h1>
+          Welcome Back
+        </h1>
+
+        <p>
+          Sign in to continue to your SRA account.
+        </p>
+
+      </div>
+
+
+      <form id="loginForm">
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+          <label for="email">
+            EMAIL ADDRESS
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          />
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+          <label for="password">
+            PASSWORD
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+
+            <button
+              type="button"
+              id="showPassword"
+              class="show-password"
+            >
+              SHOW
+            </button>
+
+          </div>
+
+        </div>
+        <a href="/forgot-password" class="forgot-link">
+  Forgot Password?
+</a>
+
+
+        <!-- MESSAGE -->
+
+        <div
+          id="loginMessage"
+          class="login-message"
+        ></div>
+
+
+        <!-- LOGIN BUTTON -->
+
+        <button
+          type="submit"
+          class="login-button"
+          id="loginButton"
+        >
+          SIGN IN
+        </button>
+
+      </form>
+
+
+      <!-- SIGNUP -->
+
+      <div class="bottom-link">
+
+        <span>
+          Don't have an account?
+        </span>
+
+        <a href="/signup">
+          CREATE ACCOUNT
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <Footer />
+
+
+  <script>
+    import { createClient } from "@supabase/supabase-js";
+
+
+    /* =====================================================
+       SUPABASE
+    ===================================================== */
+
+    const supabaseUrl =
+      import.meta.env.PUBLIC_SUPABASE_URL;
+
+    const supabaseAnonKey =
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+
+      console.error(
+        "Supabase environment variables are missing."
+      );
+
+    }
+
+
+    const supabase =
+      createClient(
+        supabaseUrl,
+        supabaseAnonKey
+      );
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const loginForm =
+      document.querySelector("#loginForm");
+
+    const emailInput =
+      document.querySelector("#email");
+
+    const passwordInput =
+      document.querySelector("#password");
+
+    const loginMessage =
+      document.querySelector("#loginMessage");
+
+    const showPassword =
+      document.querySelector("#showPassword");
+
+    const loginButton =
+      document.querySelector("#loginButton");
+
+
+    /* =====================================================
+       SHOW / HIDE PASSWORD
+    ===================================================== */
+
+    showPassword?.addEventListener(
+      "click",
+      () => {
+
+        if (
+          passwordInput instanceof HTMLInputElement
+        ) {
+
+          if (
+            passwordInput.type === "password"
+          ) {
+
+            passwordInput.type = "text";
+
+            if (showPassword) {
+              showPassword.textContent = "HIDE";
+            }
+
+          } else {
+
+            passwordInput.type = "password";
+
+            if (showPassword) {
+              showPassword.textContent = "SHOW";
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       LOGIN
+    ===================================================== */
+
+    loginForm?.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+
+        /* CLEAR MESSAGE */
+
+        if (loginMessage) {
+
+          loginMessage.textContent = "";
+
+          loginMessage.className =
+            "login-message";
+
+        }
+
+
+        /* GET VALUES */
+
+        const email =
+          emailInput instanceof HTMLInputElement
+            ? emailInput.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+        const password =
+          passwordInput instanceof HTMLInputElement
+            ? passwordInput.value
+            : "";
+
+
+        /* VALIDATION */
+
+        if (!email || !password) {
+
+          if (loginMessage) {
+
+            loginMessage.textContent =
+              "Please enter your email and password.";
+
+            loginMessage.classList.add(
+              "error"
+            );
+
+          }
+
+          return;
+
+        }
+
+
+        /* DISABLE BUTTON */
+
+        if (loginButton instanceof HTMLButtonElement) {
+
+          loginButton.disabled = true;
+
+          loginButton.textContent =
+            "SIGNING IN...";
+
+        }
+
+
+        try {
+
+          /* =================================================
+             SUPABASE LOGIN
+          ================================================= */
+
+          const {
+            data,
+            error
+          } =
+            await supabase.auth.signInWithPassword({
+
+              email: email,
+
+              password: password
+
+            });
+
+
+          /* =================================================
+             LOGIN ERROR
+          ================================================= */
+
+          if (error) {
+
+            console.error(
+              "SUPABASE LOGIN ERROR:",
+              error
+            );
+
+
+            if (loginMessage) {
+
+              loginMessage.textContent =
+                error.message;
+
+              loginMessage.classList.add(
+                "error"
+              );
+
+            }
+
+
+            return;
+
+          }
+
+
+          /* =================================================
+             USER CHECK
+          ================================================= */
+
+          if (!data.user) {
+
+            if (loginMessage) {
+
+              loginMessage.textContent =
+                "Login failed. Please try again.";
+
+              loginMessage.classList.add(
+                "error"
+              );
+
+            }
+
+            return;
+
+          }
+
+
+          /* =================================================
+             SUPABASE USER
+          ================================================= */
+
+          const user =
+            data.user;
+
+
+          /* =================================================
+             GET USER NAME
+          ================================================= */
+
+          const fullName =
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.user_metadata?.username ||
+            user.email?.split("@")[0] ||
+            "Account";
+
+
+          /* =================================================
+             SAVE LOGIN USER
+          ================================================= */
+
+          const loggedInUser = {
+
+            id: user.id,
+
+            name: String(fullName).trim(),
+
+            email: user.email || ""
+
+          };
+
+
+          localStorage.setItem(
+            "sra-user",
+            JSON.stringify(
+              loggedInUser
+            )
+          );
+
+
+          /* =================================================
+             NOTIFY HEADER
+          ================================================= */
+
+          window.dispatchEvent(
+            new Event("userUpdated")
+          );
+
+
+          /* =================================================
+             SUCCESS MESSAGE
+          ================================================= */
+
+          if (loginMessage) {
+
+            loginMessage.textContent =
+              "Login successful!";
+
+            loginMessage.classList.add(
+              "success"
+            );
+
+          }
+
+
+          /* =================================================
+             REDIRECT
+          ================================================= */
+
+          setTimeout(
+            () => {
+
+              const checkoutAfterLogin =
+                sessionStorage.getItem(
+                  "sra-checkout-after-login"
+                );
+
+
+              /* ---------------------------------------------
+                 CUSTOMER CAME FROM CHECKOUT
+              --------------------------------------------- */
+
+              if (
+                checkoutAfterLogin === "true"
+              ) {
+
+                sessionStorage.removeItem(
+                  "sra-checkout-after-login"
+                );
+
+
+                window.location.href =
+                  "/checkout";
+
+                return;
+
+              }
+
+
+              /* ---------------------------------------------
+                 NORMAL LOGIN
+              --------------------------------------------- */
+
+              window.location.href =
+                "/account";
+
+            },
+            700
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "LOGIN ERROR:",
+            error
+          );
+
+
+          if (loginMessage) {
+
+            loginMessage.textContent =
+              "Something went wrong. Please try again.";
+
+            loginMessage.classList.add(
+              "error"
+            );
+
+          }
+
+        } finally {
+
+          /* ENABLE BUTTON */
+
+          if (
+            loginButton instanceof HTMLButtonElement
+          ) {
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+              "SIGN IN";
+
+          }
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
+
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f5f1e8;
+  color: #0b1f3a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.login-page {
+
+  min-height: 720px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 70px 20px 100px;
+
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.login-card {
+
+  width: 100%;
+
+  max-width: 450px;
+
+  padding: 50px 45px 42px;
+
+  background: #faf8f3;
+
+  border: 1px solid #ded7cc;
+
+  box-shadow:
+    0 20px 60px rgba(11, 31, 58, 0.07);
+
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.login-heading {
+
+  text-align: center;
+
+  margin-bottom: 38px;
+
+}
+
+
+.eyebrow {
+
+  display: block;
+
+  margin-bottom: 13px;
+
+  color: #b79b63;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+}
+
+
+.login-heading h1 {
+
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 44px;
+
+  font-weight: 400;
+
+  line-height: 1.05;
+
+  letter-spacing: -1.5px;
+
+}
+
+
+.login-heading p {
+
+  margin: 14px 0 0;
+
+  color: #777269;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.form-group {
+
+  margin-bottom: 21px;
+
+}
+
+
+.form-group label {
+
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #0b1f3a;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.form-group input {
+
+  width: 100%;
+
+  height: 50px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d2cbc0;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #0b1f3a;
+
+  font-size: 12px;
+
+}
+
+
+.form-group input::placeholder {
+
+  color: #aaa49c;
+
+}
+
+
+.form-group input:focus {
+
+  border-color: #0b1f3a;
+
+  box-shadow:
+    0 0 0 2px rgba(11, 31, 58, 0.05);
+
+}
+
+
+/* =====================================================
+   PASSWORD
+===================================================== */
+
+.password-wrapper {
+
+  position: relative;
+
+}
+
+
+.password-wrapper input {
+
+  padding-right: 65px;
+
+}
+
+
+.show-password {
+
+  position: absolute;
+
+  top: 50%;
+
+  right: 12px;
+
+  transform: translateY(-50%);
+
+  border: 0;
+
+  padding: 5px;
+
+  background: transparent;
+
+  color: #777269;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.login-message {
+
+  min-height: 18px;
+
+  margin: -2px 0 13px;
+
+  text-align: center;
+
+  font-size: 9px;
+
+  line-height: 1.5;
+
+}
+
+
+.login-message.error {
+
+  color: #9f3040;
+
+}
+
+
+.login-message.success {
+
+  color: #47704d;
+
+}
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.login-button {
+
+  width: 100%;
+
+  height: 54px;
+
+  border: 1px solid #0b1f3a;
+
+  background: #0b1f3a;
+
+  color: #ffffff;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.6px;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+
+}
+
+
+.login-button:hover {
+
+  background: transparent;
+
+  color: #0b1f3a;
+
+}
+
+
+.login-button:disabled {
+
+  opacity: .6;
+
+  cursor: not-allowed;
+
+}
+
+
+/* =====================================================
+   SIGNUP
+===================================================== */
+
+.bottom-link {
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 27px;
+
+  color: #777269;
+
+  font-size: 9px;
+
+}
+
+
+.bottom-link a {
+
+  color: #0b1f3a;
+
+  font-weight: 700;
+
+  text-decoration: underline;
+
+  text-underline-offset: 3px;
+
+}
+.forgot-link {
+  display: block;
+  margin-top: 8px;
+  text-align: right;
+  color: #0b1f3a;
+  font-size: 9px;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  color: #b79b63;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .login-page {
+
+    min-height: 680px;
+
+    align-items: flex-start;
+
+    padding: 42px 14px 70px;
+
+  }
+
+
+  .login-card {
+
+    max-width: 100%;
+
+    padding: 38px 22px 32px;
+
+  }
+
+
+  .login-heading {
+
+    margin-bottom: 30px;
+
+  }
+
+
+  .login-heading h1 {
+
+    font-size: 35px;
+
+  }
+
+
+  .login-heading p {
+
+    font-size: 9px;
+
+  }
+
+
+  .form-group {
+
+    margin-bottom: 19px;
+
+  }
+
+
+  .form-group label {
+
+    font-size: 7px;
+
+  }
+
+
+  .form-group input {
+
+    height: 48px;
+
+    font-size: 11px;
+
+  }
+
+
+  .login-button {
+
+    height: 51px;
+
+  }
+
+
+  .bottom-link {
+
+    font-size: 8px;
+
+  }
+
+}
+
+
+/* =====================================================
+   SMALL PHONES
+===================================================== */
+
+@media (max-width: 380px) {
+
+  .login-page {
+
+    padding: 30px 10px 55px;
+
+  }
+
+
+  .login-card {
+
+    padding: 32px 18px 28px;
+
+  }
+
+
+  .login-heading h1 {
+
+    font-size: 32px;
+
+  }
+
+}
+
+</style>

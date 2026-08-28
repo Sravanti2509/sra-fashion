@@ -1,0 +1,2347 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+import { shirtsTshirts } from "../data/shirts-t-shirts.js";
+import { denim } from "../data/denim.js";
+import { trousers } from "../data/trousers.js";
+import { shorts } from "../data/shorts.js";
+
+import { dresses } from "../data/dresses.js";
+import { jeans } from "../data/jeans.js";
+import { tops } from "../data/tops.js";
+import { sweaters } from "../data/sweaters-cardigans.js";
+
+/* ================================
+   MEN PRODUCTS
+================================ */
+
+const menProducts = [
+  ...shirtsTshirts,
+  ...denim,
+  ...trousers,
+  ...shorts,
+];
+
+/* ================================
+   WOMEN PRODUCTS
+================================ */
+
+const womenProducts = [
+  ...dresses,
+  ...jeans,
+  ...tops,
+  ...sweaters,
+];
+
+/* ================================
+   ALL PRODUCTS
+================================ */
+
+const allProducts = [
+  ...menProducts,
+  ...womenProducts,
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Shopping Bag | SRA</title>
+  </head>
+
+  <body>
+
+    <Header />
+
+    <main class="sra-cart-page">
+
+      <div class="sra-cart-container">
+
+        <!-- =========================
+             PAGE HEADER
+        ========================== -->
+
+        <header class="sra-cart-header">
+
+          <div>
+
+            <span class="sra-overline">
+              SRA COLLECTION
+            </span>
+
+            <h1>
+              Shopping Bag
+            </h1>
+
+            <p>
+              Review your selected pieces before checkout.
+            </p>
+
+          </div>
+
+          <span
+            class="sra-item-count"
+            id="itemCount"
+          >
+            0 ITEMS
+          </span>
+
+        </header>
+
+
+        <!-- =========================
+             CONTENT
+        ========================== -->
+
+        <div class="sra-cart-content">
+
+          <!-- PRODUCTS -->
+
+          <section
+            class="sra-products"
+            id="cartProducts"
+          >
+
+            <div class="sra-loading">
+              Loading your bag...
+            </div>
+
+          </section>
+
+
+          <!-- SUMMARY -->
+
+          <aside class="sra-summary">
+
+            <div class="sra-summary-box">
+
+              <span class="sra-summary-title">
+                ORDER SUMMARY
+              </span>
+
+
+              <div class="sra-summary-line">
+
+                <span>
+                  Subtotal
+                </span>
+
+                <strong id="subtotal">
+                  ₹0
+                </strong>
+
+              </div>
+
+
+              <div class="sra-summary-line">
+
+                <span>
+                  Delivery
+                </span>
+
+                <span class="sra-free">
+                  Complimentary
+                </span>
+
+              </div>
+
+
+              <div class="sra-line"></div>
+
+
+              <div class="sra-total">
+
+                <span>
+                  Total
+                </span>
+
+                <strong id="total">
+                  ₹0
+                </strong>
+
+              </div>
+
+
+              <button
+                type="button"
+                id="checkoutButton"
+                class="sra-checkout"
+              >
+                PROCEED TO CHECKOUT
+              </button>
+
+
+              <a
+                href="/"
+                class="sra-continue"
+              >
+                CONTINUE SHOPPING
+              </a>
+
+            </div>
+
+          </aside>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <Footer />
+
+  </body>
+</html>
+
+
+<script
+  define:vars={{
+    products: allProducts,
+    menProductIds: menProducts.map(
+      (product) => String(product.id)
+    ),
+    womenProductIds: womenProducts.map(
+      (product) => String(product.id)
+    ),
+  }}
+>
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const cartProducts =
+    document.querySelector("#cartProducts");
+
+  const subtotalElement =
+    document.querySelector("#subtotal");
+
+  const totalElement =
+    document.querySelector("#total");
+
+  const itemCountElement =
+    document.querySelector("#itemCount");
+
+  const checkoutButton =
+    document.querySelector("#checkoutButton");
+
+
+  /* =====================================================
+     FORMAT PRICE
+  ===================================================== */
+
+  function formatPrice(price) {
+
+    return (
+      "₹" +
+      Number(price || 0).toLocaleString("en-IN")
+    );
+
+  }
+
+
+  /* =====================================================
+     GET CART
+  ===================================================== */
+
+  function getCart() {
+
+    try {
+
+      const saved =
+        localStorage.getItem("sra-cart");
+
+      if (!saved) {
+        return [];
+      }
+
+      const cart =
+        JSON.parse(saved);
+
+      if (!Array.isArray(cart)) {
+        return [];
+      }
+
+      return cart;
+
+    } catch (error) {
+
+      console.error(
+        "Cart read error:",
+        error
+      );
+
+      return [];
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SAVE CART
+  ===================================================== */
+
+  function saveCart(cart) {
+
+    try {
+
+      localStorage.setItem(
+        "sra-cart",
+        JSON.stringify(cart)
+      );
+
+      /*
+        Tell Header / other components
+        that cart changed.
+      */
+
+      window.dispatchEvent(
+        new CustomEvent("cartUpdated")
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Cart save error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     CART COUNT
+  ===================================================== */
+
+  function updateCartCount() {
+
+    const cartCount =
+      document.querySelector(".cart-count");
+
+    if (!cartCount) {
+      return;
+    }
+
+
+    try {
+
+      const cart =
+        getCart();
+
+
+      const totalItems =
+        cart.reduce(
+          (total, item) => {
+
+            return (
+              total +
+              Number(item.quantity || 1)
+            );
+
+          },
+          0
+        );
+
+
+      if (totalItems > 0) {
+
+        cartCount.textContent =
+          totalItems > 99
+            ? "99+"
+            : String(totalItems);
+
+        cartCount.style.display =
+          "flex";
+
+      } else {
+
+        cartCount.textContent =
+          "0";
+
+        cartCount.style.display =
+          "none";
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Cart count error:",
+        error
+      );
+
+      cartCount.textContent =
+        "0";
+
+      cartCount.style.display =
+        "none";
+
+    }
+
+  }
+
+
+  /* =====================================================
+     FIND PRODUCT
+  ===================================================== */
+
+  function findProduct(id) {
+
+    return products.find(
+      (product) =>
+        String(product.id) ===
+        String(id)
+    );
+
+  }
+
+
+  /* =====================================================
+     PRODUCT URL
+  ===================================================== */
+
+  function getProductUrl(id) {
+
+    const productId =
+      String(id);
+
+
+    if (
+      menProductIds.includes(productId)
+    ) {
+
+      return `/men/product/${productId}`;
+
+    }
+
+
+    if (
+      womenProductIds.includes(productId)
+    ) {
+
+      return `/women/product/${productId}`;
+
+    }
+
+
+    return `/men/product/${productId}`;
+
+  }
+
+
+  /* =====================================================
+     EMPTY CART
+  ===================================================== */
+
+  function showEmptyCart() {
+
+    if (!cartProducts) {
+      return;
+    }
+
+
+    cartProducts.innerHTML = `
+
+      <div class="sra-empty">
+
+        <div class="sra-empty-icon">
+          ♡
+        </div>
+
+        <h2>
+          Your bag is empty
+        </h2>
+
+        <p>
+          Discover our latest collection
+          and find something you'll love.
+        </p>
+
+        <a
+          href="/"
+          class="sra-shop"
+        >
+          EXPLORE COLLECTION
+        </a>
+
+      </div>
+
+    `;
+
+
+    if (subtotalElement) {
+
+      subtotalElement.textContent =
+        "₹0";
+
+    }
+
+
+    if (totalElement) {
+
+      totalElement.textContent =
+        "₹0";
+
+    }
+
+
+    if (itemCountElement) {
+
+      itemCountElement.textContent =
+        "0 ITEMS";
+
+    }
+
+
+    updateCartCount();
+
+  }
+
+
+  /* =====================================================
+     RENDER CART
+  ===================================================== */
+
+  function renderCart() {
+
+    if (!cartProducts) {
+      return;
+    }
+
+
+    const cart =
+      getCart();
+
+
+    /* =========================
+       EMPTY CART
+    ========================= */
+
+    if (!cart.length) {
+
+      showEmptyCart();
+
+      return;
+
+    }
+
+
+    /* =========================
+       VALID CART
+    ========================= */
+
+    const validCart = [];
+
+
+    cart.forEach((item) => {
+
+      const product =
+        findProduct(item.id);
+
+
+      if (!product) {
+        return;
+      }
+
+
+      validCart.push({
+
+        ...item,
+
+        quantity:
+          Math.max(
+            1,
+            Number(item.quantity || 1)
+          ),
+
+      });
+
+    });
+
+
+    /* =========================
+       NO VALID PRODUCTS
+    ========================= */
+
+    if (!validCart.length) {
+
+      localStorage.setItem(
+        "sra-cart",
+        "[]"
+      );
+
+      showEmptyCart();
+
+      return;
+
+    }
+
+
+    /*
+      Save cleaned cart.
+    */
+
+    localStorage.setItem(
+      "sra-cart",
+      JSON.stringify(validCart)
+    );
+
+
+    /* =========================
+       CALCULATE TOTALS
+    ========================= */
+
+    let subtotal = 0;
+
+    let totalItems = 0;
+
+
+    validCart.forEach((item) => {
+
+      const product =
+        findProduct(item.id);
+
+
+      if (!product) {
+        return;
+      }
+
+
+      const quantity =
+        Number(item.quantity || 1);
+
+
+      const price =
+        Number(product.price || 0);
+
+
+      subtotal +=
+        price * quantity;
+
+
+      totalItems +=
+        quantity;
+
+    });
+
+
+    /* =========================
+       ITEM COUNT
+    ========================= */
+
+    if (itemCountElement) {
+
+      itemCountElement.textContent =
+        `${totalItems} ${
+          totalItems === 1
+            ? "ITEM"
+            : "ITEMS"
+        }`;
+
+    }
+
+
+    /* =========================
+       SUMMARY
+    ========================= */
+
+    if (subtotalElement) {
+
+      subtotalElement.textContent =
+        formatPrice(subtotal);
+
+    }
+
+
+    if (totalElement) {
+
+      totalElement.textContent =
+        formatPrice(subtotal);
+
+    }
+
+
+    /* =========================
+       PRODUCT HTML
+    ========================= */
+
+    cartProducts.innerHTML =
+      validCart
+        .map((item, index) => {
+
+          const product =
+            findProduct(item.id);
+
+
+          if (!product) {
+            return "";
+          }
+
+
+          const quantity =
+            Number(item.quantity || 1);
+
+
+          const price =
+            Number(product.price || 0);
+
+
+          const itemTotal =
+            price * quantity;
+
+
+          const productUrl =
+            getProductUrl(product.id);
+
+
+          return `
+
+            <article
+              class="sra-product-row"
+            >
+
+              <!-- IMAGE -->
+
+              <a
+                href="${productUrl}"
+                class="sra-product-image"
+                aria-label="View ${product.name}"
+              >
+
+                <img
+                  src="${product.image}"
+                  alt="${product.name}"
+                />
+
+              </a>
+
+
+              <!-- DETAILS -->
+
+              <div
+                class="sra-product-details"
+              >
+
+                <!-- HEADING -->
+
+                <div
+                  class="sra-product-heading"
+                >
+
+                  <div>
+
+                    <span
+                      class="sra-product-label"
+                    >
+                      SRA COLLECTION
+                    </span>
+
+                    <a
+                      href="${productUrl}"
+                      class="sra-product-name"
+                    >
+                      ${product.name}
+                    </a>
+
+                  </div>
+
+
+                  <strong
+                    class="sra-product-price"
+                  >
+                    ${formatPrice(itemTotal)}
+                  </strong>
+
+                </div>
+
+
+                <!-- OPTIONS -->
+
+                <div
+                  class="sra-product-options"
+                >
+
+                  <!-- SIZE -->
+
+                  <div
+                    class="sra-option"
+                  >
+
+                    <span>
+                      SIZE
+                    </span>
+
+                    <strong>
+                      ${item.size || "—"}
+                    </strong>
+
+                  </div>
+
+
+                  <!-- QUANTITY -->
+
+                  <div
+                    class="sra-option"
+                  >
+
+                    <span>
+                      QUANTITY
+                    </span>
+
+                    <div
+                      class="sra-quantity"
+                    >
+
+                      <button
+                        type="button"
+                        class="decrease"
+                        data-index="${index}"
+                      >
+                        −
+                      </button>
+
+                      <strong>
+                        ${quantity}
+                      </strong>
+
+                      <button
+                        type="button"
+                        class="increase"
+                        data-index="${index}"
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <!-- FOOTER -->
+
+                <div
+                  class="sra-product-footer"
+                >
+
+                  <span>
+                    IN STOCK
+                  </span>
+
+                  <button
+                    type="button"
+                    class="remove-button"
+                    data-index="${index}"
+                  >
+                    REMOVE
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          `;
+
+        })
+        .join("");
+
+
+    attachEvents();
+
+    updateCartCount();
+
+  }
+
+
+  /* =====================================================
+     ATTACH EVENTS
+  ===================================================== */
+
+  function attachEvents() {
+
+
+    /* =========================
+       INCREASE
+    ========================= */
+
+    document
+      .querySelectorAll(".increase")
+      .forEach((button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const index =
+              Number(
+                button.dataset.index
+              );
+
+
+            const cart =
+              getCart();
+
+
+            if (!cart[index]) {
+              return;
+            }
+
+
+            cart[index].quantity =
+              Number(
+                cart[index].quantity || 1
+              ) + 1;
+
+
+            saveCart(cart);
+
+            renderCart();
+
+          }
+        );
+
+      });
+
+
+    /* =========================
+       DECREASE
+    ========================= */
+
+    document
+      .querySelectorAll(".decrease")
+      .forEach((button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const index =
+              Number(
+                button.dataset.index
+              );
+
+
+            const cart =
+              getCart();
+
+
+            if (!cart[index]) {
+              return;
+            }
+
+
+            const quantity =
+              Number(
+                cart[index].quantity || 1
+              );
+
+
+            if (quantity > 1) {
+
+              cart[index].quantity =
+                quantity - 1;
+
+            } else {
+
+              cart.splice(
+                index,
+                1
+              );
+
+            }
+
+
+            saveCart(cart);
+
+            renderCart();
+
+          }
+        );
+
+      });
+
+
+    /* =========================
+       REMOVE
+    ========================= */
+
+    document
+      .querySelectorAll(".remove-button")
+      .forEach((button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const index =
+              Number(
+                button.dataset.index
+              );
+
+
+            const cart =
+              getCart();
+
+
+            if (!cart[index]) {
+              return;
+            }
+
+
+            cart.splice(
+              index,
+              1
+            );
+
+
+            saveCart(cart);
+
+            renderCart();
+
+          }
+        );
+
+      });
+
+  }
+
+
+  /* =====================================================
+     CHECKOUT
+  ===================================================== */
+
+  checkoutButton?.addEventListener(
+    "click",
+    async () => {
+
+      const cart =
+        getCart();
+
+
+      /* EMPTY */
+
+      if (!cart.length) {
+
+        alert(
+          "Your bag is empty."
+        );
+
+        return;
+
+      }
+
+
+      /* =========================
+         SUPABASE SESSION
+      ========================= */
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/check-session"
+          );
+
+
+        /*
+          If API exists, use it.
+          Otherwise fallback to local
+          login state.
+        */
+
+        if (response.ok) {
+
+          const result =
+            await response.json();
+
+
+          if (result?.loggedIn) {
+
+            window.location.href =
+              "/checkout";
+
+            return;
+
+          }
+
+        }
+
+      } catch (error) {
+
+        console.log(
+          "Session API unavailable, using local session."
+        );
+
+      }
+
+
+      /* =========================
+         CHECK LOCAL USER
+      ========================= */
+
+      let localUser = null;
+
+
+      try {
+
+        const savedUser =
+          localStorage.getItem(
+            "sra-user"
+          );
+
+
+        if (savedUser) {
+
+          localUser =
+            JSON.parse(
+              savedUser
+            );
+
+        }
+
+      } catch {
+
+        localUser = null;
+
+      }
+
+
+      /* =========================
+         ALREADY LOGGED IN
+      ========================= */
+
+      if (localUser) {
+
+        window.location.href =
+          "/checkout";
+
+        return;
+
+      }
+
+
+      /* =========================
+         NOT LOGGED IN
+      ========================= */
+
+      sessionStorage.setItem(
+        "sra-checkout-after-login",
+        "true"
+      );
+
+
+      window.location.href =
+        "/login";
+
+    }
+  );
+
+
+  /* =====================================================
+     INITIAL LOAD
+  ===================================================== */
+
+  updateCartCount();
+
+  renderCart();
+
+
+  /* =====================================================
+     SAME TAB CART UPDATE
+  ===================================================== */
+
+  window.addEventListener(
+    "cartUpdated",
+    () => {
+
+      updateCartCount();
+
+      renderCart();
+
+    }
+  );
+
+
+  /* =====================================================
+     OTHER TAB UPDATE
+  ===================================================== */
+
+  window.addEventListener(
+    "storage",
+    (event) => {
+
+      if (
+        event.key === "sra-cart"
+      ) {
+
+        updateCartCount();
+
+        renderCart();
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     PAGE FOCUS
+  ===================================================== */
+
+  window.addEventListener(
+    "focus",
+    () => {
+
+      updateCartCount();
+
+      renderCart();
+
+    }
+  );
+
+
+  /* =====================================================
+     PAGE VISIBILITY
+  ===================================================== */
+
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+
+        updateCartCount();
+
+        renderCart();
+
+      }
+
+    }
+  );
+
+</script>
+
+
+<style>
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+
+  :global(body) {
+    margin: 0;
+
+    background: #f7f6f3;
+
+    color: #171717;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+
+  /* =========================================
+     PAGE
+  ========================================= */
+
+  :global(.sra-cart-page) {
+
+    width: 100%;
+
+    padding:
+      55px 60px 100px;
+  }
+
+
+  :global(.sra-cart-container) {
+
+    width: 100%;
+
+    max-width: 1280px;
+
+    margin: 0 auto;
+  }
+
+
+  /* =========================================
+     HEADER
+  ========================================= */
+
+  :global(.sra-cart-header) {
+
+    display: flex;
+
+    justify-content:
+      space-between;
+
+    align-items:
+      flex-end;
+
+    padding-bottom:
+      28px;
+
+    border-bottom:
+      1px solid #dedbd5;
+  }
+
+
+  :global(.sra-overline) {
+
+    display: block;
+
+    margin-bottom:
+      10px;
+
+    color: #947b5b;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+  }
+
+
+  :global(.sra-cart-header h1) {
+
+    margin: 0;
+
+    color: #171717;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 45px;
+
+    font-weight: 400;
+  }
+
+
+  :global(.sra-cart-header p) {
+
+    margin:
+      10px 0 0;
+
+    color: #77736d;
+
+    font-size: 12px;
+  }
+
+
+  :global(.sra-item-count) {
+
+    color: #77736d;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  /* =========================================
+     CONTENT
+  ========================================= */
+
+  :global(.sra-cart-content) {
+
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      320px;
+
+    gap: 55px;
+
+    align-items:
+      start;
+
+    margin-top: 38px;
+  }
+
+
+  :global(.sra-products) {
+    width: 100%;
+  }
+
+
+  /* =========================================
+     PRODUCT ROW
+  ========================================= */
+
+  :global(.sra-product-row) {
+
+    display: grid !important;
+
+    grid-template-columns:
+      160px
+      minmax(0, 1fr) !important;
+
+    column-gap:
+      26px !important;
+
+    width: 100%;
+
+    min-height:
+      205px;
+
+    padding-bottom:
+      25px;
+
+    margin-bottom:
+      25px;
+
+    border-bottom:
+      1px solid #dedbd5;
+  }
+
+
+  /* =========================================
+     PRODUCT IMAGE
+  ========================================= */
+
+  :global(.sra-product-image) {
+
+    display: block !important;
+
+    width:
+      160px !important;
+
+    height:
+      205px !important;
+
+    overflow: hidden;
+
+    background:
+      #ebe9e4;
+
+    text-decoration:
+      none;
+  }
+
+
+  :global(.sra-product-image img) {
+
+    display: block;
+
+    width:
+      100% !important;
+
+    height:
+      100% !important;
+
+    object-fit:
+      cover;
+
+    transition:
+      transform 0.3s ease;
+  }
+
+
+  :global(.sra-product-image:hover img) {
+
+    transform:
+      scale(1.03);
+  }
+
+
+  /* =========================================
+     DETAILS
+  ========================================= */
+
+  :global(.sra-product-details) {
+
+    display: flex !important;
+
+    flex-direction:
+      column !important;
+
+    width: 100%;
+
+    min-width: 0;
+
+    min-height:
+      205px;
+  }
+
+
+  /* =========================================
+     PRODUCT HEADING
+  ========================================= */
+
+  :global(.sra-product-heading) {
+
+    display: flex !important;
+
+    justify-content:
+      space-between !important;
+
+    align-items:
+      flex-start !important;
+
+    gap: 25px;
+
+    width: 100%;
+  }
+
+
+  :global(.sra-product-label) {
+
+    display: block;
+
+    margin-bottom:
+      8px;
+
+    color: #947b5b;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing:
+      1.5px;
+  }
+
+
+  /* =========================================
+     PRODUCT NAME
+  ========================================= */
+
+  :global(.sra-product-name) {
+
+    display: inline-block;
+
+    margin: 0;
+
+    color: #171717;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 23px;
+
+    font-weight: 400;
+
+    line-height: 1.2;
+
+    text-decoration: none;
+
+    transition:
+      color 0.2s ease;
+  }
+
+
+  :global(.sra-product-name:hover) {
+
+    color: #947b5b;
+  }
+
+
+  /* =========================================
+     PRICE
+  ========================================= */
+
+  :global(.sra-product-price) {
+
+    flex-shrink: 0;
+
+    color: #171717;
+
+    font-size: 14px;
+
+    white-space: nowrap;
+  }
+
+
+  /* =========================================
+     OPTIONS
+  ========================================= */
+
+  :global(.sra-product-options) {
+
+    display: flex !important;
+
+    align-items:
+      flex-end !important;
+
+    gap: 45px;
+
+    margin-top: auto;
+
+    padding-top: 20px;
+  }
+
+
+  :global(.sra-option) {
+
+    display: flex !important;
+
+    flex-direction:
+      column !important;
+
+    gap: 7px;
+  }
+
+
+  :global(.sra-option > span) {
+
+    color: #88847d;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing:
+      1.2px;
+  }
+
+
+  :global(.sra-option > strong) {
+
+    color: #171717;
+
+    font-size: 12px;
+  }
+
+
+  /* =========================================
+     QUANTITY
+  ========================================= */
+
+  :global(.sra-quantity) {
+
+    display: flex !important;
+
+    align-items:
+      center;
+
+    width:
+      96px;
+
+    height:
+      33px;
+
+    border:
+      1px solid #d4d0c9;
+
+    background:
+      #ffffff;
+  }
+
+
+  :global(.sra-quantity button) {
+
+    width:
+      30px;
+
+    height:
+      31px;
+
+    padding: 0;
+
+    border: 0;
+
+    background:
+      transparent;
+
+    color:
+      #171717;
+
+    font-size:
+      15px;
+
+    cursor:
+      pointer;
+  }
+
+
+  :global(.sra-quantity strong) {
+
+    flex:
+      1;
+
+    text-align:
+      center;
+
+    color:
+      #171717;
+
+    font-size:
+      11px;
+  }
+
+
+  /* =========================================
+     FOOTER
+  ========================================= */
+
+  :global(.sra-product-footer) {
+
+    display: flex !important;
+
+    justify-content:
+      space-between !important;
+
+    align-items:
+      center !important;
+
+    margin-top:
+      17px;
+
+    padding-top:
+      12px;
+
+    border-top:
+      1px solid #eeeae4;
+  }
+
+
+  :global(.sra-product-footer > span) {
+
+    color:
+      #507258;
+
+    font-size:
+      8px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1px;
+  }
+
+
+  :global(.remove-button) {
+
+    padding:
+      3px 0;
+
+    border:
+      0;
+
+    background:
+      transparent;
+
+    color:
+      #77736d;
+
+    font-size:
+      8px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1px;
+
+    text-decoration:
+      underline;
+
+    cursor:
+      pointer;
+  }
+
+
+  /* =========================================
+     SUMMARY
+  ========================================= */
+
+  :global(.sra-summary) {
+
+    position:
+      sticky;
+
+    top:
+      100px;
+
+    width:
+      100%;
+  }
+
+
+  :global(.sra-summary-box) {
+
+    width:
+      100%;
+
+    padding:
+      27px;
+
+    background:
+      #ffffff;
+
+    border:
+      1px solid #dedbd5;
+  }
+
+
+  :global(.sra-summary-title) {
+
+    display:
+      block;
+
+    margin-bottom:
+      24px;
+
+    color:
+      #947b5b;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1.7px;
+  }
+
+
+  :global(.sra-summary-line) {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    align-items:
+      center;
+
+    margin-bottom:
+      16px;
+
+    color:
+      #77736d;
+
+    font-size:
+      11px;
+  }
+
+
+  :global(.sra-summary-line strong) {
+
+    color:
+      #171717;
+  }
+
+
+  :global(.sra-free) {
+
+    color:
+      #507258;
+
+    font-size:
+      10px;
+
+    font-weight:
+      600;
+  }
+
+
+  :global(.sra-line) {
+
+    width:
+      100%;
+
+    height:
+      1px;
+
+    margin:
+      22px 0;
+
+    background:
+      #dedbd5;
+  }
+
+
+  :global(.sra-total) {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    align-items:
+      center;
+
+    margin-bottom:
+      22px;
+  }
+
+
+  :global(.sra-total span) {
+
+    color:
+      #171717;
+
+    font-size:
+      12px;
+
+    font-weight:
+      700;
+  }
+
+
+  :global(.sra-total strong) {
+
+    color:
+      #171717;
+
+    font-size:
+      19px;
+  }
+
+
+  /* =========================================
+     CHECKOUT
+  ========================================= */
+
+  :global(.sra-checkout) {
+
+    width:
+      100%;
+
+    height:
+      50px;
+
+    border:
+      0;
+
+    background:
+      #171717;
+
+    color:
+      #ffffff;
+
+    font-size:
+      9px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1.3px;
+
+    cursor:
+      pointer;
+
+    transition:
+      0.25s ease;
+  }
+
+
+  :global(.sra-checkout:hover) {
+
+    background:
+      #947b5b;
+  }
+
+
+  :global(.sra-continue) {
+
+    display:
+      block;
+
+    margin-top:
+      17px;
+
+    color:
+      #77736d;
+
+    text-align:
+      center;
+
+    text-decoration:
+      none;
+
+    font-size:
+      8px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1px;
+  }
+
+
+  /* =========================================
+     EMPTY
+  ========================================= */
+
+  :global(.sra-empty) {
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    min-height:
+      400px;
+
+    background:
+      #ffffff;
+
+    border:
+      1px solid #dedbd5;
+
+    text-align:
+      center;
+  }
+
+
+  :global(.sra-empty-icon) {
+
+    margin-bottom:
+      15px;
+
+    color:
+      #947b5b;
+
+    font-size:
+      25px;
+  }
+
+
+  :global(.sra-empty h2) {
+
+    margin:
+      0 0 10px;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      28px;
+
+    font-weight:
+      400;
+  }
+
+
+  :global(.sra-empty p) {
+
+    color:
+      #77736d;
+
+    font-size:
+      11px;
+  }
+
+
+  :global(.sra-shop) {
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    height:
+      44px;
+
+    padding:
+      0 24px;
+
+    background:
+      #171717;
+
+    color:
+      #ffffff;
+
+    text-decoration:
+      none;
+
+    font-size:
+      8px;
+
+    font-weight:
+      700;
+
+    letter-spacing:
+      1px;
+  }
+
+
+  /* =========================================
+     LOADING
+  ========================================= */
+
+  :global(.sra-loading) {
+
+    padding:
+      80px 20px;
+
+    color:
+      #88847d;
+
+    text-align:
+      center;
+
+    font-size:
+      11px;
+  }
+
+
+  /* =========================================
+     MOBILE
+  ========================================= */
+
+  @media (max-width: 768px) {
+
+    :global(.sra-cart-page) {
+
+      padding:
+        30px 16px 70px;
+    }
+
+
+    :global(.sra-cart-header) {
+
+      align-items:
+        flex-start;
+
+      gap:
+        12px;
+
+      padding-bottom:
+        22px;
+    }
+
+
+    :global(.sra-cart-header h1) {
+
+      font-size:
+        32px;
+    }
+
+
+    :global(.sra-cart-header p) {
+
+      font-size:
+        11px;
+
+      line-height:
+        1.5;
+    }
+
+
+    :global(.sra-cart-content) {
+
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      gap:
+        30px;
+
+      margin-top:
+        28px;
+    }
+
+
+    :global(.sra-product-row) {
+
+      grid-template-columns:
+        105px
+        minmax(0, 1fr) !important;
+
+      column-gap:
+        15px !important;
+
+      min-height:
+        140px;
+    }
+
+
+    :global(.sra-product-image) {
+
+      width:
+        105px !important;
+
+      height:
+        140px !important;
+    }
+
+
+    :global(.sra-product-details) {
+
+      min-height:
+        140px;
+    }
+
+
+    :global(.sra-product-name) {
+
+      font-size:
+        16px;
+    }
+
+
+    :global(.sra-product-price) {
+
+      font-size:
+        10px;
+    }
+
+
+    :global(.sra-product-options) {
+
+      gap:
+        18px;
+    }
+
+
+    :global(.sra-quantity) {
+
+      width:
+        82px;
+
+      height:
+        30px;
+    }
+
+
+    :global(.sra-summary) {
+
+      position:
+        static;
+    }
+
+
+    :global(.sra-summary-box) {
+
+      padding:
+        22px 18px;
+    }
+
+  }
+
+
+  /* =========================================
+     SMALL PHONE
+  ========================================= */
+
+  @media (max-width: 420px) {
+
+    :global(.sra-cart-page) {
+
+      padding:
+        25px 12px 55px;
+    }
+
+
+    :global(.sra-cart-header h1) {
+
+      font-size:
+        29px;
+    }
+
+
+    :global(.sra-product-row) {
+
+      grid-template-columns:
+        90px
+        minmax(0, 1fr) !important;
+
+      column-gap:
+        12px !important;
+
+      min-height:
+        125px;
+    }
+
+
+    :global(.sra-product-image) {
+
+      width:
+        90px !important;
+
+      height:
+        125px !important;
+    }
+
+
+    :global(.sra-product-details) {
+
+      min-height:
+        125px;
+    }
+
+
+    :global(.sra-product-name) {
+
+      font-size:
+        14px;
+    }
+
+
+    :global(.sra-product-price) {
+
+      font-size:
+        9px;
+    }
+
+
+    :global(.sra-product-options) {
+
+      gap:
+        12px;
+
+      padding-top:
+        8px;
+    }
+
+
+    :global(.sra-quantity) {
+
+      width:
+        74px;
+
+      height:
+        28px;
+    }
+
+  }
+
+</style>

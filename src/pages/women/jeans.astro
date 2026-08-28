@@ -1,0 +1,1718 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { jeans } from "../../data/jeans.js";
+---
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Jeans | SRA</title>
+</head>
+
+<body>
+
+  <Header />
+
+  <main class="jeans-page">
+
+    <!-- INTRO -->
+
+    <section class="page-intro">
+
+      <div>
+
+        <span class="eyebrow">
+          SRA WOMEN / JEANS
+        </span>
+
+        <h1>
+          Jeans
+        </h1>
+
+      </div>
+
+      <p>
+        Discover refined denim essentials,
+        timeless silhouettes and elevated
+        everyday styles designed for modern living.
+      </p>
+
+    </section>
+
+
+    <!-- FILTER BAR -->
+
+    <section class="filter-bar">
+
+      <span
+        class="result-count"
+        id="resultCount"
+      >
+        {jeans.length} PRODUCTS
+      </span>
+
+      <div class="filter-links">
+
+        <button
+          type="button"
+          id="filterButton"
+        >
+          FILTER
+          <span id="filterIcon">+</span>
+        </button>
+
+        <button
+          type="button"
+          id="sortButton"
+        >
+          SORT
+          <span>↓</span>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- FILTER PANEL -->
+
+    <div
+      class="filter-panel"
+      id="filterPanel"
+    >
+
+      <div class="filter-content">
+
+        <div class="filter-group">
+
+          <span>SIZE</span>
+
+          <div class="filter-sizes">
+
+            <button data-filter-size="XS">
+              XS
+            </button>
+
+            <button data-filter-size="S">
+              S
+            </button>
+
+            <button data-filter-size="M">
+              M
+            </button>
+
+            <button data-filter-size="L">
+              L
+            </button>
+
+            <button data-filter-size="XL">
+              XL
+            </button>
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          id="clearFilter"
+          class="clear-filter"
+        >
+          CLEAR FILTER
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- SORT PANEL -->
+
+    <div
+      class="sort-panel"
+      id="sortPanel"
+    >
+
+      <button data-sort="default">
+        Recommended
+      </button>
+
+      <button data-sort="low">
+        Price: Low to High
+      </button>
+
+      <button data-sort="high">
+        Price: High to Low
+      </button>
+
+      <button data-sort="name">
+        Name: A to Z
+      </button>
+
+    </div>
+
+
+    <!-- PRODUCT GRID -->
+
+    <section
+      class="product-grid"
+      id="productGrid"
+    >
+
+      {
+        jeans.map((product) => (
+
+          <article
+            class="product-card"
+            data-product-id={product.id}
+            data-price={product.price}
+            data-name={product.name}
+            data-sizes={product.sizes.join(",")}
+          >
+
+            <!-- IMAGE -->
+
+            <a
+              href={`/women/product/${product.id}`}
+              class="product-image"
+            >
+
+              <img
+                src={product.image}
+                alt={product.name}
+                loading="lazy"
+              />
+
+            </a>
+
+
+            <!-- FAVOURITE -->
+
+            <button
+              class="wishlist"
+              type="button"
+              aria-label={`Add ${product.name} to favourites`}
+              data-wishlist={product.id}
+            >
+              ♡
+            </button>
+
+
+            <!-- PRODUCT INFO -->
+
+            <div class="product-info">
+
+              <div class="product-name">
+
+                <h2>
+                  {product.name}
+                </h2>
+
+                <p>
+                  Women's Collection
+                </p>
+
+              </div>
+
+              <strong>
+                ₹{product.price.toLocaleString("en-IN")}
+              </strong>
+
+            </div>
+
+
+            <!-- SIZES -->
+
+            <div class="size-section">
+
+              <span class="size-label">
+                AVAILABLE SIZES
+              </span>
+
+              <div class="sizes">
+
+                {
+                  product.sizes.map((size) => (
+
+                    <button
+                      type="button"
+                      class="size"
+                      data-size={size}
+                    >
+                      {size}
+                    </button>
+
+                  ))
+                }
+
+              </div>
+
+            </div>
+
+
+            <!-- ADD TO CART -->
+
+            <button
+              type="button"
+              class="add-cart"
+              data-cart={product.id}
+            >
+              ADD TO CART
+            </button>
+
+          </article>
+
+        ))
+      }
+
+    </section>
+
+
+    <!-- NO PRODUCTS -->
+
+    <div
+      class="no-products"
+      id="noProducts"
+    >
+      No products found.
+    </div>
+
+
+    <!-- BOTTOM -->
+
+    <section class="collection-bottom">
+
+      <span>SRA WOMEN</span>
+
+      <h2>
+        Denim,<br />
+        redefined.
+      </h2>
+
+      <p>
+        Timeless denim designed to become
+        the pieces you reach for every day.
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <Footer />
+
+
+  <script>
+
+    /* =========================
+       SIZE SELECTION
+    ========================= */
+
+    document
+      .querySelectorAll(".product-card")
+      .forEach((card) => {
+
+        const sizes =
+          card.querySelectorAll(".size");
+
+        sizes.forEach((size) => {
+
+          size.addEventListener("click", () => {
+
+            sizes.forEach((item) => {
+              item.classList.remove("selected");
+            });
+
+            size.classList.add("selected");
+
+          });
+
+        });
+
+      });
+
+
+    /* =========================
+       FAVOURITES
+    ========================= */
+
+    let favourites =
+      JSON.parse(
+        localStorage.getItem("sra-favourites") || "[]"
+      );
+
+
+    document
+      .querySelectorAll("[data-wishlist]")
+      .forEach((button) => {
+
+        const productId =
+          button.dataset.wishlist;
+
+
+        if (favourites.includes(productId)) {
+
+          button.classList.add("active");
+          button.textContent = "♥";
+
+        }
+
+
+        button.addEventListener("click", () => {
+
+          if (favourites.includes(productId)) {
+
+            favourites =
+              favourites.filter(
+                (id) => id !== productId
+              );
+
+            button.classList.remove("active");
+            button.textContent = "♡";
+
+          } else {
+
+            favourites.push(productId);
+
+            button.classList.add("active");
+            button.textContent = "♥";
+
+          }
+
+
+          localStorage.setItem(
+            "sra-favourites",
+            JSON.stringify(favourites)
+          );
+
+        });
+
+      });
+
+
+    /* =========================
+       ADD TO CART
+    ========================= */
+
+    document
+      .querySelectorAll("[data-cart]")
+      .forEach((button) => {
+
+        button.addEventListener("click", () => {
+
+          const card =
+            button.closest(".product-card");
+
+          const productId =
+            button.dataset.cart;
+
+          const selectedSize =
+            card.querySelector(".size.selected");
+
+
+          if (!selectedSize) {
+
+            alert("Please select a size first.");
+
+            return;
+
+          }
+
+
+          let cart =
+            JSON.parse(
+              localStorage.getItem("sra-cart") || "[]"
+            );
+
+
+          const size =
+            selectedSize.dataset.size;
+
+
+          const existing =
+            cart.find(
+              (item) =>
+                item.id === productId &&
+                item.size === size
+            );
+
+
+          if (existing) {
+
+            existing.quantity += 1;
+
+          } else {
+
+            cart.push({
+              id: productId,
+              size: size,
+              quantity: 1
+            });
+
+          }
+
+
+          localStorage.setItem(
+            "sra-cart",
+            JSON.stringify(cart)
+          );
+
+
+          button.textContent =
+            "ADDED TO CART ✓";
+
+
+          setTimeout(() => {
+
+            button.textContent =
+              "ADD TO CART";
+
+          }, 1500);
+
+        });
+
+      });
+
+
+    /* =========================
+       FILTER
+    ========================= */
+
+    const filterButton =
+      document.querySelector("#filterButton");
+
+    const filterPanel =
+      document.querySelector("#filterPanel");
+
+    const filterIcon =
+      document.querySelector("#filterIcon");
+
+
+    filterButton?.addEventListener("click", () => {
+
+      filterPanel?.classList.toggle("open");
+
+
+      if (
+        filterPanel?.classList.contains("open")
+      ) {
+
+        filterIcon.textContent = "−";
+
+      } else {
+
+        filterIcon.textContent = "+";
+
+      }
+
+    });
+
+
+    let selectedFilterSize = "";
+
+
+    document
+      .querySelectorAll("[data-filter-size]")
+      .forEach((button) => {
+
+        button.addEventListener("click", () => {
+
+          const size =
+            button.dataset.filterSize;
+
+
+          document
+            .querySelectorAll("[data-filter-size]")
+            .forEach((item) => {
+
+              item.classList.remove("active");
+
+            });
+
+
+          button.classList.add("active");
+
+          selectedFilterSize = size;
+
+          applyFilters();
+
+        });
+
+      });
+
+
+    /* =========================
+       CLEAR FILTER
+    ========================= */
+
+    document
+      .querySelector("#clearFilter")
+      ?.addEventListener("click", () => {
+
+        selectedFilterSize = "";
+
+
+        document
+          .querySelectorAll("[data-filter-size]")
+          .forEach((button) => {
+
+            button.classList.remove("active");
+
+          });
+
+
+        applyFilters();
+
+      });
+
+
+    /* =========================
+       SORT
+    ========================= */
+
+    const sortButton =
+      document.querySelector("#sortButton");
+
+    const sortPanel =
+      document.querySelector("#sortPanel");
+
+
+    sortButton?.addEventListener("click", () => {
+
+      sortPanel?.classList.toggle("open");
+
+    });
+
+
+    let currentSort = "default";
+
+
+    document
+      .querySelectorAll("[data-sort]")
+      .forEach((button) => {
+
+        button.addEventListener("click", () => {
+
+          currentSort =
+            button.dataset.sort;
+
+          sortPanel?.classList.remove("open");
+
+          applyFilters();
+
+        });
+
+      });
+
+
+    /* =========================
+       FILTER + SORT
+    ========================= */
+
+    function applyFilters() {
+
+      const grid =
+        document.querySelector("#productGrid");
+
+
+      const cards =
+        Array.from(
+          document.querySelectorAll(".product-card")
+        );
+
+
+      cards.forEach((card) => {
+
+        const sizes =
+          card.dataset.sizes.split(",");
+
+
+        const matches =
+          !selectedFilterSize ||
+          sizes.includes(selectedFilterSize);
+
+
+        card.style.display =
+          matches ? "" : "none";
+
+      });
+
+
+      const visibleCards =
+        cards.filter(
+          (card) =>
+            card.style.display !== "none"
+        );
+
+
+      if (currentSort === "low") {
+
+        visibleCards.sort(
+          (a, b) =>
+            Number(a.dataset.price) -
+            Number(b.dataset.price)
+        );
+
+      }
+
+
+      if (currentSort === "high") {
+
+        visibleCards.sort(
+          (a, b) =>
+            Number(b.dataset.price) -
+            Number(a.dataset.price)
+        );
+
+      }
+
+
+      if (currentSort === "name") {
+
+        visibleCards.sort(
+          (a, b) =>
+            a.dataset.name.localeCompare(
+              b.dataset.name
+            )
+        );
+
+      }
+
+
+      visibleCards.forEach((card) => {
+
+        grid?.appendChild(card);
+
+      });
+
+
+      const resultCount =
+        document.querySelector("#resultCount");
+
+
+      if (resultCount) {
+
+        resultCount.textContent =
+          `${visibleCards.length} PRODUCTS`;
+
+      }
+
+
+      const noProducts =
+        document.querySelector("#noProducts");
+
+
+      if (noProducts) {
+
+        noProducts.classList.toggle(
+          "show",
+          visibleCards.length === 0
+        );
+
+      }
+
+    }
+
+  </script>
+
+</body>
+
+</html>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: #f5f1e8;
+    color: #0b1f3a;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+
+  /* PAGE */
+
+  .jeans-page {
+
+    width: 100%;
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding:
+      80px 42px 100px;
+  }
+
+
+  /* INTRO */
+
+  .page-intro {
+
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+
+    align-items: end;
+
+    gap: 50px;
+
+    padding-bottom: 65px;
+
+    border-bottom:
+      1px solid #ddd7cd;
+  }
+
+
+  .eyebrow {
+
+    display: block;
+
+    margin-bottom: 20px;
+
+    color: #b89b61;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+  }
+
+
+  .page-intro h1 {
+
+    margin: 0;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 72px;
+
+    font-weight: 400;
+
+    line-height: .98;
+
+    letter-spacing: -3px;
+  }
+
+
+  .page-intro > p {
+
+    max-width: 390px;
+
+    margin:
+      0 0 5px auto;
+
+    color: #777269;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+  }
+
+
+  /* FILTER BAR */
+
+  .filter-bar {
+
+    height: 70px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom:
+      1px solid #ddd7cd;
+  }
+
+
+  .result-count {
+
+    color: #777269;
+
+    font-size: 9px;
+
+    letter-spacing: 1.3px;
+
+    font-weight: 600;
+  }
+
+
+  .filter-links {
+
+    display: flex;
+
+    gap: 28px;
+  }
+
+
+  .filter-links button {
+
+    border: 0;
+
+    background: transparent;
+
+    color: #0b1f3a;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+  }
+
+
+  .filter-links button span {
+
+    margin-left: 7px;
+
+    color: #b89b61;
+
+    font-size: 13px;
+  }
+
+
+  /* FILTER PANEL */
+
+  .filter-panel {
+
+    display: grid;
+
+    grid-template-rows: 0fr;
+
+    overflow: hidden;
+
+    transition:
+      grid-template-rows .3s ease;
+
+    border-bottom:
+      0 solid #ddd7cd;
+  }
+
+
+  .filter-panel.open {
+
+    grid-template-rows: 1fr;
+
+    border-bottom:
+      1px solid #ddd7cd;
+  }
+
+
+  .filter-content {
+
+    min-height: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 0 5px;
+
+    overflow: hidden;
+
+    transition:
+      padding .3s ease;
+  }
+
+
+  .filter-panel.open
+  .filter-content {
+
+    padding:
+      25px 5px;
+  }
+
+
+  .filter-group > span {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #8a857c;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+  }
+
+
+  .filter-sizes {
+
+    display: flex;
+
+    gap: 6px;
+  }
+
+
+  .filter-sizes button {
+
+    width: 40px;
+
+    height: 32px;
+
+    border:
+      1px solid #d4cec3;
+
+    background: transparent;
+
+    color: #0b1f3a;
+
+    cursor: pointer;
+
+    font-size: 8px;
+  }
+
+
+  .filter-sizes button:hover,
+  .filter-sizes button.active {
+
+    background: #0b1f3a;
+
+    border-color: #0b1f3a;
+
+    color: #ffffff;
+  }
+
+
+  .clear-filter {
+
+    border: 0;
+
+    background: transparent;
+
+    color: #8a857c;
+
+    cursor: pointer;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+
+    text-decoration: underline;
+  }
+
+
+  /* SORT */
+
+  .sort-panel {
+
+    position: absolute;
+
+    right: 42px;
+
+    z-index: 20;
+
+    display: none;
+
+    flex-direction: column;
+
+    min-width: 190px;
+
+    padding: 8px 0;
+
+    background: #ffffff;
+
+    border:
+      1px solid #ddd7cd;
+
+    box-shadow:
+      0 12px 30px rgba(0,0,0,.08);
+  }
+
+
+  .sort-panel.open {
+
+    display: flex;
+  }
+
+
+  .sort-panel button {
+
+    padding:
+      12px 18px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #0b1f3a;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    letter-spacing: .5px;
+  }
+
+
+  .sort-panel button:hover {
+
+    background: #f5f1e8;
+  }
+
+
+  /* PRODUCT GRID */
+
+  .product-grid {
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(4, 1fr);
+
+    gap:
+      32px 16px;
+
+    padding-top: 35px;
+  }
+
+
+  .product-card {
+
+    position: relative;
+
+    min-width: 0;
+  }
+
+
+  /* IMAGE */
+
+  .product-image {
+
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+
+    height: 430px;
+
+    overflow: hidden;
+
+    background: #e9e3d9;
+  }
+
+
+  .product-image img {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+      transform .6s ease;
+  }
+
+
+  .product-card:hover
+  .product-image img {
+
+    transform:
+      scale(1.035);
+  }
+
+
+  /* WISHLIST */
+
+  .wishlist {
+
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    width: 34px;
+    height: 34px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+      rgba(255,255,255,.94);
+
+    color: #0b1f3a;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    z-index: 5;
+  }
+
+
+  .wishlist.active {
+
+    color: #9f3040;
+  }
+
+
+  /* INFO */
+
+  .product-info {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding:
+      15px 2px 0;
+  }
+
+
+  .product-info h2 {
+
+    margin:
+      0 0 6px;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 17px;
+
+    font-weight: 400;
+
+    line-height: 1.15;
+  }
+
+
+  .product-info p {
+
+    margin: 0;
+
+    color: #8a857c;
+
+    font-size: 9px;
+  }
+
+
+  .product-info strong {
+
+    flex-shrink: 0;
+
+    font-size: 11px;
+
+    font-weight: 600;
+  }
+
+
+  /* SIZES */
+
+  .size-section {
+
+    margin-top: 15px;
+  }
+
+
+  .size-label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #8a857c;
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+  }
+
+
+  .sizes {
+
+    display: flex;
+
+    gap: 5px;
+  }
+
+
+  .size {
+
+    width: 30px;
+    height: 27px;
+
+    padding: 0;
+
+    border:
+      1px solid #d7d1c7;
+
+    background: transparent;
+
+    color: #0b1f3a;
+
+    cursor: pointer;
+
+    font-size: 8px;
+  }
+
+
+  .size:hover,
+  .size.selected {
+
+    border-color: #0b1f3a;
+
+    background: #0b1f3a;
+
+    color: #ffffff;
+  }
+
+
+  /* CART */
+
+  .add-cart {
+
+    width: 100%;
+
+    height: 43px;
+
+    margin-top: 14px;
+
+    border:
+      1px solid #0b1f3a;
+
+    background: #0b1f3a;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+
+    transition:
+      background .25s ease,
+      color .25s ease;
+  }
+
+
+  .add-cart:hover {
+
+    background: transparent;
+
+    color: #0b1f3a;
+  }
+
+
+  /* NO PRODUCTS */
+
+  .no-products {
+
+    display: none;
+
+    padding:
+      70px 20px;
+
+    color: #777269;
+
+    text-align: center;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 22px;
+  }
+
+
+  .no-products.show {
+
+    display: block;
+  }
+
+
+  /* BOTTOM */
+
+  .collection-bottom {
+
+    padding:
+      130px 20px 20px;
+
+    text-align: center;
+  }
+
+
+  .collection-bottom span {
+
+    color: #b89b61;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+  }
+
+
+  .collection-bottom h2 {
+
+    margin:
+      18px 0 15px;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 50px;
+
+    font-weight: 400;
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+  }
+
+
+  .collection-bottom p {
+
+    margin: 0;
+
+    color: #777269;
+
+    font-size: 11px;
+  }
+
+
+  /* TABLET */
+
+  @media (max-width: 1000px) {
+
+    .jeans-page {
+
+      padding:
+        65px 25px 80px;
+    }
+
+
+    .page-intro h1 {
+
+      font-size: 58px;
+    }
+
+
+    .product-grid {
+
+      grid-template-columns:
+        repeat(3, 1fr);
+    }
+
+
+    .product-image {
+
+      height: 390px;
+    }
+
+  }
+
+
+  /* MOBILE */
+
+  @media (max-width: 700px) {
+
+    .jeans-page {
+
+      padding:
+        45px 12px 65px;
+    }
+
+
+    .page-intro {
+
+      display: block;
+
+      padding-bottom: 35px;
+    }
+
+
+    .eyebrow {
+
+      font-size: 8px;
+
+      margin-bottom: 15px;
+    }
+
+
+    .page-intro h1 {
+
+      font-size: 48px;
+
+      letter-spacing: -2px;
+    }
+
+
+    .page-intro > p {
+
+      margin:
+        22px 0 0;
+
+      font-size: 11px;
+
+      line-height: 1.7;
+    }
+
+
+    .filter-bar {
+
+      height: 58px;
+    }
+
+
+    .filter-links {
+
+      gap: 15px;
+    }
+
+
+    .filter-links button {
+
+      font-size: 8px;
+    }
+
+
+    .filter-panel.open
+    .filter-content {
+
+      padding:
+        20px 2px;
+    }
+
+
+    .filter-content {
+
+      align-items: flex-start;
+
+      flex-direction: column;
+
+      gap: 18px;
+    }
+
+
+    .filter-sizes button {
+
+      width: 38px;
+
+      height: 31px;
+    }
+
+
+    .sort-panel {
+
+      right: 12px;
+
+      min-width: 175px;
+    }
+
+
+    .product-grid {
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap:
+        28px 10px;
+
+      padding-top: 22px;
+    }
+
+
+    .product-image {
+
+      height: 270px;
+    }
+
+
+    .wishlist {
+
+      top: 9px;
+      right: 9px;
+
+      width: 29px;
+      height: 29px;
+
+      font-size: 17px;
+    }
+
+
+    .product-info {
+
+      display: block;
+
+      padding:
+        11px 1px 0;
+    }
+
+
+    .product-info h2 {
+
+      font-size: 15px;
+    }
+
+
+    .product-info strong {
+
+      display: block;
+
+      margin-top: 7px;
+    }
+
+
+    .size-section {
+
+      margin-top: 12px;
+    }
+
+
+    .size {
+
+      width: 27px;
+
+      height: 25px;
+
+      font-size: 7px;
+    }
+
+
+    .add-cart {
+
+      height: 39px;
+
+      font-size: 7px;
+    }
+
+
+    .collection-bottom {
+
+      padding:
+        80px 10px 10px;
+    }
+
+
+    .collection-bottom h2 {
+
+      font-size: 37px;
+    }
+
+  }
+
+
+  /* SMALL PHONES */
+
+  @media (max-width: 400px) {
+
+    .jeans-page {
+
+      padding:
+        40px 10px 55px;
+    }
+
+
+    .page-intro h1 {
+
+      font-size: 43px;
+    }
+
+
+    .product-grid {
+
+      gap:
+        22px 8px;
+    }
+
+
+    .product-image {
+
+      height: 235px;
+    }
+
+
+    .product-info h2 {
+
+      font-size: 14px;
+    }
+
+
+    .product-info p {
+
+      font-size: 7px;
+    }
+
+
+    .product-info strong {
+
+      font-size: 9px;
+    }
+
+
+    .size {
+
+      width: 25px;
+
+      height: 24px;
+    }
+
+
+    .add-cart {
+
+      height: 36px;
+
+      font-size: 6.5px;
+    }
+
+  }
+
+</style>

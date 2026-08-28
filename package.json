@@ -12,7 +12,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.2.7"
+    "@sanity/client": "^8.4.0",
+    "@sanity/image-url": "^2.1.1",
+    "@supabase/supabase-js": "^2.112.4",
+    "astro": "^6.1.0",
+    "razorpay": "^2.9.8"
   },
   "allowScripts": {
     "esbuild": true

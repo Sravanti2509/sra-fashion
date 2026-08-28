@@ -1,0 +1,2359 @@
+--- 
+import { supabase } from "../lib/supabase.js";
+import { shirtsTshirts } from "../data/shirts-t-shirts.js";
+import { denim } from "../data/denim.js";
+import { trousers } from "../data/trousers.js";
+import { shorts } from "../data/shorts.js";
+
+import { dresses } from "../data/dresses.js";
+import { jeans } from "../data/jeans.js";
+import { tops } from "../data/tops.js";
+import { sweaters } from "../data/sweaters-cardigans.js";
+
+/* =========================
+   ALL PRODUCTS
+========================= */
+
+const allProducts = [
+  ...shirtsTshirts,
+  ...denim,
+  ...trousers,
+  ...shorts,
+  ...dresses,
+  ...jeans,
+  ...tops,
+  ...sweaters,
+];
+---
+
+<header class="site-header">
+
+  <div class="header-inner">
+
+    <!-- BRAND -->
+
+    <a href="/" class="brand">
+      SRA
+    </a>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="main-nav" aria-label="Main navigation">
+
+      <a href="/">
+        HOME
+      </a>
+
+      <a href="/women">
+        WOMEN
+      </a>
+
+      <a href="/men">
+        MEN
+      </a>
+
+    </nav>
+
+
+    <!-- ACTIONS -->
+
+    <div class="header-actions">
+
+      <!-- SEARCH -->
+
+      <button
+        class="header-icon search-btn"
+        id="searchButton"
+        type="button"
+        aria-label="Search"
+      >
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16L21 21"></path>
+        </svg>
+
+      </button>
+
+
+      <!-- =========================
+           ACCOUNT
+      ========================= -->
+
+      <div class="account-wrapper">
+
+        <button
+          type="button"
+          class="account-button"
+          id="accountButton"
+          aria-label="Account"
+          aria-expanded="false"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+
+            <circle
+              cx="12"
+              cy="8"
+              r="3.5"
+            ></circle>
+
+            <path
+              d="M5.5 20c.8-3.2 3-5 6.5-5s5.7 1.8 6.5 5"
+            ></path>
+
+          </svg>
+
+          <span
+            class="account-name"
+            id="accountName"
+          ></span>
+
+        </button>
+
+
+        <!-- ACCOUNT MENU -->
+
+        <div
+          class="account-menu"
+          id="accountMenu"
+        >
+
+          <div class="account-menu-header">
+
+            <span class="account-menu-label">
+              ACCOUNT
+            </span>
+
+            <strong id="accountMenuName">
+              My Account
+            </strong>
+
+          </div>
+
+
+          <div class="account-menu-divider"></div>
+
+
+          <a
+            href="/account"
+            class="account-menu-link"
+          >
+            MY ACCOUNT
+          </a>
+<a
+  href="/orders"
+  class="account-menu-link"
+>
+  MY ORDERS
+</a>
+
+          <button
+            type="button"
+            class="logout-button"
+            id="logoutButton"
+          >
+            LOG OUT
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           FAVOURITES
+      ========================= -->
+
+      <a
+        href="/favourites"
+        class="header-icon favourites-link"
+        aria-label="Favourites"
+      >
+
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+
+          <path
+            d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0 1 12 6.2a4.8 4.8 0 0 1 8.8 2.6Z"
+          ></path>
+
+        </svg>
+
+
+        <!-- FAVOURITES COUNT -->
+
+        <span
+          class="favourites-count"
+          id="favouritesCount"
+        >
+          0
+        </span>
+
+      </a>
+
+
+      <!-- =========================
+           CART
+      ========================= -->
+
+      <a
+        href="/cart"
+        class="header-icon cart-link"
+        aria-label="Shopping cart"
+      >
+
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+
+          <path d="M4 5h2l1.5 10h9.8L20 8H7"></path>
+
+          <circle
+            cx="9"
+            cy="19"
+            r="1"
+          ></circle>
+
+          <circle
+            cx="17"
+            cy="19"
+            r="1"
+          ></circle>
+
+        </svg>
+
+
+        <span
+          class="cart-count"
+          id="cartCount"
+        >
+          0
+        </span>
+
+      </a>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- =========================
+     SEARCH OVERLAY
+========================= -->
+
+<div
+  class="search-overlay"
+  id="searchOverlay"
+>
+
+  <div class="search-container">
+
+    <div class="search-top">
+
+      <span class="search-label">
+        SEARCH
+      </span>
+
+      <button
+        type="button"
+        id="closeSearch"
+        class="close-search"
+        aria-label="Close search"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- SEARCH INPUT -->
+
+    <div class="search-input-wrap">
+
+      <svg viewBox="0 0 24 24">
+
+        <circle
+          cx="11"
+          cy="11"
+          r="6.5"
+        ></circle>
+
+        <path d="M16 16L21 21"></path>
+
+      </svg>
+
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search products..."
+        autocomplete="off"
+      />
+
+    </div>
+
+
+    <!-- SEARCH RESULTS -->
+
+    <div
+      class="search-results"
+      id="searchResults"
+    >
+
+      <p class="search-hint">
+        Search shirts, dresses, denim, tops, jeans...
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.site-header {
+  width: 100%;
+  height: 76px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e8e5de;
+
+  display: flex;
+  align-items: center;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 1000;
+}
+
+
+.header-inner {
+  width: 100%;
+  max-width: 1500px;
+
+  margin: 0 auto;
+  padding: 0 42px;
+
+  display: grid;
+
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items: center;
+}
+
+
+/* =====================================================
+   BRAND
+===================================================== */
+
+.brand {
+  justify-self: start;
+
+  color: #0b1f3a;
+
+  text-decoration: none;
+
+  /*
+    Premium serif logo
+  */
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 31px;
+
+  font-weight: 700;
+
+  letter-spacing: 3px;
+
+  line-height: 1;
+
+  transition:
+    color .25s ease,
+    transform .25s ease;
+}
+
+
+.brand:hover {
+  color: #b08c4d;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.main-nav {
+  display: flex;
+
+  align-items: center;
+
+  gap: 42px;
+}
+
+
+.main-nav a {
+  position: relative;
+
+  color: #0b1f3a;
+
+  text-decoration: none;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: 1.2px;
+
+  padding: 8px 0;
+
+  transition:
+    color .25s ease;
+}
+
+
+.main-nav a::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  bottom: 2px;
+
+  width: 0;
+
+  height: 1px;
+
+  background: #b08c4d;
+
+  transition:
+    width .25s ease;
+}
+
+
+.main-nav a:hover {
+  color: #b08c4d;
+}
+
+
+.main-nav a:hover::after {
+  width: 100%;
+}
+
+
+/* =====================================================
+   HEADER ACTIONS
+===================================================== */
+
+.header-actions {
+  justify-self: end;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+
+.header-icon {
+  position: relative;
+
+  width: 25px;
+  height: 25px;
+
+  padding: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #0b1f3a;
+
+  text-decoration: none;
+
+  background: transparent;
+
+  border: 0;
+
+  cursor: pointer;
+
+  transition:
+    color .2s ease,
+    transform .2s ease;
+}
+
+
+.header-icon:hover {
+  color: #b08c4d;
+
+  transform: translateY(-1px);
+}
+
+
+.header-icon svg {
+  width: 20px;
+  height: 20px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+
+/* =====================================================
+   ACCOUNT
+===================================================== */
+
+.account-wrapper {
+  position: relative;
+}
+
+
+.account-button {
+  position: relative;
+
+  min-width: 25px;
+  height: 25px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #0b1f3a;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  cursor: pointer;
+
+  transition:
+    color .2s ease,
+    transform .2s ease;
+}
+
+
+.account-button svg {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+
+.account-button:hover {
+  color: #b08c4d;
+
+  transform: translateY(-1px);
+}
+
+
+.account-name {
+  display: none;
+
+  max-width: 80px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: .7px;
+}
+
+
+.account-button.logged-in {
+  width: auto;
+}
+
+
+.account-button.logged-in .account-name {
+  display: block;
+}
+
+
+/* =====================================================
+   ACCOUNT MENU
+===================================================== */
+
+.account-menu {
+  position: absolute;
+
+  top: calc(100% + 16px);
+
+  right: -10px;
+
+  width: 220px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e2d9;
+
+  box-shadow:
+    0 14px 40px rgba(11, 31, 58, .12);
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  transform: translateY(-6px);
+
+  transition:
+    opacity .2s ease,
+    visibility .2s ease,
+    transform .2s ease;
+}
+
+
+.account-menu.active {
+  opacity: 1;
+
+  visibility: visible;
+
+  transform: translateY(0);
+}
+
+
+.account-menu-header {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.account-menu-label {
+  color: #b08c4d;
+
+  font-size: 7px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.7px;
+}
+
+
+.account-menu-header strong {
+  color: #0b1f3a;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 400;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+.account-menu-divider {
+  width: 100%;
+
+  height: 1px;
+
+  background: #e8e3da;
+
+  margin: 17px 0;
+}
+
+
+.account-menu-link,
+.logout-button {
+  width: 100%;
+
+  min-height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #0b1f3a;
+
+  text-decoration: none;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+
+  cursor: pointer;
+
+  transition:
+    color .2s ease;
+}
+
+
+.account-menu-link:hover,
+.logout-button:hover {
+  color: #b08c4d;
+}
+
+
+.logout-button {
+  border-top: 1px solid #eeeae3;
+
+  margin-top: 5px;
+
+  padding-top: 10px;
+}
+
+
+/* =====================================================
+   FAVOURITES COUNT
+   SAME COLOR AS CART
+===================================================== */
+
+.favourites-count {
+  position: absolute;
+
+  top: -7px;
+
+  right: -8px;
+
+  min-width: 15px;
+
+  height: 15px;
+
+  padding: 0 4px;
+
+  border-radius: 50px;
+
+  /*
+    SAME NAVY BLUE
+  */
+  background: #0b1f3a;
+
+  color: #ffffff;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  z-index: 5;
+}
+
+
+/* =====================================================
+   CART COUNT
+   SAME COLOR AS FAVOURITES
+===================================================== */
+
+.cart-count {
+  position: absolute;
+
+  top: -7px;
+
+  right: -8px;
+
+  min-width: 15px;
+
+  height: 15px;
+
+  padding: 0 4px;
+
+  border-radius: 50px;
+
+  /*
+    SAME NAVY BLUE
+  */
+  background: #0b1f3a;
+
+  color: #ffffff;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  z-index: 5;
+}
+
+
+/*
+  Force both counts to stay identical
+*/
+
+.favourites-count,
+.cart-count {
+  background: #0b1f3a !important;
+
+  color: #ffffff !important;
+}
+
+
+/* =====================================================
+   SEARCH OVERLAY
+===================================================== */
+
+.search-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(255,255,255,.98);
+
+  z-index: 2000;
+
+  display: none;
+
+  overflow-y: auto;
+}
+
+
+.search-overlay.active {
+  display: block;
+}
+
+
+.search-container {
+  width: 100%;
+
+  max-width: 900px;
+
+  margin: 0 auto;
+
+  padding: 35px 30px 80px;
+}
+
+
+.search-top {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 35px;
+}
+
+
+.search-label {
+  color: #b08c4d;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+
+.close-search {
+  width: 38px;
+
+  height: 38px;
+
+  border: 1px solid #ddd7cd;
+
+  background: transparent;
+
+  color: #0b1f3a;
+
+  font-size: 25px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+
+.close-search:hover {
+  background: #0b1f3a;
+
+  color: #ffffff;
+}
+
+
+.search-input-wrap {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  border-bottom: 1px solid #0b1f3a;
+
+  padding: 15px 0;
+}
+
+
+.search-input-wrap svg {
+  width: 21px;
+
+  height: 21px;
+
+  flex-shrink: 0;
+
+  fill: none;
+
+  stroke: #0b1f3a;
+
+  stroke-width: 1.5;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+
+.search-input-wrap input {
+  width: 100%;
+
+  border: 0;
+
+  outline: 0;
+
+  background: transparent;
+
+  color: #0b1f3a;
+
+  font-size: 20px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+.search-input-wrap input::placeholder {
+  color: #aaa49a;
+}
+
+
+.search-results {
+  margin-top: 30px;
+}
+
+
+.search-hint {
+  color: #8a857c;
+
+  font-size: 11px;
+
+  letter-spacing: .5px;
+}
+
+
+.search-result {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #eeeae3;
+
+  cursor: pointer;
+
+  text-decoration: none;
+
+  color: #0b1f3a;
+}
+
+
+.search-result:hover {
+  background: #faf8f3;
+}
+
+
+.search-result-image {
+  width: 65px;
+
+  height: 80px;
+
+  object-fit: cover;
+
+  background: #eee9df;
+}
+
+
+.search-result-info {
+  flex: 1;
+}
+
+
+.search-result-name {
+  margin: 0 0 6px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 400;
+}
+
+
+.search-result-price {
+  margin: 0;
+
+  color: #777269;
+
+  font-size: 11px;
+}
+
+
+.no-results {
+  padding: 50px 0;
+
+  text-align: center;
+}
+
+
+.no-results-title {
+  margin: 0 0 10px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 28px;
+
+  font-weight: 400;
+
+  color: #0b1f3a;
+}
+
+
+.no-results-text {
+  margin: 0;
+
+  color: #8a857c;
+
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+/* =====================================================
+   MOBILE HEADER FIX
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .site-header {
+    height: 64px;
+  }
+
+  .header-inner {
+    width: 100%;
+    max-width: none;
+    padding: 0 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+  }
+
+  /* BRAND */
+
+  .brand {
+    flex-shrink: 0;
+
+    font-size: 23px;
+    letter-spacing: 2px;
+
+    line-height: 1;
+  }
+
+  /* NAVIGATION */
+
+  .main-nav {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    min-width: 0;
+  }
+
+  .main-nav a {
+    flex-shrink: 0;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: .6px;
+
+    padding: 6px 0;
+
+    white-space: nowrap;
+  }
+
+  /* ACTIONS */
+
+  .header-actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+  }
+
+  .header-icon {
+    width: 20px;
+    height: 20px;
+
+    flex-shrink: 0;
+  }
+
+  .header-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* ACCOUNT */
+
+  .account-button {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0;
+
+    flex-shrink: 0;
+  }
+
+  .account-button svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .account-name {
+    display: none !important;
+  }
+
+  /* COUNTS */
+
+  .favourites-count,
+  .cart-count {
+    top: -6px;
+    right: -6px;
+
+    min-width: 13px;
+    height: 13px;
+
+    padding: 0 3px;
+
+    font-size: 7px;
+
+    background: #0b1f3a !important;
+    color: #ffffff !important;
+  }
+
+  /* ACCOUNT MENU */
+
+  .account-menu {
+    top: calc(100% + 14px);
+    right: -5px;
+
+    width: 190px;
+
+    padding: 17px;
+  }
+
+  .account-menu-header strong {
+    font-size: 16px;
+  }
+
+  /* SEARCH */
+
+  .search-container {
+    padding: 25px 18px 60px;
+  }
+
+  .search-input-wrap input {
+    font-size: 16px;
+  }
+
+  .search-result-image {
+    width: 55px;
+    height: 70px;
+  }
+
+  .search-result-name {
+    font-size: 15px;
+  }
+}
+
+
+/* =====================================================
+   SMALL PHONES
+===================================================== */
+
+@media (max-width: 380px) {
+
+  .header-inner {
+    padding: 0 8px;
+    gap: 5px;
+  }
+
+  .brand {
+    font-size: 20px;
+    letter-spacing: 1.5px;
+  }
+
+  .main-nav {
+    gap: 7px;
+  }
+
+  .main-nav a {
+    font-size: 7px;
+    letter-spacing: .3px;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .account-button {
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
+  }
+
+  .account-button svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .favourites-count,
+  .cart-count {
+    min-width: 12px;
+    height: 12px;
+
+    top: -5px;
+    right: -5px;
+
+    font-size: 6.5px;
+  }
+
+  .account-menu {
+    width: 175px;
+    right: -4px;
+  }
+}
+
+
+
+</style>
+
+
+<script define:vars={{ products: allProducts }}>
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const searchButton =
+    document.querySelector("#searchButton");
+
+  const searchOverlay =
+    document.querySelector("#searchOverlay");
+
+  const closeSearch =
+    document.querySelector("#closeSearch");
+
+  const searchInput =
+    document.querySelector("#searchInput");
+
+  const searchResults =
+    document.querySelector("#searchResults");
+
+
+  const accountButton =
+    document.querySelector("#accountButton");
+
+  const accountMenu =
+    document.querySelector("#accountMenu");
+
+  const accountName =
+    document.querySelector("#accountName");
+
+  const accountMenuName =
+    document.querySelector("#accountMenuName");
+
+  const logoutButton =
+    document.querySelector("#logoutButton");
+
+
+  /* =====================================================
+     GET LOGGED-IN USER
+  ===================================================== */
+
+  function getUser() {
+
+    try {
+
+      const savedUser =
+        localStorage.getItem("sra-user");
+
+      if (!savedUser) {
+        return null;
+      }
+
+      const user =
+        JSON.parse(savedUser);
+
+      if (
+        !user ||
+        typeof user !== "object"
+      ) {
+        return null;
+      }
+
+      return user;
+
+    } catch (error) {
+
+      console.error(
+        "User read error:",
+        error
+      );
+
+      return null;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     GET DISPLAY NAME
+  ===================================================== */
+
+  function getDisplayName(user) {
+
+    if (!user) {
+      return "";
+    }
+
+    let name =
+      user.name ||
+      user.fullName ||
+      user.username ||
+      user.email ||
+      "";
+
+
+    name =
+      String(name).trim();
+
+
+    /* If email is stored, show only before @ */
+
+    if (
+      name.includes("@")
+    ) {
+
+      name =
+        name.split("@")[0];
+
+    }
+
+
+    /* Capitalize first letter */
+
+    if (name.length > 0) {
+
+      name =
+        name.charAt(0).toUpperCase() +
+        name.slice(1);
+
+    }
+
+
+    return name || "Account";
+
+  }
+
+
+  /* =====================================================
+     UPDATE ACCOUNT UI
+  ===================================================== */
+
+  function updateAccount() {
+
+    const user =
+      getUser();
+
+
+    if (!accountButton) {
+      return;
+    }
+
+
+    /* =========================================
+       USER NOT LOGGED IN
+    ========================================= */
+
+    if (!user) {
+
+      accountButton.classList.remove(
+        "logged-in"
+      );
+
+
+      if (accountName) {
+
+        accountName.textContent =
+          "";
+
+      }
+
+
+      if (accountMenuName) {
+
+        accountMenuName.textContent =
+          "My Account";
+
+      }
+
+
+      return;
+
+    }
+
+
+    /* =========================================
+       USER LOGGED IN
+    ========================================= */
+
+    const displayName =
+      getDisplayName(user);
+
+
+    accountButton.classList.add(
+      "logged-in"
+    );
+
+
+    if (accountName) {
+
+      accountName.textContent =
+        displayName;
+
+    }
+
+
+    if (accountMenuName) {
+
+      accountMenuName.textContent =
+        displayName;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     INITIAL ACCOUNT CHECK
+  ===================================================== */
+
+  updateAccount();
+
+
+  /* =====================================================
+     ACCOUNT BUTTON
+  ===================================================== */
+
+  accountButton?.addEventListener(
+    "click",
+    (event) => {
+
+      event.stopPropagation();
+
+
+      const user =
+        getUser();
+
+
+      /* =========================================
+         NOT LOGGED IN
+      ========================================= */
+
+      if (!user) {
+
+        window.location.href =
+          "/login";
+
+        return;
+
+      }
+
+
+      /* =========================================
+         LOGGED IN
+      ========================================= */
+
+      accountMenu?.classList.toggle(
+        "active"
+      );
+
+
+      const isOpen =
+        accountMenu?.classList.contains(
+          "active"
+        );
+
+
+      accountButton.setAttribute(
+        "aria-expanded",
+        isOpen
+          ? "true"
+          : "false"
+      );
+
+    }
+  );
+
+
+  /* =====================================================
+     CLOSE ACCOUNT MENU
+  ===================================================== */
+
+  document.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        !accountMenu ||
+        !accountButton
+      ) {
+        return;
+      }
+
+
+      const target =
+        event.target;
+
+
+      if (
+        target instanceof Node &&
+        !accountMenu.contains(target) &&
+        !accountButton.contains(target)
+      ) {
+
+        accountMenu.classList.remove(
+          "active"
+        );
+
+
+        accountButton.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
+
+  logoutButton?.addEventListener(
+    "click",
+    () => {
+
+      /* Remove login */
+
+      localStorage.removeItem(
+        "sra-user"
+      );
+
+
+      /* Close menu */
+
+      accountMenu?.classList.remove(
+        "active"
+      );
+
+
+      accountButton?.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+
+      /* Update header immediately */
+
+      updateAccount();
+
+
+      /* Go home */
+
+      window.location.href =
+        "/";
+
+    }
+  );
+
+
+  /* =====================================================
+     LOGIN / SIGNUP UPDATE
+  ===================================================== */
+
+  window.addEventListener(
+    "storage",
+    (event) => {
+
+      if (
+        event.key === "sra-user"
+      ) {
+
+        updateAccount();
+
+      }
+
+
+      if (
+        event.key === "sra-cart"
+      ) {
+
+        updateCartCount();
+
+      }
+
+
+      if (
+        event.key === "sra-favourites"
+      ) {
+
+        updateFavouritesCount();
+
+      }
+
+    }
+  );
+
+
+  /* Same tab login update */
+
+  window.addEventListener(
+    "userUpdated",
+    () => {
+
+      updateAccount();
+
+    }
+  );
+
+
+  /* =====================================================
+     OPEN SEARCH
+  ===================================================== */
+
+  searchButton?.addEventListener(
+    "click",
+    () => {
+
+      searchOverlay?.classList.add(
+        "active"
+      );
+
+
+      document.body.style.overflow =
+        "hidden";
+
+
+      setTimeout(
+        () => {
+
+          searchInput?.focus();
+
+        },
+        100
+      );
+
+    }
+  );
+
+
+  /* =====================================================
+     CLOSE SEARCH
+  ===================================================== */
+
+  function closeSearchBox() {
+
+    searchOverlay?.classList.remove(
+      "active"
+    );
+
+
+    document.body.style.overflow =
+      "";
+
+
+    if (searchInput) {
+
+      searchInput.value =
+        "";
+
+    }
+
+
+    if (searchResults) {
+
+      searchResults.innerHTML = `
+        <p class="search-hint">
+          Search shirts, dresses, denim, tops, jeans...
+        </p>
+      `;
+
+    }
+
+  }
+
+
+  closeSearch?.addEventListener(
+    "click",
+    closeSearchBox
+  );
+
+
+  /* =====================================================
+     ESC KEY
+  ===================================================== */
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (
+        event.key === "Escape"
+      ) {
+
+        closeSearchBox();
+
+
+        accountMenu?.classList.remove(
+          "active"
+        );
+
+
+        accountButton?.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     SEARCH
+  ===================================================== */
+
+  searchInput?.addEventListener(
+    "input",
+    () => {
+
+      const query =
+        searchInput.value
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, " ");
+
+
+      if (!searchResults) {
+        return;
+      }
+
+
+      if (!query) {
+
+        searchResults.innerHTML = `
+          <p class="search-hint">
+            Search shirts, dresses, denim, tops, jeans...
+          </p>
+        `;
+
+        return;
+
+      }
+
+
+      /* =========================================
+         MEN CATEGORIES
+      ========================================= */
+
+      if (
+        query === "shirt" ||
+        query === "shirts" ||
+        query === "tshirt" ||
+        query === "tshirts" ||
+        query === "t-shirt" ||
+        query === "t-shirts" ||
+        query === "men shirt" ||
+        query === "men shirts"
+      ) {
+
+        window.location.href =
+          "/men/shirts-t-shirts";
+
+        return;
+
+      }
+
+
+      if (
+        query === "denim" ||
+        query === "men denim"
+      ) {
+
+        window.location.href =
+          "/men/denim";
+
+        return;
+
+      }
+
+
+      if (
+        query === "trouser" ||
+        query === "trousers" ||
+        query === "pants" ||
+        query === "men trousers" ||
+        query === "men pants"
+      ) {
+
+        window.location.href =
+          "/men/trousers";
+
+        return;
+
+      }
+
+
+      if (
+        query === "short" ||
+        query === "shorts" ||
+        query === "men shorts"
+      ) {
+
+        window.location.href =
+          "/men/shorts";
+
+        return;
+
+      }
+
+
+      /* =========================================
+         WOMEN CATEGORIES
+      ========================================= */
+
+      if (
+        query === "dress" ||
+        query === "dresses" ||
+        query === "women dress" ||
+        query === "women dresses"
+      ) {
+
+        window.location.href =
+          "/women/dresses";
+
+        return;
+
+      }
+
+
+      if (
+        query === "top" ||
+        query === "tops" ||
+        query === "women top" ||
+        query === "women tops"
+      ) {
+
+        window.location.href =
+          "/women/tops";
+
+        return;
+
+      }
+
+
+      if (
+        query === "jean" ||
+        query === "jeans" ||
+        query === "women jean" ||
+        query === "women jeans"
+      ) {
+
+        window.location.href =
+          "/women/jeans";
+
+        return;
+
+      }
+
+
+      if (
+        query === "sweater" ||
+        query === "sweaters" ||
+        query === "cardigan" ||
+        query === "cardigans" ||
+        query === "women sweater" ||
+        query === "women sweaters" ||
+        query === "women cardigans"
+      ) {
+
+        window.location.href =
+          "/women/sweaters-cardigans";
+
+        return;
+
+      }
+
+
+      /* =========================================
+         PRODUCT SEARCH
+      ========================================= */
+
+      const matchedProducts =
+        products.filter(
+          (product) => {
+
+            const name =
+              String(
+                product.name || ""
+              ).toLowerCase();
+
+
+            const description =
+              String(
+                product.description || ""
+              ).toLowerCase();
+
+
+            return (
+              name.includes(query) ||
+              description.includes(query)
+            );
+
+          }
+        );
+
+
+      /* =========================================
+         NO RESULTS
+      ========================================= */
+
+      if (!matchedProducts.length) {
+
+        searchResults.innerHTML = `
+
+          <div class="no-results">
+
+            <h2 class="no-results-title">
+              No products found
+            </h2>
+
+            <p class="no-results-text">
+              We couldn't find anything matching "${query}".
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /* =========================================
+         RESULTS
+      ========================================= */
+
+      searchResults.innerHTML =
+        matchedProducts
+          .slice(0, 8)
+          .map(
+            (product) => {
+
+              let productUrl =
+                `/men/product/${product.id}`;
+
+
+              const productName =
+                String(
+                  product.name || ""
+                ).toLowerCase();
+
+
+              const description =
+                String(
+                  product.description || ""
+                ).toLowerCase();
+
+
+              if (
+                query.includes("dress") ||
+                query.includes("top") ||
+                query.includes("jean") ||
+                query.includes("sweater") ||
+                query.includes("cardigan") ||
+                productName.includes("dress") ||
+                productName.includes("top") ||
+                productName.includes("jean") ||
+                productName.includes("sweater") ||
+                productName.includes("cardigan")
+              ) {
+
+                productUrl =
+                  `/women/product/${product.id}`;
+
+              }
+
+
+              return `
+
+                <a
+                  class="search-result"
+                  href="${productUrl}"
+                >
+
+                  <img
+                    class="search-result-image"
+                    src="${product.image}"
+                    alt="${product.name}"
+                  />
+
+
+                  <div class="search-result-info">
+
+                    <h3 class="search-result-name">
+                      ${product.name}
+                    </h3>
+
+
+                    <p class="search-result-price">
+                      ₹${Number(
+                        product.price || 0
+                      ).toLocaleString("en-IN")}
+                    </p>
+
+                  </div>
+
+                </a>
+
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+  );
+
+
+  /* =====================================================
+     CLOSE SEARCH AFTER RESULT CLICK
+  ===================================================== */
+
+  searchResults?.addEventListener(
+    "click",
+    (event) => {
+
+      const result =
+        event.target.closest(
+          ".search-result"
+        );
+
+
+      if (!result) {
+        return;
+      }
+
+
+      closeSearchBox();
+
+    }
+  );
+
+
+  /* =====================================================
+     CART COUNT
+  ===================================================== */
+
+  function updateCartCount() {
+
+    const cartCount =
+      document.querySelector(
+        "#cartCount"
+      );
+
+
+    if (!cartCount) {
+      return;
+    }
+
+
+    let cart = [];
+
+
+    try {
+
+      cart =
+        JSON.parse(
+          localStorage.getItem(
+            "sra-cart"
+          ) || "[]"
+        );
+
+
+      if (!Array.isArray(cart)) {
+
+        cart = [];
+
+      }
+
+    } catch {
+
+      cart = [];
+
+    }
+
+
+    const total =
+      cart.reduce(
+        (
+          sum,
+          item
+        ) =>
+          sum +
+          Number(
+            item.quantity || 1
+          ),
+        0
+      );
+
+
+    cartCount.textContent =
+      String(total);
+
+  }
+
+
+  /* =====================================================
+     FAVOURITES COUNT
+  ===================================================== */
+
+  function updateFavouritesCount() {
+
+    const favouritesCount =
+      document.querySelector(
+        "#favouritesCount"
+      );
+
+
+    if (!favouritesCount) {
+      return;
+    }
+
+
+    let favourites = [];
+
+
+    try {
+
+      favourites =
+        JSON.parse(
+          localStorage.getItem(
+            "sra-favourites"
+          ) || "[]"
+        );
+
+
+      if (!Array.isArray(favourites)) {
+
+        favourites = [];
+
+      }
+
+    } catch {
+
+      favourites = [];
+
+    }
+
+
+    favouritesCount.textContent =
+      String(
+        favourites.length
+      );
+
+  }
+
+
+  /* =====================================================
+     INITIAL COUNTS
+  ===================================================== */
+
+  updateCartCount();
+
+  updateFavouritesCount();
+
+
+  /* =====================================================
+     SAME TAB CART UPDATE
+  ===================================================== */
+
+  window.addEventListener(
+    "cartUpdated",
+    updateCartCount
+  );
+
+
+  /* =====================================================
+     SAME TAB FAVOURITES UPDATE
+  ===================================================== */
+
+  window.addEventListener(
+    "favouritesUpdated",
+    updateFavouritesCount
+  );
+
+</script>

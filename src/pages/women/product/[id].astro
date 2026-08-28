@@ -1,0 +1,1269 @@
+---
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+
+import { tops } from "../../../data/tops.js";
+import { jeans } from "../../../data/jeans.js";
+import { dresses } from "../../../data/dresses.js";
+import { sweaters } from "../../../data/sweaters-cardigans.js";
+
+const allProducts = [
+  ...tops,
+  ...jeans,
+  ...dresses,
+  ...sweaters,
+];
+
+export function getStaticPaths() {
+  return allProducts.map((product) => ({
+    params: {
+      id: String(product.id),
+    },
+    props: {
+      product,
+    },
+  }));
+}
+
+const { product } = Astro.props;
+const productId = String(product.id);
+---
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>{product.name} | SRA</title>
+</head>
+
+<body>
+
+  <Header />
+
+  <main class="product-page">
+
+    <!-- BREADCRUMB -->
+
+    <div class="breadcrumb">
+      <a href="/women">WOMEN</a>
+      <span>/</span>
+      <span>{product.name}</span>
+    </div>
+
+
+    <!-- PRODUCT -->
+
+    <section class="product-detail">
+
+      <!-- IMAGE -->
+
+      <div class="product-visual">
+
+        <div class="image-wrap">
+
+          <img
+            src={product.image}
+            alt={product.name}
+          />
+
+        </div>
+
+        <!-- WISHLIST -->
+
+        <button
+          class="wishlist"
+          id="wishlistButton"
+          type="button"
+          aria-label="Add to favourites"
+        >
+          ♡
+        </button>
+
+      </div>
+
+
+      <!-- INFORMATION -->
+
+      <div class="product-content">
+
+        <span class="eyebrow">
+          SRA WOMEN
+        </span>
+
+        <h1>
+          {product.name}
+        </h1>
+
+        <div class="price">
+          ₹{Number(product.price).toLocaleString("en-IN")}
+        </div>
+
+        <div class="divider"></div>
+
+        <p class="description">
+          {product.description ||
+            "A refined wardrobe essential designed with timeless style, premium comfort and effortless everyday elegance."}
+        </p>
+
+
+        <!-- SIZE -->
+
+        <div class="size-block">
+
+          <div class="size-heading">
+
+            <span>
+              SELECT SIZE
+            </span>
+
+            <span class="size-guide">
+              SIZE GUIDE
+            </span>
+
+          </div>
+
+          <div class="sizes">
+
+            {
+              (product.sizes || ["XS", "S", "M", "L", "XL"]).map(
+                (size) => (
+                  <button
+                    type="button"
+                    class="size"
+                    data-size={size}
+                  >
+                    {size}
+                  </button>
+                )
+              )
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- ADD TO CART -->
+
+        <button
+          type="button"
+          class="add-cart"
+          id="addCart"
+        >
+          ADD TO CART
+        </button>
+
+
+        <!-- DETAILS -->
+
+        <div class="details">
+
+          <div class="detail-row">
+            <span>DELIVERY</span>
+            <span>Complimentary delivery</span>
+          </div>
+
+          <div class="detail-row">
+            <span>RETURNS</span>
+            <span>Easy returns within 14 days</span>
+          </div>
+
+          <div class="detail-row">
+            <span>AVAILABILITY</span>
+            <span>In stock</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- BRAND -->
+
+    <section class="product-bottom">
+
+      <span>
+        SRA WOMEN
+      </span>
+
+      <h2>
+        Designed<br />
+        with intention.
+      </h2>
+
+      <p>
+        Timeless pieces created for
+        effortless everyday elegance.
+      </p>
+
+    </section>
+
+  </main>
+
+  <Footer />
+
+
+  <script define:vars={{ productId }}>
+
+    /* =========================
+       SIZE SELECTION
+    ========================= */
+
+    const sizeButtons =
+      document.querySelectorAll(".size");
+
+    let selectedSize = "";
+
+    sizeButtons.forEach((button) => {
+
+      button.addEventListener("click", () => {
+
+        sizeButtons.forEach((item) => {
+          item.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+
+        selectedSize =
+          button.dataset.size || "";
+
+      });
+
+    });
+
+
+    /* =========================
+       WISHLIST
+    ========================= */
+
+    const wishlistButton =
+      document.querySelector("#wishlistButton");
+
+
+    function getFavourites() {
+
+      try {
+
+        const saved =
+          JSON.parse(
+            localStorage.getItem("sra-favourites") || "[]"
+          );
+
+        return Array.isArray(saved)
+          ? saved.map(String)
+          : [];
+
+      } catch {
+
+        return [];
+
+      }
+
+    }
+
+
+    let favourites =
+      getFavourites();
+
+
+    function updateWishlist() {
+
+      if (!wishlistButton) return;
+
+      if (favourites.includes(productId)) {
+
+        wishlistButton.textContent = "♥";
+
+        wishlistButton.classList.add("active");
+
+        wishlistButton.setAttribute(
+          "aria-label",
+          "Remove from favourites"
+        );
+
+      } else {
+
+        wishlistButton.textContent = "♡";
+
+        wishlistButton.classList.remove("active");
+
+        wishlistButton.setAttribute(
+          "aria-label",
+          "Add to favourites"
+        );
+
+      }
+
+    }
+
+
+    updateWishlist();
+
+
+    wishlistButton?.addEventListener(
+      "click",
+      () => {
+
+        favourites =
+          getFavourites();
+
+        if (favourites.includes(productId)) {
+
+          favourites =
+            favourites.filter(
+              (id) => id !== productId
+            );
+
+        } else {
+
+          favourites.push(productId);
+
+        }
+
+
+        localStorage.setItem(
+          "sra-favourites",
+          JSON.stringify(favourites)
+        );
+
+
+        updateWishlist();
+
+
+        window.dispatchEvent(
+          new Event("favouritesUpdated")
+        );
+
+      }
+    );
+
+
+    /* =========================
+       ADD TO CART
+    ========================= */
+
+    const addCart =
+      document.querySelector("#addCart");
+
+
+    addCart?.addEventListener(
+      "click",
+      () => {
+
+        /* SIZE REQUIRED */
+
+        if (!selectedSize) {
+
+          alert(
+            "Please select a size first."
+          );
+
+          return;
+
+        }
+
+
+        /* GET CART */
+
+        let cart = [];
+
+        try {
+
+          cart =
+            JSON.parse(
+              localStorage.getItem("sra-cart") || "[]"
+            );
+
+          if (!Array.isArray(cart)) {
+            cart = [];
+          }
+
+        } catch {
+
+          cart = [];
+
+        }
+
+
+        /* CHECK EXISTING ITEM */
+
+        const existing =
+          cart.find(
+            (item) =>
+              String(item.id) === productId &&
+              item.size === selectedSize
+          );
+
+
+        /* UPDATE QUANTITY */
+
+        if (existing) {
+
+          existing.quantity =
+            Number(existing.quantity || 0) + 1;
+
+        } else {
+
+          cart.push({
+
+            id: productId,
+
+            size: selectedSize,
+
+            quantity: 1
+
+          });
+
+        }
+
+
+        /* SAVE CART */
+
+        localStorage.setItem(
+          "sra-cart",
+          JSON.stringify(cart)
+        );
+
+
+        /* UPDATE HEADER CART COUNT */
+
+        window.dispatchEvent(
+          new Event("cartUpdated")
+        );
+
+
+        /* BUTTON FEEDBACK */
+
+        addCart.textContent =
+          "ADDED TO CART ✓";
+
+        addCart.classList.add("added");
+
+
+        setTimeout(() => {
+
+          addCart.textContent =
+            "ADD TO CART";
+
+          addCart.classList.remove("added");
+
+        }, 1800);
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
+
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  background: #f5f1e8;
+
+  color: #0b1f3a;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.product-page {
+
+  width: 100%;
+
+  max-width: 1500px;
+
+  margin: 0 auto;
+
+  padding:
+    35px 42px 100px;
+}
+
+
+/* =========================
+   BREADCRUMB
+========================= */
+
+.breadcrumb {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 35px;
+
+  color: #8a857c;
+
+  font-size: 8px;
+
+  letter-spacing: 1.2px;
+
+  text-transform: uppercase;
+}
+
+.breadcrumb a {
+
+  color: #0b1f3a;
+
+  text-decoration: none;
+
+  font-weight: 600;
+}
+
+.breadcrumb span:last-child {
+
+  max-width: 350px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================
+   PRODUCT
+========================= */
+
+.product-detail {
+
+  display: grid;
+
+  grid-template-columns:
+    1.15fr .85fr;
+
+  gap: 80px;
+
+  align-items: start;
+}
+
+
+/* =========================
+   IMAGE
+========================= */
+
+.product-visual {
+
+  position: relative;
+
+  width: 100%;
+}
+
+.image-wrap {
+
+  width: 100%;
+
+  height: 720px;
+
+  overflow: hidden;
+
+  background: #e9e3d9;
+}
+
+.image-wrap img {
+
+  width: 100%;
+
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+
+  transition:
+    transform .6s ease;
+}
+
+.image-wrap:hover img {
+
+  transform: scale(1.02);
+}
+
+
+/* =========================
+   WISHLIST
+========================= */
+
+.wishlist {
+
+  position: absolute;
+
+  top: 18px;
+
+  right: 18px;
+
+  width: 45px;
+
+  height: 45px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.95);
+
+  color: #0b1f3a;
+
+  font-size: 23px;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition:
+    transform .2s ease;
+}
+
+.wishlist:hover {
+
+  transform: scale(1.05);
+}
+
+.wishlist.active {
+
+  color: #9f3040;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.product-content {
+
+  position: sticky;
+
+  top: 110px;
+
+  padding:
+    35px 20px 30px 0;
+}
+
+
+/* =========================
+   EYEBROW
+========================= */
+
+.eyebrow {
+
+  color: #b89b61;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 2px;
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+.product-content h1 {
+
+  margin:
+    18px 0 15px;
+
+  max-width: 580px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 52px;
+
+  font-weight: 400;
+
+  line-height: 1.03;
+
+  letter-spacing: -2px;
+}
+
+
+/* =========================
+   PRICE
+========================= */
+
+.price {
+
+  color: #0b1f3a;
+
+  font-size: 15px;
+
+  font-weight: 600;
+}
+
+
+/* =========================
+   DIVIDER
+========================= */
+
+.divider {
+
+  width: 100%;
+
+  height: 1px;
+
+  margin:
+    28px 0;
+
+  background: #ddd7cd;
+}
+
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.description {
+
+  max-width: 480px;
+
+  margin:
+    0 0 35px;
+
+  color: #777269;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+}
+
+
+/* =========================
+   SIZE
+========================= */
+
+.size-block {
+
+  margin-bottom: 28px;
+}
+
+.size-heading {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+
+  font-size: 8px;
+
+  font-weight: 600;
+
+  letter-spacing: 1.2px;
+}
+
+.size-guide {
+
+  color: #8a857c;
+
+  text-decoration: underline;
+
+  cursor: pointer;
+}
+
+.sizes {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.size {
+
+  width: 48px;
+
+  height: 43px;
+
+  border:
+    1px solid #d4cec3;
+
+  background: transparent;
+
+  color: #0b1f3a;
+
+  cursor: pointer;
+
+  font-size: 9px;
+
+  transition:
+    all .2s ease;
+}
+
+.size:hover,
+.size.selected {
+
+  background: #0b1f3a;
+
+  border-color: #0b1f3a;
+
+  color: #ffffff;
+}
+
+
+/* =========================
+   CART
+========================= */
+
+.add-cart {
+
+  width: 100%;
+
+  height: 55px;
+
+  border:
+    1px solid #0b1f3a;
+
+  background: #0b1f3a;
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 1.4px;
+
+  transition:
+    all .25s ease;
+}
+
+.add-cart:hover {
+
+  background: transparent;
+
+  color: #0b1f3a;
+}
+
+.add-cart.added {
+
+  background: #314b3a;
+
+  border-color: #314b3a;
+
+  color: #fff;
+}
+
+
+/* =========================
+   DETAILS
+========================= */
+
+.details {
+
+  margin-top: 35px;
+
+  border-top:
+    1px solid #ddd7cd;
+}
+
+.detail-row {
+
+  min-height: 55px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border-bottom:
+    1px solid #ddd7cd;
+
+  font-size: 9px;
+}
+
+.detail-row span:first-child {
+
+  color: #0b1f3a;
+
+  font-weight: 600;
+
+  letter-spacing: 1px;
+}
+
+.detail-row span:last-child {
+
+  color: #777269;
+
+  text-align: right;
+}
+
+
+/* =========================
+   BOTTOM
+========================= */
+
+.product-bottom {
+
+  padding:
+    150px 20px 20px;
+
+  text-align: center;
+}
+
+.product-bottom > span {
+
+  color: #b89b61;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 2px;
+}
+
+.product-bottom h2 {
+
+  margin:
+    18px 0 15px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 55px;
+
+  font-weight: 400;
+
+  line-height: 1.03;
+
+  letter-spacing: -2px;
+}
+
+.product-bottom p {
+
+  margin: 0;
+
+  color: #777269;
+
+  font-size: 11px;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1000px) {
+
+  .product-page {
+
+    padding:
+      30px 25px 80px;
+  }
+
+  .product-detail {
+
+    gap: 45px;
+  }
+
+  .image-wrap {
+
+    height: 600px;
+  }
+
+  .product-content h1 {
+
+    font-size: 43px;
+  }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+  .product-page {
+
+    padding:
+      25px 12px 60px;
+  }
+
+  .breadcrumb {
+
+    margin-bottom: 22px;
+
+    font-size: 7px;
+
+    gap: 7px;
+  }
+
+  .breadcrumb span:last-child {
+
+    max-width: 190px;
+  }
+
+  .product-detail {
+
+    display: block;
+  }
+
+  .image-wrap {
+
+    height: auto;
+
+    aspect-ratio: 3 / 4;
+  }
+
+  .image-wrap img {
+
+    object-fit: contain;
+  }
+
+  .wishlist {
+
+    top: 12px;
+
+    right: 12px;
+
+    width: 38px;
+
+    height: 38px;
+
+    font-size: 20px;
+  }
+
+  .product-content {
+
+    position: static;
+
+    padding:
+      35px 3px 20px;
+  }
+
+  .eyebrow {
+
+    font-size: 7px;
+
+    letter-spacing: 1.5px;
+  }
+
+  .product-content h1 {
+
+    margin:
+      14px 0 10px;
+
+    font-size: 34px;
+
+    line-height: 1.08;
+
+    letter-spacing: -1px;
+  }
+
+  .price {
+
+    font-size: 13px;
+  }
+
+  .divider {
+
+    margin:
+      20px 0;
+  }
+
+  .description {
+
+    width: 100%;
+
+    max-width: none;
+
+    margin-bottom: 25px;
+
+    font-size: 10.5px;
+
+    line-height: 1.7;
+  }
+
+  .size-block {
+
+    margin-bottom: 22px;
+  }
+
+  .size-heading {
+
+    margin-bottom: 10px;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+  }
+
+  .sizes {
+
+    gap: 6px;
+  }
+
+  .size {
+
+    width: 43px;
+
+    height: 39px;
+
+    font-size: 8px;
+  }
+
+  .add-cart {
+
+    height: 50px;
+
+    font-size: 8px;
+
+    letter-spacing: 1.2px;
+  }
+
+  .details {
+
+    margin-top: 25px;
+  }
+
+  .detail-row {
+
+    min-height: 50px;
+
+    gap: 15px;
+
+    font-size: 7.5px;
+  }
+
+  .detail-row span:last-child {
+
+    max-width: 180px;
+  }
+
+  .product-bottom {
+
+    padding:
+      90px 10px 10px;
+  }
+
+  .product-bottom > span {
+
+    font-size: 7px;
+  }
+
+  .product-bottom h2 {
+
+    margin:
+      14px 0 12px;
+
+    font-size: 36px;
+
+    line-height: 1.08;
+
+    letter-spacing: -1px;
+  }
+
+  .product-bottom p {
+
+    font-size: 9px;
+
+    line-height: 1.6;
+  }
+
+}
+
+
+/* =========================
+   SMALL PHONE
+========================= */
+
+@media (max-width: 400px) {
+
+  .product-page {
+
+    padding:
+      20px 10px 50px;
+  }
+
+  .image-wrap {
+
+    aspect-ratio: .78;
+  }
+
+  .product-content {
+
+    padding-top: 24px;
+  }
+
+  .product-content h1 {
+
+    font-size: 30px;
+  }
+
+  .description {
+
+    font-size: 10px;
+  }
+
+  .size {
+
+    width: 40px;
+
+    height: 37px;
+  }
+
+  .add-cart {
+
+    height: 48px;
+  }
+
+  .product-bottom h2 {
+
+    font-size: 30px;
+  }
+
+}
+
+</style>

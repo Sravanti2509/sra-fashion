@@ -1,0 +1,811 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { supabase } from "../lib/supabase.js";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Sign Up | SRA</title>
+  </head>
+
+  <body>
+
+    <Header />
+
+    <main class="signup-page">
+
+      <section class="signup-card">
+
+        <div class="signup-heading">
+
+          <span class="eyebrow">
+            WELCOME TO SRA
+          </span>
+
+          <h1>
+            Create Account
+          </h1>
+
+          <p>
+            Join SRA and save your favourite pieces.
+          </p>
+
+        </div>
+
+
+        <form id="signupForm">
+
+          <div class="form-group">
+
+            <label for="name">
+              FULL NAME
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              placeholder="Enter your full name"
+              autocomplete="name"
+              required
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="email">
+              EMAIL ADDRESS
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="phone">
+              PHONE NUMBER
+            </label>
+
+            <input
+              id="phone"
+              type="tel"
+              placeholder="Enter your phone number"
+              autocomplete="tel"
+              inputmode="numeric"
+              maxlength="10"
+              required
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="password">
+              PASSWORD
+            </label>
+
+            <div class="password-box">
+
+              <input
+                id="password"
+                type="password"
+                placeholder="Create a password"
+                autocomplete="new-password"
+                required
+              />
+
+              <button
+                type="button"
+                id="togglePassword"
+                class="password-toggle"
+              >
+                SHOW
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="confirmPassword">
+              CONFIRM PASSWORD
+            </label>
+
+            <div class="password-box">
+
+              <input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+                required
+              />
+
+              <button
+                type="button"
+                id="toggleConfirmPassword"
+                class="password-toggle"
+              >
+                SHOW
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <label class="terms">
+
+            <input
+              type="checkbox"
+              id="terms"
+              required
+            />
+
+            <span>
+              I agree to the terms and conditions
+            </span>
+
+          </label>
+
+
+          <p
+            id="errorMessage"
+            class="message error"
+          ></p>
+
+
+          <p
+            id="successMessage"
+            class="message success"
+          ></p>
+
+
+          <button
+            type="submit"
+            class="signup-button"
+          >
+            CREATE ACCOUNT
+          </button>
+
+        </form>
+
+
+        <div class="login-link">
+
+          <span>
+            Already have an account?
+          </span>
+
+          <a href="/login">
+            LOGIN
+          </a>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <Footer />
+
+<script>
+  import { supabase } from "../lib/supabase.js";
+
+  const form =
+    document.querySelector("#signupForm");
+
+  const nameInput =
+    document.querySelector("#name");
+
+  const emailInput =
+    document.querySelector("#email");
+
+  const phoneInput =
+    document.querySelector("#phone");
+
+  const passwordInput =
+    document.querySelector("#password");
+
+  const confirmPasswordInput =
+    document.querySelector("#confirmPassword");
+
+  const errorMessage =
+    document.querySelector("#errorMessage");
+
+  const successMessage =
+    document.querySelector("#successMessage");
+
+  const signupButton =
+    document.querySelector(".signup-button");
+
+
+  /* PASSWORD SHOW / HIDE */
+
+  const togglePassword =
+    document.querySelector("#togglePassword");
+
+  togglePassword?.addEventListener(
+    "click",
+    () => {
+
+      if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+        togglePassword.textContent = "HIDE";
+
+      } else {
+
+        passwordInput.type = "password";
+        togglePassword.textContent = "SHOW";
+
+      }
+
+    }
+  );
+
+
+  /* CONFIRM PASSWORD SHOW / HIDE */
+
+  const toggleConfirmPassword =
+    document.querySelector(
+      "#toggleConfirmPassword"
+    );
+
+  toggleConfirmPassword?.addEventListener(
+    "click",
+    () => {
+
+      if (
+        confirmPasswordInput.type === "password"
+      ) {
+
+        confirmPasswordInput.type = "text";
+        toggleConfirmPassword.textContent = "HIDE";
+
+      } else {
+
+        confirmPasswordInput.type = "password";
+        toggleConfirmPassword.textContent = "SHOW";
+
+      }
+
+    }
+  );
+
+
+  /* SIGNUP */
+
+  form?.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+      errorMessage.textContent = "";
+      successMessage.textContent = "";
+
+
+      const name =
+        nameInput.value.trim();
+
+      const email =
+        emailInput.value
+          .trim()
+          .toLowerCase();
+
+      const phone =
+        phoneInput.value
+          .trim()
+          .replace(/\D/g, "");
+
+      const password =
+        passwordInput.value;
+
+      const confirmPassword =
+        confirmPasswordInput.value;
+
+
+      /* NAME */
+
+      if (name.length < 2) {
+
+        errorMessage.textContent =
+          "Please enter your full name.";
+
+        return;
+
+      }
+
+
+      /* EMAIL */
+
+      const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailPattern.test(email)) {
+
+        errorMessage.textContent =
+          "Please enter a valid email address.";
+
+        return;
+
+      }
+
+
+      /* PHONE */
+
+      if (phone.length !== 10) {
+
+        errorMessage.textContent =
+          "Please enter a valid 10-digit phone number.";
+
+        return;
+
+      }
+
+
+      /* PASSWORD */
+
+      if (password.length < 6) {
+
+        errorMessage.textContent =
+          "Password must contain at least 6 characters.";
+
+        return;
+
+      }
+
+
+      /* CONFIRM PASSWORD */
+
+      if (password !== confirmPassword) {
+
+        errorMessage.textContent =
+          "Passwords do not match.";
+
+        return;
+
+      }
+
+
+      /* BUTTON */
+
+      signupButton.disabled = true;
+      signupButton.textContent = "CREATING ACCOUNT...";
+
+
+      try {
+
+        /* SUPABASE SIGNUP */
+
+        const { data, error } =
+          await supabase.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+
+              data: {
+                full_name: name,
+                phone: phone
+              }
+
+            }
+
+          });
+
+
+        /* SUPABASE ERROR */
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        /* SUCCESS */
+
+        successMessage.textContent =
+          "Account created successfully!";
+
+
+        form.reset();
+
+
+        /*
+          If email confirmation is enabled,
+          user must confirm email first.
+        */
+
+        if (
+          data.user &&
+          !data.session
+        ) {
+
+          successMessage.textContent =
+            "Account created! Please check your email to confirm your account.";
+
+          setTimeout(
+            () => {
+
+              window.location.href =
+                "/login";
+
+            },
+            2500
+          );
+
+        } else {
+
+          setTimeout(
+            () => {
+
+              window.location.href =
+                "/login";
+
+            },
+            1500
+          );
+
+        }
+
+
+      } catch (error) {
+
+        console.error(
+          "Signup error:",
+          error
+        );
+
+
+        if (
+          error.message?.toLowerCase().includes(
+            "already registered"
+          )
+        ) {
+
+          errorMessage.textContent =
+            "An account with this email already exists. Please login.";
+
+        } else {
+
+          errorMessage.textContent =
+            error.message ||
+            "Unable to create account. Please try again.";
+
+        }
+
+      } finally {
+
+        signupButton.disabled = false;
+        signupButton.textContent =
+          "CREATE ACCOUNT";
+
+      }
+
+    }
+  );
+
+</script>
+
+  </body>
+</html>
+
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f5f1e8;
+  color: #0b1f3a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* PAGE */
+
+.signup-page {
+  min-height: 750px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 70px 20px 100px;
+}
+
+
+/* CARD */
+
+.signup-card {
+  width: 100%;
+  max-width: 470px;
+  padding: 48px 46px 42px;
+  background: #faf8f3;
+  border: 1px solid #e0d9ce;
+  box-shadow:
+    0 18px 55px rgba(11, 31, 58, 0.07);
+}
+
+
+/* HEADING */
+
+.signup-heading {
+  text-align: center;
+  margin-bottom: 38px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 13px;
+  color: #b79b63;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.signup-heading h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -1.4px;
+}
+
+.signup-heading p {
+  margin: 13px 0 0;
+  color: #777269;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+
+/* FORM */
+
+.form-group {
+  margin-bottom: 19px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #0b1f3a;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+
+/* INPUT */
+
+.form-group input {
+  width: 100%;
+  height: 49px;
+  padding: 0 14px;
+  border: 1px solid #d4cdc2;
+  outline: none;
+  background: #ffffff;
+  color: #0b1f3a;
+  font-size: 12px;
+}
+
+.form-group input::placeholder {
+  color: #aaa49b;
+}
+
+.form-group input:focus {
+  border-color: #0b1f3a;
+  box-shadow:
+    0 0 0 2px rgba(11, 31, 58, 0.05);
+}
+
+
+/* PASSWORD */
+
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  padding-right: 65px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #777269;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+
+/* TERMS */
+
+.terms {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 5px 0 18px;
+  color: #777269;
+  font-size: 9px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.terms input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #0b1f3a;
+}
+
+
+/* MESSAGE */
+
+.message {
+  min-height: 16px;
+  margin: 0 0 10px;
+  font-size: 9px;
+  text-align: center;
+}
+
+.error {
+  color: #9f3040;
+}
+
+.success {
+  color: #48704c;
+}
+
+
+/* BUTTON */
+
+.signup-button {
+  width: 100%;
+  height: 54px;
+  border: 1px solid #0b1f3a;
+  background: #0b1f3a;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.signup-button:hover {
+  background: transparent;
+  color: #0b1f3a;
+}
+
+
+/* LOGIN */
+
+.login-link {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 27px;
+  color: #777269;
+  font-size: 9px;
+}
+
+.login-link a {
+  color: #0b1f3a;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .signup-page {
+    min-height: 700px;
+    padding: 40px 14px 70px;
+    align-items: flex-start;
+  }
+
+  .signup-card {
+    max-width: 100%;
+    padding: 34px 22px 30px;
+  }
+
+  .signup-heading {
+    margin-bottom: 30px;
+  }
+
+  .eyebrow {
+    font-size: 7px;
+  }
+
+  .signup-heading h1 {
+    font-size: 34px;
+  }
+
+  .signup-heading p {
+    font-size: 9px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    font-size: 7px;
+  }
+
+  .form-group input {
+    height: 47px;
+    font-size: 11px;
+  }
+
+  .terms {
+    font-size: 8px;
+  }
+
+  .signup-button {
+    height: 51px;
+  }
+
+  .login-link {
+    font-size: 8px;
+  }
+
+}
+
+
+@media (max-width: 380px) {
+
+  .signup-page {
+    padding: 30px 10px 55px;
+  }
+
+  .signup-card {
+    padding: 30px 18px 27px;
+  }
+
+  .signup-heading h1 {
+    font-size: 31px;
+  }
+
+}
+
+</style>

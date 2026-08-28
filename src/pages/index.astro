@@ -1,11 +1,1575 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { shirtsTshirts } from "../data/shirts-t-shirts.js";
+import { denim } from "../data/denim.js";
+import { trousers } from "../data/trousers.js";
+import { shorts } from "../data/shorts.js";
+
+import { dresses } from "../data/dresses.js";
+import { jeans } from "../data/jeans.js";
+import { tops } from "../data/tops.js";
+import { sweaters } from "../data/sweaters-cardigans.js";
+
+const menProducts = [
+  ...shirtsTshirts,
+  ...denim,
+  ...trousers,
+  ...shorts,
+];
+
+const womenProducts = [
+  ...dresses,
+  ...jeans,
+  ...tops,
+  ...sweaters,
+];
+
+/* Featured products */
+const womenFeature = womenProducts[0];
+const menFeature = menProducts[0];
+const editorialProduct =
+  womenProducts[1] || menProducts[1] || womenFeature || menFeature;
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="SRA — Timeless fashion. Modern perspective. Yours."
+    />
+
+    <title>SRA | Timeless. Modern. Yours.</title>
+  </head>
+
+  <body>
+
+    <Header />
+
+    <main>
+
+      <!-- =====================================================
+           HERO
+      ====================================================== -->
+
+      <section class="hero">
+
+        <div class="hero-inner">
+
+          <span class="hero-label">
+            SRA FASHION
+          </span>
+
+          <h1>
+            Timeless.<br />
+            Modern.<br />
+            Yours.
+          </h1>
+
+          <p class="hero-description">
+            Thoughtfully designed pieces for
+            the way you live, move and express yourself.
+          </p>
+
+          <div class="hero-actions">
+
+            <a
+              href="/women"
+              class="hero-button dark"
+            >
+              SHOP WOMEN
+            </a>
+
+            <a
+              href="/men"
+              class="hero-button outline"
+            >
+              SHOP MEN
+            </a>
+
+          </div>
+
+        </div>
+
+        <div class="hero-scroll">
+          <span>SCROLL TO EXPLORE</span>
+          <span class="scroll-line"></span>
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           INTRODUCTION
+      ====================================================== -->
+
+      <section class="intro-section">
+
+        <div class="intro-label">
+          THE SRA COLLECTION
+        </div>
+
+        <h2>
+          Refined pieces for<br />
+          modern everyday dressing.
+        </h2>
+
+        <p>
+          SRA brings together timeless silhouettes,
+          considered details and effortless style.
+          Created for those who believe what they wear
+          should feel as personal as who they are.
+        </p>
+
+      </section>
+
+
+      <!-- =====================================================
+           MEN / WOMEN FEATURE
+      ====================================================== -->
+
+      <section class="collection-feature">
+
+        <!-- WOMEN -->
+
+        <a
+          href="/women"
+          class="collection-card"
+        >
+
+          <div class="collection-image">
+
+            {
+              womenFeature && (
+                <img
+                  src={womenFeature.image}
+                  alt={womenFeature.name}
+                />
+              )
+            }
+
+            <div class="image-overlay"></div>
+
+            <div class="collection-content">
+
+              <span>
+                SRA WOMEN
+              </span>
+
+              <h3>
+                Modern<br />
+                femininity.
+              </h3>
+
+              <strong>
+                EXPLORE WOMEN →
+              </strong>
+
+            </div>
+
+          </div>
+
+        </a>
+
+
+        <!-- MEN -->
+
+        <a
+          href="/men"
+          class="collection-card"
+        >
+
+          <div class="collection-image">
+
+            {
+              menFeature && (
+                <img
+                  src={menFeature.image}
+                  alt={menFeature.name}
+                />
+              )
+            }
+
+            <div class="image-overlay"></div>
+
+            <div class="collection-content">
+
+              <span>
+                SRA MEN
+              </span>
+
+              <h3>
+                Quiet<br />
+                confidence.
+              </h3>
+
+              <strong>
+                EXPLORE MEN →
+              </strong>
+
+            </div>
+
+          </div>
+
+        </a>
+
+      </section>
+
+
+      <!-- =====================================================
+           EDITORIAL
+      ====================================================== -->
+
+      <section class="editorial-section">
+
+        <div class="editorial-image">
+
+          {
+            editorialProduct && (
+              <img
+                src={editorialProduct.image}
+                alt={editorialProduct.name}
+                loading="lazy"
+              />
+            )
+          }
+
+        </div>
+
+
+        <div class="editorial-content">
+
+          <span>
+            THE SRA EDIT
+          </span>
+
+          <h2>
+            Designed for<br />
+            effortless confidence.
+          </h2>
+
+          <p>
+            From everyday essentials to statement
+            pieces, every SRA design is made to move
+            effortlessly through your wardrobe.
+          </p>
+
+          <a
+            href="/women"
+            class="editorial-button"
+          >
+            DISCOVER THE COLLECTION
+          </a>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           BRAND STATEMENT
+      ====================================================== -->
+
+      <section class="statement-section">
+
+        <span>
+          SRA COLLECTION
+        </span>
+
+        <h2>
+          Wear your<br />
+          confidence.
+        </h2>
+
+        <p>
+          Timeless pieces. Modern perspective.
+          A wardrobe that feels entirely yours.
+        </p>
+
+      </section>
+
+    </main>
+
+
+    <Footer />
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+      /* =========================================
+         FAVOURITES
+      ========================================= */
+
+      function getFavourites() {
+
+        try {
+
+          const saved =
+            JSON.parse(
+              localStorage.getItem(
+                "sra-favourites"
+              ) || "[]"
+            );
+
+          return Array.isArray(saved)
+            ? saved.map(String)
+            : [];
+
+        } catch {
+
+          return [];
+
+        }
+
+      }
+
+
+      function updateWishlistButtons() {
+
+        const favourites =
+          getFavourites();
+
+        document
+          .querySelectorAll(".wishlist-button")
+          .forEach((button) => {
+
+            const id =
+              String(
+                button.dataset.productId
+              );
+
+            if (
+              favourites.includes(id)
+            ) {
+
+              button.textContent = "♥";
+
+              button.classList.add(
+                "active"
+              );
+
+            } else {
+
+              button.textContent = "♡";
+
+              button.classList.remove(
+                "active"
+              );
+
+            }
+
+          });
+
+      }
+
+
+      document
+        .querySelectorAll(".wishlist-button")
+        .forEach((button) => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const id =
+                String(
+                  button.dataset.productId
+                );
+
+              let favourites =
+                getFavourites();
+
+
+              if (
+                favourites.includes(id)
+              ) {
+
+                favourites =
+                  favourites.filter(
+                    (item) => item !== id
+                  );
+
+              } else {
+
+                favourites.push(id);
+
+              }
+
+
+              localStorage.setItem(
+                "sra-favourites",
+                JSON.stringify(favourites)
+              );
+
+
+              updateWishlistButtons();
+
+
+              window.dispatchEvent(
+                new Event(
+                  "favouritesUpdated"
+                )
+              );
+
+            }
+          );
+
+        });
+
+
+      updateWishlistButtons();
+
+    </script>
+
+  </body>
+</html>
+
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f6f2e9;
+  color: #0b1f3a;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+
+  position: relative;
+
+  min-height:
+    calc(100vh - 100px);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    #f6f2e9;
+
+  overflow: hidden;
+
+  border-bottom:
+    1px solid #e3ddd1;
+}
+
+
+.hero-inner {
+
+  width: 100%;
+
+  max-width: 900px;
+
+  padding:
+    100px 30px 130px;
+
+  text-align: center;
+}
+
+
+.hero-label {
+
+  display: block;
+
+  margin-bottom:
+    28px;
+
+  color:
+    #b08c4d;
+
+  font-size:
+    10px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    3px;
+}
+
+
+.hero h1 {
+
+  margin: 0;
+
+  color:
+    #0b1f3a;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(75px, 9vw, 145px);
+
+  font-weight:
+    400;
+
+  line-height:
+    .88;
+
+  letter-spacing:
+    -7px;
+}
+
+
+.hero-description {
+
+  max-width:
+    430px;
+
+  margin:
+    38px auto 0;
+
+  color:
+    #777269;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.8;
+}
+
+
+.hero-actions {
+
+  display:
+    flex;
+
+  justify-content:
+    center;
+
+  gap:
+    10px;
+
+  margin-top:
+    35px;
+}
+
+
+.hero-button {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-width:
+    150px;
+
+  height:
+    48px;
+
+  padding:
+    0 22px;
+
+  font-size:
+    8px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    1.4px;
+
+  text-decoration:
+    none;
+
+  transition:
+    .25s ease;
+}
+
+
+.hero-button.dark {
+
+  background:
+    #0b1f3a;
+
+  color:
+    white;
+
+  border:
+    1px solid #0b1f3a;
+}
+
+
+.hero-button.dark:hover {
+
+  background:
+    transparent;
+
+  color:
+    #0b1f3a;
+}
+
+
+.hero-button.outline {
+
+  background:
+    transparent;
+
+  color:
+    #0b1f3a;
+
+  border:
+    1px solid #0b1f3a;
+}
+
+
+.hero-button.outline:hover {
+
+  background:
+    #0b1f3a;
+
+  color:
+    white;
+}
+
+
+.hero-scroll {
+
+  position:
+    absolute;
+
+  bottom:
+    28px;
+
+  left:
+    50%;
+
+  transform:
+    translateX(-50%);
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  color:
+    #8b857b;
+
+  font-size:
+    7px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    1.8px;
+}
+
+
+.scroll-line {
+
+  width:
+    1px;
+
+  height:
+    32px;
+
+  background:
+    #b8b0a4;
+}
+
+
+/* =====================================================
+   INTRO
+===================================================== */
+
+.intro-section {
+
+  max-width:
+    900px;
+
+  margin:
+    0 auto;
+
+  padding:
+    150px 30px;
+
+  text-align:
+    center;
+}
+
+
+.intro-label {
+
+  margin-bottom:
+    20px;
+
+  color:
+    #b08c4d;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    2.5px;
+}
+
+
+.intro-section h2 {
+
+  margin:
+    0;
+
+  color:
+    #0b1f3a;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(38px, 5vw, 65px);
+
+  font-weight:
+    400;
+
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -2px;
+}
+
+
+.intro-section p {
+
+  max-width:
+    540px;
+
+  margin:
+    30px auto 0;
+
+  color:
+    #777269;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.9;
+}
+
+
+/* =====================================================
+   COLLECTION FEATURE
+===================================================== */
+
+.collection-feature {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  width:
+    100%;
+
+  padding:
+    0 35px;
+
+  gap:
+    18px;
+}
+
+
+.collection-card {
+
+  display:
+    block;
+
+  text-decoration:
+    none;
+}
+
+
+.collection-image {
+
+  position:
+    relative;
+
+  height:
+    680px;
+
+  overflow:
+    hidden;
+
+  background:
+    #ddd7cc;
+}
+
+
+.collection-image img {
+
+  width:
+    100%;
+
+  height:
+    100%;
+
+  display:
+    block;
+
+  object-fit:
+    cover;
+
+  transition:
+    transform .7s ease;
+}
+
+
+.collection-card:hover
+.collection-image img {
+
+  transform:
+    scale(1.035);
+}
+
+
+.image-overlay {
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.55),
+      transparent 55%
+    );
+}
+
+
+.collection-content {
+
+  position:
+    absolute;
+
+  left:
+    45px;
+
+  right:
+    45px;
+
+  bottom:
+    42px;
+
+  color:
+    white;
+}
+
+
+.collection-content span {
+
+  font-size:
+    8px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    2px;
+}
+
+
+.collection-content h3 {
+
+  margin:
+    14px 0 25px;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    50px;
+
+  font-weight:
+    400;
+
+  line-height:
+    .98;
+
+  letter-spacing:
+    -2px;
+}
+
+
+.collection-content strong {
+
+  font-size:
+    8px;
+
+  letter-spacing:
+    1.4px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.7);
+
+  padding-bottom:
+    7px;
+}
+
+
+/* =====================================================
+   EDITORIAL
+===================================================== */
+
+.editorial-section {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    1.05fr .95fr;
+
+  min-height:
+    650px;
+
+  margin:
+    140px 35px 0;
+
+  background:
+    #ebe5da;
+}
+
+
+.editorial-image {
+
+  min-height:
+    650px;
+
+  overflow:
+    hidden;
+}
+
+
+.editorial-image img {
+
+  width:
+    100%;
+
+  height:
+    100%;
+
+  display:
+    block;
+
+  object-fit:
+    cover;
+}
+
+
+.editorial-content {
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  padding:
+    70px;
+}
+
+
+.editorial-content > span {
+
+  color:
+    #b08c4d;
+
+  font-size:
+    8px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    2px;
+}
+
+
+.editorial-content h2 {
+
+  margin:
+    18px 0 22px;
+
+  color:
+    #0b1f3a;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(42px, 4vw, 65px);
+
+  font-weight:
+    400;
+
+  line-height:
+    1;
+
+  letter-spacing:
+    -2px;
+}
+
+
+.editorial-content p {
+
+  max-width:
+    420px;
+
+  margin:
+    0 0 30px;
+
+  color:
+    #777269;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.9;
+}
+
+
+.editorial-button {
+
+  display:
+    inline-flex;
+
+  width:
+    fit-content;
+
+  height:
+    48px;
+
+  align-items:
+    center;
+
+  padding:
+    0 22px;
+
+  background:
+    #0b1f3a;
+
+  color:
+    white;
+
+  font-size:
+    8px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    1.3px;
+
+  text-decoration:
+    none;
+
+  transition:
+    .25s ease;
+}
+
+
+.editorial-button:hover {
+
+  background:
+    #b08c4d;
+}
+
+
+/* =====================================================
+   BRAND STATEMENT
+===================================================== */
+
+.statement-section {
+
+  padding:
+    180px 30px;
+
+  margin-top:
+    140px;
+
+  text-align:
+    center;
+
+  background:
+    #0b1f3a;
+
+  color:
+    white;
+}
+
+
+.statement-section span {
+
+  color:
+    #c7a66b;
+
+  font-size:
+    9px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    2.5px;
+}
+
+
+.statement-section h2 {
+
+  margin:
+    20px 0;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(60px, 8vw, 110px);
+
+  font-weight:
+    400;
+
+  line-height:
+    .9;
+
+  letter-spacing:
+    -5px;
+}
+
+
+.statement-section p {
+
+  margin:
+    25px auto 0;
+
+  color:
+    #c9cbd0;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.8;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .hero h1 {
+    font-size:
+      90px;
+  }
+
+
+  .collection-feature {
+    padding:
+      0 20px;
+  }
+
+
+  .collection-image {
+    height:
+      560px;
+  }
+
+
+  .collection-content {
+    left:
+      30px;
+
+    right:
+      30px;
+  }
+
+
+  .collection-content h3 {
+    font-size:
+      40px;
+  }
+
+
+  .editorial-section {
+    margin:
+      100px 20px 0;
+
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .editorial-image {
+    min-height:
+      550px;
+  }
+
+
+  .editorial-content {
+    padding:
+      60px 45px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+  body {
+    overflow-x:
+      hidden;
+  }
+
+
+  /* HERO */
+
+  .hero {
+    min-height:
+      calc(100vh - 80px);
+  }
+
+
+  .hero-inner {
+    padding:
+      75px 18px 110px;
+  }
+
+
+  .hero-label {
+    margin-bottom:
+      22px;
+
+    font-size:
+      8px;
+
+    letter-spacing:
+      2.3px;
+  }
+
+
+  .hero h1 {
+    font-size:
+      58px;
+
+    line-height:
+      .92;
+
+    letter-spacing:
+      -3px;
+  }
+
+
+  .hero-description {
+    max-width:
+      300px;
+
+    margin-top:
+      28px;
+
+    font-size:
+      10px;
+  }
+
+
+  .hero-actions {
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+
+    margin-top:
+      28px;
+  }
+
+
+  .hero-button {
+    width:
+      180px;
+
+    height:
+      44px;
+  }
+
+
+  .hero-scroll {
+    bottom:
+      18px;
+
+    font-size:
+      6px;
+  }
+
+
+  /* INTRO */
+
+  .intro-section {
+    padding:
+      90px 22px;
+  }
+
+
+  .intro-label {
+    font-size:
+      7px;
+  }
+
+
+  .intro-section h2 {
+    font-size:
+      34px;
+
+    letter-spacing:
+      -1px;
+  }
+
+
+  .intro-section p {
+    font-size:
+      10px;
+
+    line-height:
+      1.8;
+  }
+
+
+  /* COLLECTION */
+
+  .collection-feature {
+    display:
+      flex;
+
+    flex-direction:
+      column;
+
+    padding:
+      0 12px;
+
+    gap:
+      12px;
+  }
+
+
+  .collection-image {
+    height:
+      500px;
+  }
+
+
+  .collection-content {
+    left:
+      25px;
+
+    right:
+      25px;
+
+    bottom:
+      28px;
+  }
+
+
+  .collection-content h3 {
+    margin:
+      10px 0 20px;
+
+    font-size:
+      38px;
+  }
+
+
+  /* EDITORIAL */
+
+  .editorial-section {
+    margin:
+      75px 12px 0;
+
+    display:
+      flex;
+
+    flex-direction:
+      column;
+  }
+
+
+  .editorial-image {
+    min-height:
+      420px;
+  }
+
+
+  .editorial-content {
+    padding:
+      50px 25px;
+  }
+
+
+  .editorial-content h2 {
+    font-size:
+      39px;
+
+    letter-spacing:
+      -1px;
+  }
+
+
+  .editorial-content p {
+    font-size:
+      10px;
+  }
+
+
+  /* STATEMENT */
+
+  .statement-section {
+    margin-top:
+      75px;
+
+    padding:
+      110px 20px;
+  }
+
+
+  .statement-section h2 {
+    font-size:
+      58px;
+
+    letter-spacing:
+      -3px;
+  }
+
+
+  .statement-section p {
+    font-size:
+      9px;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL PHONE
+===================================================== */
+
+@media (max-width: 380px) {
+
+  .hero h1 {
+    font-size:
+      51px;
+  }
+
+
+  .hero-description {
+    font-size:
+      9px;
+  }
+
+
+  .collection-image {
+    height:
+      430px;
+  }
+
+
+  .collection-content h3 {
+    font-size:
+      32px;
+  }
+
+
+  .editorial-image {
+    min-height:
+      370px;
+  }
+
+
+  .editorial-content h2 {
+    font-size:
+      34px;
+  }
+
+
+  .statement-section h2 {
+    font-size:
+      49px;
+  }
+
+}
+
+</style>

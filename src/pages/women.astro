@@ -1,0 +1,1014 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Women | SRA</title>
+</head>
+
+<body>
+
+  <Header />
+
+  <main class="women-page">
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+
+    <section class="women-heading">
+
+      <span>SHOP WOMEN</span>
+
+      <h1>Women</h1>
+
+      <p>
+        Discover timeless silhouettes, refined essentials
+        and modern pieces designed for every occasion.
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         CATEGORY NAVIGATION
+    ========================== -->
+
+    <nav class="category-nav">
+
+      <a href="#tops">
+        Tops & T-Shirts
+      </a>
+
+      <a href="#jeans">
+        Jeans
+      </a>
+
+      <a href="#dresses">
+        Dresses
+      </a>
+
+      <a href="#sweaters">
+        Sweaters & Cardigans
+      </a>
+
+    </nav>
+
+
+    <!-- =========================
+         CATEGORY GRID
+    ========================== -->
+
+    <section class="category-grid">
+
+
+      <!-- TOPS -->
+
+      <article class="category-card" id="tops">
+
+        <div class="category-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=900&q=90"
+            alt="Women's Tops and T-Shirts"
+          />
+
+        </div>
+
+        <div class="category-info">
+
+          <span>01 / COLLECTION</span>
+
+          <h2>Tops & T-Shirts</h2>
+
+          <p>
+            Everyday essentials with effortless,
+            timeless style.
+          </p>
+
+          <a href="/women/tops">
+            SHOP NOW →
+          </a>
+
+        </div>
+
+      </article>
+
+
+      <!-- JEANS -->
+
+      <article
+        class="category-card reverse-mobile"
+        id="jeans"
+      >
+
+        <div class="category-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=900&q=90"
+            alt="Women's Jeans"
+          />
+
+        </div>
+
+        <div class="category-info">
+
+          <span>02 / COLLECTION</span>
+
+          <h2>Jeans</h2>
+
+          <p>
+            Modern denim designed for
+            everyday confidence.
+          </p>
+
+          <a href="/women/jeans">
+            SHOP NOW →
+          </a>
+
+        </div>
+
+      </article>
+
+
+      <!-- DRESSES -->
+
+      <article
+        class="category-card"
+        id="dresses"
+      >
+
+        <div class="category-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=900&q=90"
+            alt="Women's Dresses"
+          />
+
+        </div>
+
+        <div class="category-info">
+
+          <span>03 / COLLECTION</span>
+
+          <h2>Dresses</h2>
+
+          <p>
+            Elegant silhouettes created
+            for every moment.
+          </p>
+
+          <a href="/women/dresses">
+            SHOP NOW →
+          </a>
+
+        </div>
+
+      </article>
+
+
+      <!-- SWEATERS -->
+
+      <article
+        class="category-card reverse-mobile"
+        id="sweaters"
+      >
+
+        <div class="category-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=900&q=90"
+            alt="Women's Sweaters and Cardigans"
+          />
+
+        </div>
+
+        <div class="category-info">
+
+          <span>04 / COLLECTION</span>
+
+          <h2> sweaters & Cardigans</h2>
+
+          <p>
+            Soft layers designed for
+            effortless sophistication.
+          </p>
+
+          <a href="/women/sweaters-cardigans">
+            SHOP NOW →
+          </a>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =========================
+         BOTTOM MESSAGE
+    ========================== -->
+
+    <section class="women-bottom">
+
+      <span>SRA WOMEN</span>
+
+      <h2>
+        Timeless style.<br />
+        Modern attitude.
+      </h2>
+
+    </section>
+
+  </main>
+
+
+  <Footer />
+
+</body>
+</html>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+
+  body {
+
+    margin: 0;
+
+    background: #f5f1e8;
+
+    color: #0b1f3a;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+
+  /* =========================
+     PAGE
+  ========================== */
+
+  .women-page {
+
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding:
+      80px 42px 100px;
+  }
+
+
+  /* =========================
+     HEADING
+  ========================== */
+
+  .women-heading {
+
+    max-width: 650px;
+
+    margin-bottom: 55px;
+  }
+
+
+  .women-heading span {
+
+    color: #b89b61;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+  }
+
+
+  .women-heading h1 {
+
+    margin:
+      14px 0 15px;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 72px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -3px;
+  }
+
+
+  .women-heading p {
+
+    max-width: 450px;
+
+    margin: 0;
+
+    color: #746f67;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+  }
+
+
+  /* =========================
+     CATEGORY NAV
+  ========================== */
+
+  .category-nav {
+
+    width: 100%;
+
+    margin-bottom: 55px;
+
+    padding:
+      17px 0;
+
+    border-top:
+      1px solid #ddd7cd;
+
+    border-bottom:
+      1px solid #ddd7cd;
+
+    display: flex;
+
+    justify-content: flex-start;
+
+    align-items: center;
+
+    gap: 42px;
+  }
+
+
+  .category-nav a {
+
+    color: #0b1f3a;
+
+    text-decoration: none;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    transition:
+      color 0.2s ease;
+  }
+
+
+  .category-nav a:hover {
+
+    color: #b89b61;
+  }
+
+
+  /* =========================
+     CATEGORY GRID
+  ========================== */
+
+  .category-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+    gap:
+      22px;
+  }
+
+
+  /* =========================
+     CATEGORY CARD
+  ========================== */
+
+  .category-card {
+
+    position: relative;
+
+    min-width: 0;
+
+    background: #ffffff;
+
+    overflow: hidden;
+
+    border:
+      1px solid #e8e2d8;
+
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+
+  .category-card:hover {
+
+    transform:
+      translateY(-5px);
+
+    box-shadow:
+      0 18px 40px
+      rgba(11, 31, 58, 0.08);
+  }
+
+
+  /* =========================
+     IMAGE
+  ========================== */
+
+  .category-image {
+
+    width: 100%;
+
+    height: 420px;
+
+    overflow: hidden;
+
+    background: #ebe5db;
+  }
+
+
+  .category-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+      transform 0.7s ease;
+  }
+
+
+  .category-card:hover
+  .category-image img {
+
+    transform:
+      scale(1.035);
+  }
+
+
+  /* =========================
+     INFO
+  ========================== */
+
+  .category-info {
+
+    min-height: 190px;
+
+    padding:
+      25px 27px 28px;
+  }
+
+
+  .category-info span {
+
+    display: block;
+
+    margin-bottom: 11px;
+
+    color: #b89b61;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.6px;
+  }
+
+
+  .category-info h2 {
+
+    margin:
+      0 0 10px;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    color: #0b1f3a;
+
+    font-size: 29px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+
+    letter-spacing: -1px;
+  }
+
+
+  .category-info p {
+
+    max-width: 330px;
+
+    margin:
+      0 0 18px;
+
+    color: #777269;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+  }
+
+
+  .category-info a {
+
+    display: inline-block;
+
+    padding-bottom: 6px;
+
+    border-bottom:
+      1px solid #0b1f3a;
+
+    color: #0b1f3a;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+
+  .category-info a:hover {
+
+    color: #b89b61;
+
+    border-color: #b89b61;
+  }
+
+
+  /* =========================
+     BOTTOM
+  ========================== */
+
+  .women-bottom {
+
+    padding:
+      110px 20px 20px;
+
+    text-align: center;
+  }
+
+
+  .women-bottom span {
+
+    color: #b89b61;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+  }
+
+
+  .women-bottom h2 {
+
+    margin:
+      18px 0 0;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size: 46px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+
+    letter-spacing: -2px;
+  }
+
+
+  /* =========================
+     TABLET
+  ========================== */
+
+  @media (max-width: 900px) {
+
+    .women-page {
+
+      padding:
+        65px 25px 80px;
+    }
+
+
+    .women-heading h1 {
+
+      font-size: 60px;
+    }
+
+
+    .category-grid {
+
+      gap: 15px;
+    }
+
+
+    .category-image {
+
+      height: 350px;
+    }
+
+
+    .category-info {
+
+      padding:
+        21px 20px 23px;
+    }
+
+
+    .category-info h2 {
+
+      font-size: 25px;
+    }
+
+  }
+
+
+  /* =========================
+     MOBILE
+  ========================== */
+  /* =========================
+     MOBILE - 2 COLUMN GRID
+  ========================= */
+
+  @media (max-width: 700px) {
+
+    .women-page {
+      padding: 48px 12px 65px;
+    }
+
+
+    /* HEADING */
+
+    .women-heading {
+      margin-bottom: 35px;
+    }
+
+    .women-heading h1 {
+      font-size: 50px;
+      letter-spacing: -2px;
+    }
+
+    .women-heading p {
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+
+    /* CATEGORY NAV */
+
+    .category-nav {
+      margin-bottom: 35px;
+
+      padding: 14px 0;
+
+      gap: 20px;
+
+      overflow-x: auto;
+
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-nav a {
+      flex-shrink: 0;
+
+      font-size: 8px;
+    }
+
+
+    /* =========================
+       2 COLUMN CATEGORY GRID
+    ========================= */
+
+    .category-grid {
+
+      width: 100%;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 14px;
+    }
+
+
+    /* =========================
+       CARD
+    ========================= */
+
+    .category-card {
+
+      width: 100%;
+
+      min-width: 0;
+
+      display: flex;
+
+      flex-direction: column;
+
+      background: #ffffff;
+
+      border: 1px solid #e7e1d7;
+
+      overflow: hidden;
+
+      box-shadow: none;
+
+      transform: none !important;
+    }
+
+
+    /* =========================
+       IMAGE
+    ========================= */
+
+    .category-image {
+
+      width: 100%;
+
+      height: 250px;
+
+      overflow: hidden;
+
+      background: #ebe5db;
+    }
+
+    .category-image img {
+
+      width: 100%;
+
+      height: 100%;
+
+      display: block;
+
+      object-fit: cover;
+    }
+
+
+    /* =========================
+       INFO
+    ========================= */
+
+    .category-info {
+
+      width: 100%;
+
+      min-height: 155px;
+
+      padding: 17px 13px 18px;
+
+      background: #ffffff;
+    }
+
+
+    /* REMOVE 01 / 02 / 03 / 04 */
+
+    .category-info span {
+      display: none;
+    }
+
+
+    .category-info h2 {
+
+      margin: 0 0 9px;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      color: #0b1f3a;
+
+      font-size: 21px;
+
+      font-weight: 400;
+
+      line-height: 1.1;
+
+      letter-spacing: -0.7px;
+    }
+
+
+    .category-info p {
+
+      margin: 0 0 15px;
+
+      color: #777269;
+
+      font-size: 9px;
+
+      line-height: 1.55;
+    }
+
+
+    .category-info a {
+
+      display: inline-block;
+
+      padding-bottom: 5px;
+
+      border-bottom:
+        1px solid #0b1f3a;
+
+      color: #0b1f3a;
+
+      text-decoration: none;
+
+      font-size: 7px;
+
+      font-weight: 600;
+
+      letter-spacing: 0.9px;
+    }
+
+
+    /* =========================
+       IMPORTANT
+       REMOVE OLD LEFT / RIGHT
+       ORDERING
+    ========================= */
+
+    .category-card:nth-child(1),
+    .category-card:nth-child(2),
+    .category-card:nth-child(3),
+    .category-card:nth-child(4) {
+
+      display: flex;
+
+      flex-direction: column;
+
+      grid-template-columns: none;
+    }
+
+
+    .category-card:nth-child(1) .category-image,
+    .category-card:nth-child(2) .category-image,
+    .category-card:nth-child(3) .category-image,
+    .category-card:nth-child(4) .category-image {
+
+      order: 0;
+    }
+
+
+    .category-card:nth-child(1) .category-info,
+    .category-card:nth-child(2) .category-info,
+    .category-card:nth-child(3) .category-info,
+    .category-card:nth-child(4) .category-info {
+
+      order: 1;
+
+      padding-left: 13px;
+
+      padding-right: 13px;
+    }
+
+
+    /* BOTTOM */
+
+    .women-bottom {
+
+      padding:
+        70px 10px 10px;
+    }
+
+    .women-bottom h2 {
+
+      font-size: 35px;
+
+      letter-spacing: -1.5px;
+    }
+
+  }
+
+
+  /* =========================
+     SMALL PHONES
+  ========================= */
+
+  @media (max-width: 400px) {
+
+    .women-page {
+
+      padding:
+        40px 10px 55px;
+    }
+
+
+    .women-heading h1 {
+
+      font-size: 43px;
+    }
+
+
+    .category-grid {
+
+      gap: 10px;
+    }
+
+
+    .category-card {
+
+      border-radius: 0;
+    }
+
+
+    .category-image {
+
+      height: 205px;
+    }
+
+
+    .category-info {
+
+      min-height: 145px;
+
+      padding:
+        14px 10px 15px;
+    }
+
+
+    .category-info h2 {
+
+      font-size: 18px;
+
+      letter-spacing: -0.5px;
+    }
+
+
+    .category-info p {
+
+      font-size: 8px;
+
+      line-height: 1.5;
+
+      margin-bottom: 12px;
+    }
+
+
+    .category-info a {
+
+      font-size: 6.5px;
+    }
+
+
+    .women-bottom h2 {
+
+      font-size: 30px;
+    }
+
+  }

@@ -1,0 +1,377 @@
+<footer class="site-footer">
+
+  <div class="footer-main">
+
+    <!-- BRAND -->
+    <div class="footer-brand">
+
+      <a href="/" class="footer-logo">
+        SRA
+      </a>
+
+      <p>
+        Timeless fashion designed
+        for the modern woman and man.
+      </p>
+
+      <div class="social-links">
+
+        <a
+          href="https://www.instagram.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Instagram
+        </a>
+
+        <a
+          href="https://www.facebook.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Facebook
+        </a>
+
+        <a
+          href="https://www.pinterest.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Pinterest
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- SHOP -->
+    <div class="footer-column">
+
+      <h3>SHOP</h3>
+
+      <a href="/women">
+        Women
+      </a>
+
+      <a href="/men">
+        Men
+      </a>
+
+    </div>
+
+
+    <!-- HELP -->
+    <div class="footer-column">
+
+      <h3>HELP</h3>
+
+      <a href="/contact">
+        Contact Us
+      </a>
+
+      <a href="/shipping">
+        Shipping &amp; Delivery
+      </a>
+
+      <a href="/faq">
+        FAQ
+      </a>
+
+    </div>
+
+
+    <!-- COMPANY -->
+    <div class="footer-column">
+
+      <h3>COMPANY</h3>
+
+      <a href="/about">
+        About SRA
+      </a>
+
+      <a href="/privacy">
+        Privacy Policy
+      </a>
+
+      <a href="/terms">
+        Terms &amp; Conditions
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER BOTTOM -->
+
+  <div class="footer-bottom">
+
+    <p>
+      © 2026 SRA. All rights reserved.
+    </p>
+
+    <p>
+      Designed with intention.
+    </p>
+
+  </div>
+
+</footer>
+
+
+<style>
+
+  .site-footer {
+    margin-top: 100px;
+    background: #0b1f3a;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+
+  .footer-main {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+
+    padding: 75px 42px 65px;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+  }
+
+
+  /* BRAND */
+
+  .footer-logo {
+    display: inline-block;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 38px;
+    font-weight: 800;
+
+    letter-spacing: -3px;
+    line-height: 1;
+
+    transition: color 0.25s ease;
+  }
+
+
+  .footer-logo:hover {
+    color: #c8b27d;
+  }
+
+
+  .footer-brand p {
+    margin: 24px 0 0;
+
+    max-width: 260px;
+
+    color: #d8dee6;
+
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+
+  /* SOCIAL */
+
+  .social-links {
+    margin-top: 28px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+
+  .social-links a {
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 11px;
+    letter-spacing: 0.7px;
+
+    transition: color 0.25s ease;
+  }
+
+
+  .social-links a:hover {
+    color: #c8b27d;
+  }
+
+
+  /* COLUMNS */
+
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+
+  .footer-column h3 {
+    margin: 3px 0 22px;
+
+    color: #c8b27d;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  .footer-column a {
+    margin-bottom: 13px;
+
+    color: #e3e7ec;
+    text-decoration: none;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    transition:
+      color 0.25s ease,
+      transform 0.25s ease;
+  }
+
+
+  .footer-column a:hover {
+    color: #c8b27d;
+    transform: translateX(3px);
+  }
+
+
+  /* BOTTOM */
+
+  .footer-bottom {
+    width: 100%;
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding: 22px 42px;
+
+    border-top:
+      1px solid rgba(255, 255, 255, 0.14);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+  }
+
+
+  .footer-bottom p {
+    margin: 0;
+
+    color:
+      rgba(255, 255, 255, 0.55);
+
+    font-size: 10px;
+    letter-spacing: 0.4px;
+  }
+
+
+  /* MOBILE */
+
+  @media (max-width: 700px) {
+
+    .site-footer {
+      margin-top: 70px;
+    }
+
+
+    .footer-main {
+      padding: 55px 22px 45px;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 42px 25px;
+    }
+
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+
+
+    .footer-logo {
+      font-size: 32px;
+      letter-spacing: -2.5px;
+    }
+
+
+    .footer-brand p {
+      font-size: 12px;
+    }
+
+
+    .footer-column h3 {
+      margin-bottom: 17px;
+      font-size: 9px;
+    }
+
+
+    .footer-column a {
+      font-size: 11px;
+      margin-bottom: 11px;
+    }
+
+
+    .footer-bottom {
+      padding: 20px 22px;
+
+      flex-direction: column;
+      align-items: flex-start;
+
+      gap: 8px;
+    }
+
+
+    .footer-bottom p {
+      font-size: 9px;
+    }
+
+  }
+
+
+  /* SMALL PHONES */
+
+  @media (max-width: 400px) {
+
+    .footer-main {
+      padding: 48px 17px 40px;
+      gap: 35px 18px;
+    }
+
+
+    .footer-logo {
+      font-size: 29px;
+    }
+
+
+    .footer-brand p {
+      font-size: 11px;
+    }
+
+
+    .footer-column a {
+      font-size: 10px;
+    }
+
+
+    .footer-bottom {
+      padding: 18px 17px;
+    }
+
+  }
+
+</style>

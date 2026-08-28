@@ -1,0 +1,1037 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="Contact SRA Fashion. Get in touch with our team for assistance and enquiries."
+    />
+
+    <title>Contact Us | SRA</title>
+  </head>
+
+  <body>
+
+    <Header />
+
+    <main>
+
+      <!-- HERO -->
+
+      <section class="contact-hero">
+
+        <div class="hero-content">
+
+          <span>
+            SRA CUSTOMER CARE
+          </span>
+
+          <h1>
+            We'd love<br />
+            to hear from you.
+          </h1>
+
+          <p>
+            Have a question about your order, our collections,
+            shipping or anything else? Our team is here to help.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- CONTACT CONTENT -->
+
+      <section class="contact-section">
+
+        <div class="contact-grid">
+
+          <!-- LEFT -->
+
+          <div class="contact-info">
+
+            <span class="section-label">
+              GET IN TOUCH
+            </span>
+
+            <h2>
+              Let's talk.
+            </h2>
+
+            <p>
+              Whether you need help with an order or simply
+              want to know more about SRA, feel free to reach out.
+            </p>
+
+
+            <div class="info-item">
+
+              <span>
+                EMAIL
+              </span>
+
+              <a href="mailto:hello@sra.com">
+                hello@sra.com
+              </a>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                CUSTOMER CARE
+              </span>
+
+              <p>
+                Monday – Saturday<br />
+                10:00 AM – 6:00 PM
+              </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                FOLLOW SRA
+              </span>
+
+              <div class="socials">
+
+                <a
+                  href="https://www.instagram.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Instagram
+                </a>
+
+                <a
+                  href="https://www.facebook.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Facebook
+                </a>
+
+                <a
+                  href="https://www.pinterest.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Pinterest
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- RIGHT -->
+
+          <div class="contact-form-wrapper">
+
+            <span class="section-label">
+              SEND A MESSAGE
+            </span>
+
+            <h2>
+              How can we help?
+            </h2>
+
+
+            <form id="contact-form">
+
+              <div class="form-row">
+
+                <div class="form-group">
+
+                  <label for="name">
+                    YOUR NAME
+                  </label>
+
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    placeholder="Enter your name"
+                    required
+                  />
+
+                </div>
+
+
+                <div class="form-group">
+
+                  <label for="email">
+                    EMAIL ADDRESS
+                  </label>
+
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    required
+                  />
+
+                </div>
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="subject">
+                  SUBJECT
+                </label>
+
+                <select
+                  id="subject"
+                  name="subject"
+                  required
+                >
+
+                  <option value="">
+                    Select a topic
+                  </option>
+
+                  <option value="order">
+                    Order enquiry
+                  </option>
+
+                  <option value="shipping">
+                    Shipping & Delivery
+                  </option>
+
+                  <option value="returns">
+                    Returns & Exchanges
+                  </option>
+
+                  <option value="product">
+                    Product enquiry
+                  </option>
+
+                  <option value="other">
+                    Other
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="message">
+                  MESSAGE
+                </label>
+
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="6"
+                  placeholder="Tell us how we can help..."
+                  required
+                ></textarea>
+
+              </div>
+
+
+              <button
+                type="submit"
+                class="submit-button"
+              >
+                SEND MESSAGE →
+              </button>
+
+
+              <p
+                id="success-message"
+                class="success-message"
+              >
+                Thank you. Your message has been received.
+              </p>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- FAQ LINK -->
+
+      <section class="help-section">
+
+        <span>
+          NEED MORE HELP?
+        </span>
+
+        <h2>
+          Find quick answers.
+        </h2>
+
+        <p>
+          Check our frequently asked questions for
+          information about orders, shipping and returns.
+        </p>
+
+        <a href="/faq">
+          VISIT FAQ →
+        </a>
+
+      </section>
+
+    </main>
+
+    <Footer />
+
+
+    <script>
+
+      const form =
+        document.querySelector("#contact-form");
+
+      const successMessage =
+        document.querySelector("#success-message");
+
+
+      form?.addEventListener(
+        "submit",
+        (event) => {
+
+          event.preventDefault();
+
+          if (!successMessage) return;
+
+          successMessage.classList.add("show");
+
+          form.reset();
+
+        }
+      );
+
+    </script>
+
+  </body>
+</html>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+
+  body {
+    margin: 0;
+
+    background: #f6f2e9;
+
+    color: #0b1f3a;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+
+  a {
+    color: inherit;
+  }
+
+
+  /* =====================================================
+     HERO
+  ===================================================== */
+
+  .contact-hero {
+
+    min-height: 560px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 100px 30px;
+
+    text-align: center;
+
+    border-bottom:
+      1px solid #e3ddd1;
+
+    background: #f6f2e9;
+  }
+
+
+  .hero-content {
+
+    max-width: 800px;
+  }
+
+
+  .hero-content > span {
+
+    display: block;
+
+    margin-bottom: 25px;
+
+    color: #b08c4d;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+  }
+
+
+  .hero-content h1 {
+
+    margin: 0;
+
+    color: #0b1f3a;
+
+    font-family:
+      Georgia,
+      "Times New Roman",
+      serif;
+
+    font-size:
+      clamp(55px, 8vw, 105px);
+
+    font-weight: 400;
+
+    line-height: .92;
+
+    letter-spacing: -5px;
+  }
+
+
+  .hero-content p {
+
+    max-width: 470px;
+
+    margin: 35px auto 0;
+
+    color: #777269;
+
+    font-size: 12px;
+
+    line-height: 1.9;
+  }
+
+
+  /* =====================================================
+     CONTACT SECTION
+  ===================================================== */
+
+  .contact-section {
+
+    padding: 140px 50px;
+  }
+
+
+  .contact-grid {
+
+    max-width: 1250px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+      .8fr 1.2fr;
+
+    gap: 110px;
+  }
+
+
+  .section-label {
+
+    display: block;
+
+    margin-bottom: 18px;
+
+    color: #b08c4d;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+  }
+
+
+  .contact-info h2,
+  .contact-form-wrapper h2 {
+
+    margin: 0;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size: 48px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    letter-spacing: -2px;
+  }
+
+
+  .contact-info > p {
+
+    max-width: 390px;
+
+    margin: 25px 0 50px;
+
+    color: #777269;
+
+    font-size: 11px;
+
+    line-height: 1.9;
+  }
+
+
+  /* INFO */
+
+  .info-item {
+
+    padding: 25px 0;
+
+    border-top:
+      1px solid #d8d1c5;
+  }
+
+
+  .info-item > span {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #8b857b;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+  }
+
+
+  .info-item a {
+
+    color: #0b1f3a;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size: 17px;
+
+    text-decoration: none;
+  }
+
+
+  .info-item p {
+
+    margin: 0;
+
+    color: #55514b;
+
+    font-size: 11px;
+
+    line-height: 1.8;
+  }
+
+
+  .socials {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+  }
+
+
+  .socials a {
+
+    color: #0b1f3a;
+
+    font-size: 10px;
+
+    text-decoration: none;
+
+    border-bottom:
+      1px solid #b08c4d;
+
+    padding-bottom: 4px;
+  }
+
+
+  /* =====================================================
+     FORM
+  ===================================================== */
+
+  .contact-form-wrapper {
+
+    padding: 55px;
+
+    background: #ebe5da;
+  }
+
+
+  .contact-form-wrapper h2 {
+
+    margin-bottom: 45px;
+
+    font-size: 42px;
+  }
+
+
+  .form-row {
+
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+
+    gap: 20px;
+  }
+
+
+  .form-group {
+
+    margin-bottom: 25px;
+  }
+
+
+  label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #777269;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+  }
+
+
+  input,
+  select,
+  textarea {
+
+    width: 100%;
+
+    border: none;
+
+    border-bottom:
+      1px solid #bcb5aa;
+
+    background: transparent;
+
+    color: #0b1f3a;
+
+    padding: 13px 3px;
+
+    outline: none;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+
+    font-size: 11px;
+
+    transition:
+      border-color .25s ease;
+  }
+
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+
+    border-bottom-color:
+      #0b1f3a;
+  }
+
+
+  textarea {
+
+    resize: vertical;
+
+    min-height: 130px;
+
+    line-height: 1.7;
+  }
+
+
+  input::placeholder,
+  textarea::placeholder {
+
+    color: #aaa39a;
+  }
+
+
+  select {
+
+    cursor: pointer;
+  }
+
+
+  .submit-button {
+
+    height: 48px;
+
+    padding: 0 25px;
+
+    border:
+      1px solid #0b1f3a;
+
+    background: #0b1f3a;
+
+    color: #ffffff;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    cursor: pointer;
+
+    transition:
+      .25s ease;
+  }
+
+
+  .submit-button:hover {
+
+    background: transparent;
+
+    color: #0b1f3a;
+  }
+
+
+  .success-message {
+
+    display: none;
+
+    margin: 20px 0 0;
+
+    color: #517052;
+
+    font-size: 10px;
+  }
+
+
+  .success-message.show {
+
+    display: block;
+  }
+
+
+  /* =====================================================
+     HELP SECTION
+  ===================================================== */
+
+  .help-section {
+
+    padding: 120px 25px;
+
+    text-align: center;
+
+    background: #0b1f3a;
+
+    color: white;
+  }
+
+
+  .help-section > span {
+
+    color: #c7a66b;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+  }
+
+
+  .help-section h2 {
+
+    margin: 18px 0;
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size: 50px;
+
+    font-weight: 400;
+
+    letter-spacing: -2px;
+  }
+
+
+  .help-section p {
+
+    max-width: 420px;
+
+    margin: 0 auto 30px;
+
+    color: #c9cbd0;
+
+    font-size: 11px;
+
+    line-height: 1.8;
+  }
+
+
+  .help-section a {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    height: 45px;
+
+    padding: 0 22px;
+
+    border:
+      1px solid #c8b27d;
+
+    color: white;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    text-decoration: none;
+
+    transition: .25s ease;
+  }
+
+
+  .help-section a:hover {
+
+    background: #c8b27d;
+
+    color: #0b1f3a;
+  }
+
+
+  /* =====================================================
+     TABLET
+  ===================================================== */
+
+  @media (max-width: 900px) {
+
+    .contact-section {
+
+      padding: 100px 25px;
+    }
+
+
+    .contact-grid {
+
+      grid-template-columns: 1fr;
+
+      gap: 70px;
+    }
+
+
+    .contact-form-wrapper {
+
+      padding: 45px;
+    }
+
+  }
+
+
+  /* =====================================================
+     MOBILE
+  ===================================================== */
+
+  @media (max-width: 600px) {
+
+    .contact-hero {
+
+      min-height: 470px;
+
+      padding: 75px 20px;
+    }
+
+
+    .hero-content > span {
+
+      font-size: 7px;
+
+      letter-spacing: 2px;
+    }
+
+
+    .hero-content h1 {
+
+      font-size: 52px;
+
+      letter-spacing: -3px;
+    }
+
+
+    .hero-content p {
+
+      max-width: 310px;
+
+      margin-top: 25px;
+
+      font-size: 10px;
+    }
+
+
+    .contact-section {
+
+      padding: 80px 18px;
+    }
+
+
+    .contact-grid {
+
+      gap: 55px;
+    }
+
+
+    .contact-info h2,
+    .contact-form-wrapper h2 {
+
+      font-size: 38px;
+
+      letter-spacing: -1.5px;
+    }
+
+
+    .contact-info > p {
+
+      font-size: 10px;
+
+      margin-bottom: 35px;
+    }
+
+
+    .contact-form-wrapper {
+
+      padding: 30px 22px;
+    }
+
+
+    .contact-form-wrapper h2 {
+
+      margin-bottom: 35px;
+    }
+
+
+    .form-row {
+
+      grid-template-columns: 1fr;
+
+      gap: 0;
+    }
+
+
+    .help-section {
+
+      padding: 90px 20px;
+    }
+
+
+    .help-section h2 {
+
+      font-size: 40px;
+
+      letter-spacing: -1.5px;
+    }
+
+
+    .help-section p {
+
+      font-size: 10px;
+    }
+
+  }
+
+
+  /* =====================================================
+     SMALL PHONE
+  ===================================================== */
+
+  @media (max-width: 380px) {
+
+    .hero-content h1 {
+
+      font-size: 45px;
+    }
+
+
+    .contact-form-wrapper {
+
+      padding: 25px 18px;
+    }
+
+
+    .contact-info h2,
+    .contact-form-wrapper h2 {
+
+      font-size: 34px;
+    }
+
+
+    .help-section h2 {
+
+      font-size: 35px;
+    }
+
+  }
+
+</style>
