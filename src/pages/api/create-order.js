@@ -1,6 +1,7 @@
+import { env } from "cloudflare:workers";
 export const prerender = false;
 
-export async function POST({ request, locals }) {
+export async function POST({ request }) {
   try {
     const body = await request.json();
 
@@ -27,8 +28,8 @@ export async function POST({ request, locals }) {
       );
     }
 
-    const keyId = locals.runtime.env.RAZORPAY_KEY_ID;
-    const keySecret = locals.runtime.env.RAZORPAY_KEY_SECRET;
+  const keyId = env.RAZORPAY_KEY_ID;
+const keySecret = env.RAZORPAY_KEY_SECRET;
 
     console.log("RAZORPAY KEY ID EXISTS:", !!keyId);
     console.log("RAZORPAY SECRET EXISTS:", !!keySecret);
