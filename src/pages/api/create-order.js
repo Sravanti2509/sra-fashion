@@ -1,8 +1,6 @@
-import Razorpay from "razorpay";
-
 export const prerender = false;
 
-export async function POST({ request }) {
+export async function POST({ request, locals }) {
   try {
     const body = await request.json();
 
@@ -29,8 +27,8 @@ export async function POST({ request }) {
       );
     }
 
-    const keyId = import.meta.env.RAZORPAY_KEY_ID;
-    const keySecret = import.meta.env.RAZORPAY_KEY_SECRET;
+    const keyId = locals.runtime.env.RAZORPAY_KEY_ID;
+    const keySecret = locals.runtime.env.RAZORPAY_KEY_SECRET;
 
     console.log("RAZORPAY KEY ID EXISTS:", !!keyId);
     console.log("RAZORPAY SECRET EXISTS:", !!keySecret);
@@ -39,8 +37,7 @@ export async function POST({ request }) {
       return new Response(
         JSON.stringify({
           success: false,
-          error:
-            "Razorpay server keys are missing. Check .env",
+          error: "Razorpay server keys are missing",
         }),
         {
           status: 500,
@@ -51,18 +48,45 @@ export async function POST({ request }) {
       );
     }
 
-    const razorpay = new Razorpay({
-      key_id: keyId,
-      key_secret: keySecret,
-    });
+    const auth = btoa(`${keyId}:${keySecret}`);
 
-    const order = await razorpay.orders.create({
-      amount: Math.round(amount * 100),
-      currency: "INR",
-      receipt,
-    });
+    const razorpayResponse = await fetch(
+      "https://api.razorpay.com/v1/orders",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${auth}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: Math.round(amount * 100),
+          currency: "INR",
+          receipt,
+        }),
+      },
+    );
 
-    console.log("RAZORPAY ORDER CREATED:", order.id);
+    const responseText = await razorpayResponse.text();
+
+    console.log("RAZORPAY RESPONSE STATUS:", razorpayResponse.status);
+    console.log("RAZORPAY RESPONSE:", responseText);
+
+    if (!razorpayResponse.ok) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: responseText || "Razorpay order creation failed",
+        }),
+        {
+          status: razorpayResponse.status,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+    }
+
+    const order = JSON.parse(responseText);
 
     return new Response(
       JSON.stringify({
