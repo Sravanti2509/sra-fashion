@@ -1,0 +1,37 @@
+/* SRA FASHION — FORCE LIGHT THEME */
+
+:root {
+  color-scheme: only light !important;
+}
+
+html {
+  color-scheme: only light !important;
+  background-color: #f6f2e9 !important;
+}
+
+body {
+  color-scheme: only light !important;
+}
+
+/* Prevent browser dark-mode transformations */
+html,
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Keep images and visual elements natural */
+img,
+picture,
+video,
+canvas,
+svg {
+  color-scheme: only light !important;
+}
+
+/* Form controls should stay light */
+input,
+textarea,
+select,
+button {
+  color-scheme: only light !important;
+}
